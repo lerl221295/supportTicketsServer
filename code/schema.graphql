@@ -1,0 +1,203 @@
+type Cliente {
+	id: Int
+	nombre: String
+	apellido: String
+	identificacion: String
+	email: String
+	telefono: String
+	ubicacion: String
+	tickets: [Ticket]
+}
+
+type Tecnico {
+	id: Int
+	nombre: String
+	apellido: String
+	identificacion: String
+	email: String
+	telefono: String
+	profesion: String
+	departamento: String
+	fecha_nac: String
+	tickets: [Ticket]
+}
+
+type Admin {
+	id: Int
+	nombre: String
+	apellido: String
+	email: String
+}
+
+type User {
+	id: Int
+	tecnico: Tecnico
+	cliente: Cliente
+	admin: Admin
+	token: String
+}
+
+type Me {
+	id: Int
+	tipo: String
+}
+
+type Interaccion {
+	_id: String
+	#unix time = fecha.getTime()
+	timestamp: String
+	#si se trata de un mensaje el texto sera el mensaje. Si se trata de una actividad el texto debe ser la conjugacion del verbo que indique la accion, ejemplo: "cambio el estado de 'en proceso' a 'pausado'" 
+	text: String
+	#cliente o tecnico
+	emisor: String 
+	#actividad o mensaje
+	tipo: String
+	ticket: Ticket
+}
+
+type Ticket {
+	_id: Int
+	titulo: String
+	estado: String
+	prioridad: String
+	tipo: String
+	cliente: Cliente
+	tecnico: Tecnico
+	interacciones(onlyFirst: Boolean): [Interaccion]
+	# Para manejar los atributos dinámicos que se pueden crear al ticket
+	additionalsAttributes: [AdditionalAttribute]
+}
+
+type AdditionalAttribute {
+	_id: Int
+	# Tipo de atributo: input/text/picker/checkbox/dropdown/...
+	type: String
+	# Nombre del atributo
+	name: String
+	# Valor del atributo, siempre será un array para manejar todos los posibles casos de tipo de campo
+	# Será siempre String, si se necesita en entero, se parsea y borrate
+	value: [String]
+	# True, para cuando el campo sea un numero entero (podría ser mejor manejarlo siempre en float)
+	int: Boolean
+}
+
+type TicketResponse {
+	mensaje: String,
+	ticket_id: Int
+}
+
+input login {
+	email: String!
+	password: String!
+	#tecnico o cliente
+	tipo: String!
+}
+
+input cliente {
+	id: Int
+	nombre: String!
+	apellido: String!
+	identificacion: String!
+	email: String!
+	telefono: String!
+	ubicacion: String!
+}
+
+input tecnico {
+	id: Int
+	nombre: String!
+	apellido: String!
+	fecha_nac: String!
+	identificacion: String!
+	email: String!
+	telefono: String!
+	profesion: String!
+	departamento: String!
+}
+
+input ticket {
+	titulo: String!
+	tipo: String!
+}
+
+input ticketUpdate {
+	_id: Int!
+	estado: String
+	prioridad: String
+	tipo: String
+}
+
+
+input interaccion {
+	text: String!
+	#"0" para interacciones de tickets aun no creados
+	ticket_id: Int!
+}
+
+input me {
+    id: Int
+    tipo: String
+}
+
+input additional_attribute {
+	# Tipo de atributo: input/text/picker/checkbox/dropdown/...
+	type: String!
+	# Nombre del atributo
+	name: String!
+	# Valor del atributo, siempre será un array para manejar todos los posibles casos de tipo de campo
+	# Será siempre String, si se necesita en entero, se parsea y borrate
+	value: [String]!
+	# True, para cuando el campo sea un numero entero (podría ser mejor manejarlo siempre en float)
+	int: Boolean
+}
+
+type Query {
+	clientes: [Cliente]
+	cliente(id: Int): Cliente
+
+	tecnicos: [Tecnico]
+	tecnico(id: Int): Tecnico
+
+	tickets(estado: String): [Ticket]
+	ticket(id: Int): Ticket
+
+	ultimasInteracciones(n: Int): [Interaccion]
+
+	getMe: Me
+}
+
+type Mutation {
+	authenticate(user: login!): User
+
+	createCliente(cliente: cliente): String
+	createTecnico(tecnico: tecnico): String
+
+	updateCliente(cliente: cliente): String
+	updateTecnico(tecnico: tecnico): String
+
+	# probablemente haga una publicacion para un subscription :D
+	createTicket(ticket: ticket!, interaccion: interaccion!): TicketResponse
+	# probablemente haga una publicacion para un subscription :D
+	updateTicket(ticket: ticketUpdate!): String
+	# probablemente haga una publicacion para un subscription :D
+	asignTecnico(tecnico_id: Int!, ticket_id: Int!): String
+
+	tomarTicket(ticket_id: Int!): String
+
+	#agrega un mensaje al ticket. Realiza publicacion de la subscripcion que se encargara de enviar en real time las nuevas interacciones del ticket
+	addInteraccion(interaccion: interaccion!): String #interacciones tipo mensaje
+
+	# Se deben asociar los atributos adicionales al tenant del sistema, de manera de poder distinguirlo del resto
+	# También, se puede agregar un atributo para saber si pertenece al ticket, el cliente, agente o a quien fucking sea
+	addAdditionalsAttributes(additionals_attributes: [additional_attribute]): String
+}
+
+type Subscription {
+	newInteracciones(ticket_id: Int): Interaccion
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
+}
