@@ -57,12 +57,13 @@ const mocks = {
 		tecnico: null
 	}),
 	Query: () => ({
-		tickets: (root, args, { jwt }) => {
+		tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
 			//if(!jwt) throw Error("Mamate un pipe, sapo"); 
+			console.log(subdomain);
 			return new MockList([40, 50]);
 		},
-		clientes: () => Cliente.getAll(),
+		clientes: () => new MockList([40, 50]),
 		tecnicos: () => new MockList([40, 50]),
 		ultimasInteracciones: (_, {n = 10}) => new MockList([n, n])/*,
 		ticket: () => ({
@@ -70,13 +71,13 @@ const mocks = {
 		})*/
 	}),
 	Mutation: () => ({
-		authenticate : (_, {user}) => {
+		/*authenticate : (_, {user}) => {
 			if(user.email == "luis@gmail.com") return({
 				id: casual.integer(1, 1000),
 				token: casual.uuid
 			});
 			throw Error("Mamate un pipe, sapo");
-		},
+		},*/
 		addInteraccion: (_, {interaccion}) => {
 			pubsub.publish('interacciones', {newInteracciones: {
 				...interaccion,

@@ -1,3 +1,5 @@
+union Person = Cliente | Tecnico | Admin
+
 type Cliente {
 	id: Int
 	nombre: String
@@ -31,9 +33,7 @@ type Admin {
 
 type User {
 	id: Int
-	tecnico: Tecnico
-	cliente: Cliente
-	admin: Admin
+	person: Person
 	token: String
 }
 

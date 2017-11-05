@@ -1,7 +1,7 @@
 {
-  "name": "APIGatewayMicroService",
+  "name": "TesisServer",
   "version": "0.0.1",
-  "description": "Un api gateway para distribuidos",
+  "description": "Un API GraphQL para la gestion de tickets de soporte",
   "main": "server.js",
   "dependencies": {
     "apollo-server-express": "^1.0.2",

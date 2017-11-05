@@ -18,10 +18,8 @@ graphQLServer.use('*', cors(/*{ origin: `http://localhost:${GRAPHQL_PORT}` }*/))
 graphQLServer.use('/graphql', bodyParser.json(), 
     graphqlExpress( request => ({
             schema,
-            //para manejar el jwt en el header : (agregarlo al context para
-            //que cada resolver lo reciba en el tercerparametro.jwt
             context: { 
-                jwt: request.headers.authorization
+                subdomain: request.headers.host.split(".")[0]
             }
         }) 
     ) 
