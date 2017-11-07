@@ -15,6 +15,14 @@ const graphQLServer = express();
 
 graphQLServer.use('*', cors(/*{ origin: `http://localhost:${GRAPHQL_PORT}` }*/));//subscription
 
+const subdomains = ['directv', 'sidor'];
+
+graphQLServer.use('/graphql', (request, res, next) => {
+    if(subdomains.includes(request.headers.host.split(".")[0]))
+        next();
+    else res.send("no tienes aseso menol");
+})
+
 graphQLServer.use('/graphql', bodyParser.json(), 
     graphqlExpress( request => ({
             schema,
