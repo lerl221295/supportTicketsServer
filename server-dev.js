@@ -13,12 +13,14 @@ const GRAPHQL_PORT = 3000;
 
 const graphQLServer = express();
 
-graphQLServer.use('*', cors(/*{ origin: `http://localhost:${GRAPHQL_PORT}` }*/));//subscription
+graphQLServer.use('*', cors());
 
 const subdomains = ['directv', 'sidor'];
 
 graphQLServer.use('/graphql', (request, res, next) => {
-    if(subdomains.includes(request.headers.host.split(".")[0]))
+    const subdomain = request.headers.host.split(".")[0];
+    //console.log(subdomain);
+    if(subdomains.includes(subdomain))
         next();
     else res.send("no tienes aseso menol");
 })
@@ -43,18 +45,15 @@ graphQLServer.use('/graphiql', graphiqlExpress({
 const ws = createServer(graphQLServer);
 ws.listen(GRAPHQL_PORT, () => {
     console.log(`Servidor de desarrollo corriendo en http://localhost:${GRAPHQL_PORT}/graphql`);
-    // Set up the WebSocket for handling GraphQL subscriptions
     new SubscriptionServer({
         execute,
         subscribe,
-        schema
+        schema,
+        onConnect: (connectionParams, webSocket) => ({
+            subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
+        }),
     }, {
         server: ws,
         path: '/subscriptions',
     });
 });
-
-/*graphQLServer.listen(GRAPHQL_PORT, () => {
-    console.log(`Servidor de desarrollo corriendo en http://localhost:${GRAPHQL_PORT}/graphql`);
-});
-*/

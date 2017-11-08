@@ -45,7 +45,7 @@ const mocks = {
 	Ticket: () => ({
 		_id: casual.integer(1, 1000),
 		titulo: casual.title,
-		estado: casual.random_element(['abierto', 'proceso', 'esperando'/*, 'cerrado.ok', 'cerrado.bad'*/]),
+		estado: casual.random_element(['abierto'/*, 'proceso', 'esperando', 'cerrado.ok', 'cerrado.bad'*/]),
 		prioridad: casual.random_element(['baja', 'media', 'alta', 'urgente']),
 		tipo: casual.random_element(['pregunta', 'solicitud', 'problema']),
 		interacciones: (_, {onlyFirst}) => {
@@ -60,7 +60,7 @@ const mocks = {
 		tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
 			//if(!jwt) throw Error("Mamate un pipe, sapo"); 
-			console.log(subdomain);
+			console.log("retornare los tickets de ",subdomain);
 			return new MockList([40, 50]);
 		},
 		clientes: () => new MockList([40, 50]),
@@ -78,11 +78,12 @@ const mocks = {
 			});
 			throw Error("Mamate un pipe, sapo");
 		},*/
-		addInteraccion: (_, {interaccion}) => {
+		addInteraccion: (_, {interaccion}, { subdomain }) => {
 			pubsub.publish('interacciones', {newInteracciones: {
 				...interaccion,
 				timestamp: new Date().toString(),
-				_id: casual.uuid
+				_id: casual.uuid,
+				subdomain
 			}});
 			return "Interaccion agregada con exito";
 		},
@@ -103,8 +104,13 @@ const pubsub = new PubSub();
 const resolvers = {
 	Subscription: {
         newInteracciones: {
-            subscribe: () => pubsub.asyncIterator('interacciones')
-        }
+            subscribe: withFilter(
+                () => pubsub.asyncIterator('interacciones'),
+                ({ newInteracciones }, variables, context) => {
+                	return newInteracciones.subdomain === context.subdomain;
+                }
+            )
+		}
     }
 }
 
