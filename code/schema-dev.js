@@ -52,14 +52,14 @@ const mocks = {
 			let numbers = [6, 6];
 			if(onlyFirst) numbers = [1, 1]
 			return new MockList(numbers)
-		},
+		}/*,
 		cliente: null,
-		tecnico: null
+		tecnico: null*/
 	}),
-	Query: () => ({
+	Consultas: () => ({
 		tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
-			//if(!jwt) throw Error("Mamate un pipe, sapo"); 
+			//if(!jwt) throw Error("Mamate un pipe, sapo");
 			console.log("retornare los tickets de ",subdomain);
 			return new MockList([40, 50]);
 		},

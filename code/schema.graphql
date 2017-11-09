@@ -153,7 +153,7 @@ input additional_attribute {
 	int: Boolean
 }
 
-type Query {
+type Consultas {
 	clientes: [Cliente]
 	cliente(id: Int): Cliente
 
@@ -199,7 +199,7 @@ type Subscription {
 }
 
 schema {
-	query: Query
+	query: Consultas
 	mutation: Mutation
 	subscription: Subscription
 }
