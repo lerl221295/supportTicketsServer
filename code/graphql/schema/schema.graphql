@@ -1,0 +1,305 @@
+type Client {
+	id: String
+	name: String
+	lastname: String
+	email: String
+	phones: [String]
+	address: String
+	about: String
+    twitter_id: String
+    facebook_id: String
+    organization: Organization
+    interventions: [Invervention]
+}
+
+type Agent {
+	id: String
+    name: String
+    lastname: String
+    email: String
+    phones: [String]
+    about: String
+    profession: String
+    supplier: Supplier
+}
+
+type Organization {
+    id: String
+    name: String
+    about: String
+    domains: [String]
+    clients: [Client]
+}
+
+type Supplier {
+    id: String
+    name: String
+    about: String
+    agents: [Agent]
+}
+
+type Device {
+    id: String
+    code: String
+    name: Sring
+    client: Cliente
+    tickets: [Ticket]
+}
+
+type Task {
+    text: String
+    done: Boolean
+}
+
+type Group {
+    id: String
+    name: String
+    about: String
+    group_scale: Group
+    agents: [Agent]
+    # Agentes que deben ser notificados
+    notification_agents: [Agent]
+    # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
+    notification_hours: Int
+    notification_text: String
+}
+
+type Message {
+    text: String
+    time: String
+    agent: Agent
+}
+
+type Discussion {
+    id: String
+    agents: [Agent]
+    messages: [Message]
+}
+
+union Autor = Client | Agent
+
+enum InterventionAutor {
+    AGENT
+    CLIENT
+}
+
+type Invervention {
+    id: String
+    text: String
+    time: String
+    type_autor: InterventionAutor
+    autor: Autor
+}
+
+enum Source {
+    PORTAL
+    EMAIL
+    FACEBOOK
+    TWITTER
+}
+
+type Ticket {
+    id: String
+    number: Int
+    title: String
+    description: String
+    ###################
+    priority: String
+    type: String
+    state: String
+    next_states: [String]
+    source: Source
+    agente: Agente
+    client: Client
+    activities: Activities
+    intervention: Intervention
+    discussion: Discussion
+    device: Device
+    group: Group
+    supplier: Supplier
+    tasks: [Task]
+    custom_fields: [CustomField]
+    response_by: String
+    resolve_by: String
+}
+
+type CustomField {
+    value: String
+    metadata: Field
+}
+
+enum FieldType {
+    TEXT
+    TEXTAREA
+    NUMBER
+    DATE
+    SELECT
+    CHECKBOX
+}
+
+interface Field {
+    position: Int
+    key: String
+    label: String
+    type: FieldType
+}
+
+type FreeField implements Field {
+    position: Int
+    key: String
+    label: String
+    type: FieldType
+}
+
+type SelectValue {
+    text: String
+    key: String
+    position: Int
+}
+
+type SelectField implements Field {
+    position: Int
+    key: String
+    label: String
+    type: FieldType
+    values: [SelectValue]
+}
+
+
+enum ActivityAutor {
+    AGENT
+    CLIENT
+    SYSTEM
+}
+
+type Activity {
+    id: String
+    time: String
+    type_autor: ActivityAutor
+    autor: Autor
+    changes: [Change]
+}
+
+type Change {
+    prop_name: String
+    old_value: String
+    new_value: String
+}
+
+
+
+input login {
+	email: String!
+	password: String!
+	#tecnico o cliente
+	tipo: String!
+}
+
+input cliente {
+	id: Int
+	nombre: String!
+	apellido: String!
+	identificacion: String!
+	email: String!
+	telefono: String!
+	ubicacion: String!
+}
+
+input tecnico {
+	id: Int
+	nombre: String!
+	apellido: String!
+	fecha_nac: String!
+	identificacion: String!
+	email: String!
+	telefono: String!
+	profesion: String!
+	departamento: String!
+}
+
+input ticket {
+	titulo: String!
+	tipo: String!
+}
+
+input ticketUpdate {
+	_id: Int!
+	estado: String
+	prioridad: String
+	tipo: String
+}
+
+
+input interaccion {
+	text: String!
+	#"0" para interacciones de tickets aun no creados
+	ticket_id: Int!
+}
+
+input me {
+    id: Int
+    tipo: String
+}
+
+input additional_attribute {
+	# Tipo de atributo: input/text/picker/checkbox/dropdown/...
+	type: String!
+	# Nombre del atributo
+	name: String!
+	# Valor del atributo, siempre será un array para manejar todos los posibles casos de tipo de campo
+	# Será siempre String, si se necesita en entero, se parsea y borrate
+	value: [String]!
+	# True, para cuando el campo sea un numero entero (podría ser mejor manejarlo siempre en float)
+	int: Boolean
+}
+
+type Query {
+	clientes: [Cliente]
+	cliente(id: Int): Cliente
+
+	tecnicos: [Tecnico]
+	tecnico(id: Int): Tecnico
+
+	tickets(estado: String): [Ticket]
+	ticket(id: Int): Ticket
+
+	ultimasInteracciones(n: Int): [Interaccion]
+
+	getMe: Me
+}
+
+type Mutation {
+	authenticate(user: login!): User
+
+	createCliente(cliente: cliente): String
+	createTecnico(tecnico: tecnico): String
+
+	updateCliente(cliente: cliente): String
+	updateTecnico(tecnico: tecnico): String
+
+	# probablemente haga una publicacion para un subscription :D
+	createTicket(ticket: ticket!, interaccion: interaccion!): TicketResponse
+	# probablemente haga una publicacion para un subscription :D
+	updateTicket(ticket: ticketUpdate!): String
+	# probablemente haga una publicacion para un subscription :D
+	asignTecnico(tecnico_id: Int!, ticket_id: Int!): String
+
+	tomarTicket(ticket_id: Int!): String
+
+	#agrega un mensaje al ticket. Realiza publicacion de la subscripcion que se encargara de enviar en real time las nuevas interacciones del ticket
+	addInteraccion(interaccion: interaccion!): String #interacciones tipo mensaje
+
+	# Se deben asociar los atributos adicionales al tenant del sistema, de manera de poder distinguirlo del resto
+	# También, se puede agregar un atributo para saber si pertenece al ticket, el cliente, agente o a quien fucking sea
+	addAdditionalsAttributes(additionals_attributes: [additional_attribute]): String
+}
+
+type Subscripcion {
+	newInteracciones(ticket_id: Int): Interaccion
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscripcion
+}
