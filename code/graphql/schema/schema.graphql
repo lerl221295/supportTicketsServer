@@ -127,22 +127,22 @@ union CustomFieldValues = TextValue | NumberValue | SelectValue | CheckValue
 
 type TextValue {
     value: String
-    metadata: Field
+    metadata: CustomField
 }
 
 type NumberValue {
     value: Int
-    metadata: Field
+    metadata: CustomField
 }
 
 type SelectValue {
     key: String
-    metadata: Field
+    metadata: CustomField
 }
 
 type CheckValue {
     value: Boolean
-    metadata: Field
+    metadata: CustomField
 }
 
 
@@ -155,7 +155,7 @@ enum FieldType {
     CHECKBOX
 }
 
-union Field = FreeField | SelectField
+union CustomField = FreeField | SelectField
 
 type FreeField {
     position: Int
@@ -218,7 +218,7 @@ type Status {
     stage: Stage
     # Estados a los que se puede ir hacia ese estado
     statuses: [Status]
-    roles_permissions: UserRoles
+    roles_permissions: [UserRoles]
 }
 
 type Category {
