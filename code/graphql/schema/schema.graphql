@@ -155,15 +155,6 @@ enum FieldType {
     CHECKBOX
 }
 
-type FreeField {
-    position: Int
-    key: String
-    label: String
-    type: FieldType
-}
-
-type SelectValue {
-    position: Int
 union Field = FreeField | SelectField
 
 type FreeField {
@@ -205,6 +196,42 @@ type Change {
     prop_name: String
     old_value: String
     new_value: String
+}
+
+type Stage {
+    id: String
+    key: String
+    name: String
+    statuses: [Status]
+}
+
+enum UserRoles {
+    AGENT
+    SUPERVISOR
+    SUPPLIER
+}
+
+type Status {
+    id: String
+    key: String
+    label: String
+    stage: Stage
+    # Estados a los que se puede ir hacia ese estado
+    statuses: [Status]
+    roles_permissions: UserRoles
+}
+
+type Category {
+    id: String
+    name: String
+    articles: [Article]
+}
+
+type Article {
+    name: String
+    description: String
+    time: String
+    publisher_user: Agent
 }
 
 type Query {
