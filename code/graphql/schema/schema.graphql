@@ -121,6 +121,8 @@ type Ticket {
     custom_fields_values: [CustomFieldValues]
     response_by: String
     resolve_by: String
+    #sera null en los tickets que no esten solucionados (1-5, no satisfecho- satisfecho)
+    satisfaction_level: Int
 }
 
 union CustomFieldValues = TextValue | NumberValue | SelectValue | CheckValue
