@@ -10,6 +10,8 @@ type Client {
     facebook_id: String
     organization: Organization
     interventions: [Intervention]
+    #tickets soliticatos por el client
+    tickets: [Ticket]
 }
 
 type Agent {
@@ -21,6 +23,8 @@ type Agent {
     about: String
     profession: String
     supplier: Supplier
+    #tickets asignados actualmente al agente
+    tickets: [Ticket]
 }
 
 type Organization {
@@ -29,6 +33,8 @@ type Organization {
     about: String
     domains: [String]
     clients: [Client]
+    #tickets creados por clientes de esta organizacion
+    tickets: [Ticket]
 }
 
 type Supplier {
@@ -36,6 +42,8 @@ type Supplier {
     name: String
     about: String
     agents: [Agent]
+    #tickets asignados actualmente al proveedor
+    tickets: [Ticket]
 }
 
 type Device {
@@ -62,6 +70,8 @@ type Group {
     # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
     notification_hours: Int
     notification_text: String
+    #tickets asignados actualmente al grupo
+    tickets: [Ticket]
 }
 
 type Message {
@@ -89,6 +99,7 @@ type Intervention {
     time: String
     type_autor: InterventionAutor
     autor: Autor
+    ticket: Ticket
 }
 
 enum Source {
