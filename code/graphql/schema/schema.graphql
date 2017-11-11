@@ -234,6 +234,94 @@ type Article {
     publisher_user: Agent
 }
 
+union Entity = Agent | Client | Supplier
+
+type User {
+    entity: Entity
+    notifications: [Notification]
+
+}
+
+type Notification {
+    text: String
+    time: String
+    readed: Boolean
+    ticket: Ticket
+
+}
+
+enum UnityTime {
+    MINUTES
+    HOURS
+    DAYS
+    MONTHS
+}
+
+enum OperationalHours {
+    CALENDAR
+    BUSINESS
+}
+
+type PolicyTime {
+    value: Int
+    unity: UnityTime
+}
+
+type Policy {
+    #low, medium, high, urgent (considerar enum)
+    priority_key: String
+    first_response: PolicyTime
+    solved: PolicyTime
+    #si el tiempo correra en horas habiles o 24x7
+    operational_hours: OperationalHours
+}
+
+type SLAPolicy {
+    id: String
+    default: Boolean
+    name: String
+    description: String
+    active: Boolean
+    position: Int
+    #una politica para cada prioridad
+    policies: [Policy]
+    clients: [Client]
+    organizations: [Organization]
+}
+
+type Horary {
+    # hora del dia en que se comienza a trabajar
+    start: Int
+    # hora del dia en que se termina de trabajar
+    end: Int
+}
+
+enum WeekDay {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+type Holiday {
+    name: String
+    day: Int
+    month: Int
+}
+
+type WorkingDay {
+    day: WeekDay
+    horary: Horary
+}
+
+type BusinessHours {
+    working_days: [WorkingDay]
+    holidays: [Holiday]
+}
+
 type Query {
 	customFields: [ CustomField ]
 }
