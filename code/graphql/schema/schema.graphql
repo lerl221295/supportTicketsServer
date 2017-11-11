@@ -118,15 +118,33 @@ type Ticket {
     group: Group
     supplier: Supplier
     tasks: [Task]
-    custom_fields: [CustomField]
+    custom_fields_values: [CustomFieldValues]
     response_by: String
     resolve_by: String
 }
 
-type CustomField {
+union CustomFieldValues = TextValue | NumberValue | SelectValue | CheckValue
+
+type TextValue {
     value: String
     metadata: Field
 }
+
+type NumberValue {
+    value: Int
+    metadata: Field
+}
+
+type SelectValue {
+    key: String
+    metadata: Field
+}
+
+type CheckValue {
+    value: Boolean
+    metadata: Field
+}
+
 
 enum FieldType {
     TEXT
@@ -137,32 +155,27 @@ enum FieldType {
     CHECKBOX
 }
 
-interface Field {
+union Field = FreeField | SelectField
+
+type FreeField {
     position: Int
     key: String
     label: String
     type: FieldType
 }
 
-type FreeField implements Field {
-    position: Int
-    key: String
-    label: String
-    type: FieldType
-}
-
-type SelectValue {
+type SelectOption {
     text: String
     key: String
     position: Int
 }
 
-type SelectField implements Field {
+type SelectField {
     position: Int
     key: String
     label: String
     type: FieldType
-    values: [SelectValue]
+    options: [SelectOption]
 }
 
 
@@ -185,7 +198,6 @@ type Change {
     old_value: String
     new_value: String
 }
-
 
 
 input login {
