@@ -50,7 +50,9 @@ ws.listen(GRAPHQL_PORT, () => {
         subscribe,
         schema,
         onConnect: (connectionParams, webSocket) => ({
-            subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
+            //subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
+            //falta validar el connectionParams.token
+            subdomain: connectionParams.subdomain
         }),
     }, {
         server: ws,
