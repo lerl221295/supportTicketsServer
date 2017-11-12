@@ -10,7 +10,7 @@ type Client {
     facebook_id: String
     organization: Organization
     interventions: [Intervention]
-    #tickets soliticatos por el client
+    #Tickets soliticatos por el client
     tickets: [Ticket]
 }
 
@@ -23,7 +23,7 @@ type Agent {
     about: String
     profession: String
     supplier: Supplier
-    #tickets asignados actualmente al agente
+    #Tickets asignados actualmente al agente
     tickets: [Ticket]
 }
 
@@ -33,7 +33,7 @@ type Organization {
     about: String
     domains: [String]
     clients: [Client]
-    #tickets creados por clientes de esta organizacion
+    #Tickets creados por clientes de esta organizacion
     tickets: [Ticket]
 }
 
@@ -42,7 +42,7 @@ type Supplier {
     name: String
     about: String
     agents: [Agent]
-    #tickets asignados actualmente al proveedor
+    #Tickets asignados actualmente al proveedor
     tickets: [Ticket]
 }
 
@@ -65,12 +65,12 @@ type Group {
     about: String
     group_scale: Group
     agents: [Agent]
-    # Agentes que deben ser notificados
+    #Agentes que deben ser notificados
     notification_agents: [Agent]
-    # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
+    #Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
     notification_hours: Int
     notification_text: String
-    #tickets asignados actualmente al grupo
+    #Tickets asignados actualmente al grupo
     tickets: [Ticket]
 }
 
@@ -109,30 +109,45 @@ enum Source {
     TWITTER
 }
 
+type TicketType {
+    key: String
+    text: String
+}
+
+enum TicketPriority {
+    low
+    medium
+    high
+    urgent
+}
+
 type Ticket {
     id: String
     number: Int
     title: String
     description: String
-    ###################
-    priority: String
-    type: String
-    state: String
-    next_states: [String]
+    #Las prioridades como enum ya que no son modificables
+    priority: TicketPriority
+    type: TicketType
+    state: Status
+    #Estados a los que puede ir el ticket (calculado)
+    next_states: [Status]
     source: Source
     agente: Agent
     client: Client
-    activities: Activity
-    intervention: Intervention
+    activities: [Activity]
+    intervention: [Intervention]
     discussion: Discussion
     device: Device
     group: Group
     supplier: Supplier
     tasks: [Task]
     custom_fields_values: [CustomFieldValues]
+    #Cuando debe o debio realizarse la primera respuesta segun el SLA
     response_by: String
+    #Cuando debe o debio solucionarse el ticket segun el SLA
     resolve_by: String
-    #sera null en los tickets que no esten solucionados (1-5, no satisfecho- satisfecho)
+    #Sera null en los tickets que no esten solucionados (1-5, no satisfecho- satisfecho)
     satisfaction_level: Int
 }
 
@@ -229,8 +244,8 @@ type Status {
     key: String
     label: String
     stage: Stage
-    # Estados a los que se puede ir hacia ese estado
-    statuses: [Status]
+    #Estados desde los que se puede ir hacia ese estado
+    came_from: [Status]
     roles_permissions: [UserRoles]
 }
 
@@ -281,11 +296,10 @@ type PolicyTime {
 }
 
 type Policy {
-    #low, medium, high, urgent (considerar enum)
-    priority_key: String
+    priority: TicketPriority
     first_response: PolicyTime
     solved: PolicyTime
-    #si el tiempo correra en horas habiles o 24x7
+    #Si el tiempo correra en horas habiles o 24x7
     operational_hours: OperationalHours
 }
 
@@ -296,16 +310,16 @@ type SLAPolicy {
     description: String
     active: Boolean
     position: Int
-    #una politica para cada prioridad
+    #Una politica para cada prioridad
     policies: [Policy]
     clients: [Client]
     organizations: [Organization]
 }
 
 type Horary {
-    # hora del dia en que se comienza a trabajar
+    #Hora del dia en que se comienza a trabajar
     start: Int
-    # hora del dia en que se termina de trabajar
+    #Hora del dia en que se termina de trabajar
     end: Int
 }
 
