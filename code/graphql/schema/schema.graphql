@@ -47,16 +47,16 @@ type Supplier {
 }
 
 type Device {
-    id: String
-    code: String
-    name: String
-    client: Client
-    tickets: [Ticket]
+	id: String
+	code: String
+	name: String
+	client: Client
+	tickets: [Ticket]
 }
 
 type Task {
-    text: String
-    done: Boolean
+	text: String
+	done: Boolean
 }
 
 type Group {
@@ -75,38 +75,38 @@ type Group {
 }
 
 type Message {
-    text: String
-    time: String
-    agent: Agent
+	text: String
+	time: String
+	agent: Agent
 }
 
 type Discussion {
-    id: String
-    agents: [Agent]
-    messages: [Message]
+	id: String
+	agents: [Agent]
+	messages: [Message]
 }
 
 union Autor = Client | Agent
 
 enum InterventionAutor {
-    AGENT
-    CLIENT
+	AGENT
+	CLIENT
 }
 
 type Intervention {
-    id: String
-    text: String
-    time: String
-    type_autor: InterventionAutor
-    autor: Autor
-    ticket: Ticket
+	id: String
+	text: String
+	time: String
+	type_autor: InterventionAutor
+	autor: Autor
+	ticket: Ticket
 }
 
 enum Source {
-    PORTAL
-    EMAIL
-    FACEBOOK
-    TWITTER
+	PORTAL
+	EMAIL
+	FACEBOOK
+	TWITTER
 }
 
 type TicketType {
@@ -142,7 +142,7 @@ type Ticket {
     group: Group
     supplier: Supplier
     tasks: [Task]
-    custom_fields_values: [CustomFieldValues]
+    custom_fields: [TicketField]
     #Cuando debe o debio realizarse la primera respuesta segun el SLA
     response_by: String
     #Cuando debe o debio solucionarse el ticket segun el SLA
@@ -151,148 +151,148 @@ type Ticket {
     satisfaction_level: Int
 }
 
-union CustomFieldValues = TextValue | NumberValue | SelectValue | CheckValue
+type TicketField {
+	value: FieldValue
+	metadata: Field
+}
+
+union FieldValue = TextValue | NumberValue | SelectValue | CheckValue
 
 type TextValue {
-    value: String
-    metadata: CustomField
+	text: String
 }
 
 type NumberValue {
-    value: Int
-    metadata: CustomField
+	number: Int
 }
 
 type SelectValue {
-    key: String
-    metadata: CustomField
+	key: String
 }
 
 type CheckValue {
-    value: Boolean
-    metadata: CustomField
+	check: Boolean
 }
 
 
 enum FieldType {
-    TEXT
-    TEXTAREA
-    NUMBER
-    DATE
-    SELECT
-    CHECKBOX
+	TEXT
+	TEXTAREA
+	NUMBER
+	DATE
+	SELECT
+	CHECKBOX
 }
 
-union CustomField = FreeField | SelectField
+union Field = FreeField | SelectField
 
 type FreeField {
-    position: Int
-    key: String
-    label: String
-    type: FieldType
+	position: Int
+	key: String
+	label: String
+	type: FieldType
 }
 
 type SelectOption {
-    text: String
-    key: String
-    position: Int
+	text: String
+	key: String
+	position: Int
 }
 
 type SelectField {
-    position: Int
-    key: String
-    label: String
-    type: FieldType
-    options: [SelectOption]
+	position: Int
+	key: String
+	label: String
+	type: FieldType
+	options: [SelectOption]
 }
 
 enum ActivityAutor {
-    AGENT
-    CLIENT
-    SYSTEM
+	AGENT
+	CLIENT
+	SYSTEM
 }
 
 type Activity {
-    id: String
-    time: String
-    type_autor: ActivityAutor
-    autor: Autor
-    changes: [Change]
+	id: String
+	time: String
+	type_autor: ActivityAutor
+	autor: Autor
+	changes: [Change]
 }
 
 type Change {
-    prop_name: String
-    old_value: String
-    new_value: String
+	prop_name: String
+	old_value: String
+	new_value: String
 }
 
 type Stage {
-    id: String
-    key: String
-    name: String
-    statuses: [Status]
+	id: String
+	key: String
+	name: String
+	statuses: [Status]
 }
 
 enum UserRoles {
-    AGENT
-    SUPERVISOR
-    SUPPLIER
+	AGENT
+	SUPERVISOR
+	SUPPLIER
 }
 
 type Status {
-    id: String
-    key: String
-    label: String
-    stage: Stage
-    #Estados desde los que se puede ir hacia ese estado
+	id: String
+	key: String
+	label: String
+	stage: Stage
+	# Estados a los que se puede ir hacia ese estado
     came_from: [Status]
-    roles_permissions: [UserRoles]
 }
 
 type Category {
-    id: String
-    name: String
-    articles: [Article]
+	id: String
+	name: String
+	articles: [Article]
 }
 
 type Article {
-    name: String
-    description: String
-    time: String
-    publisher_user: Agent
+	name: String
+	description: String
+	time: String
+	publisher_user: Agent
 }
 
 union Entity = Agent | Client | Supplier
 
 type User {
-    entity: Entity
-    notifications: [Notification]
+	entity: Entity
+	notifications: [Notification]
 
 }
 
 type Notification {
-    text: String
-    time: String
-    readed: Boolean
-    ticket: Ticket
+	text: String
+	time: String
+	readed: Boolean
+	ticket: Ticket
 
 }
 
 enum UnityTime {
-    MINUTES
-    HOURS
-    DAYS
-    MONTHS
+	MINUTES
+	HOURS
+	DAYS
+	MONTHS
 }
 
 enum OperationalHours {
-    CALENDAR
-    BUSINESS
+	CALENDAR
+	BUSINESS
 }
 
 type PolicyTime {
-    value: Int
-    unity: UnityTime
+	value: Int
+	unity: UnityTime
 }
 
 type Policy {
@@ -324,33 +324,162 @@ type Horary {
 }
 
 enum WeekDay {
-    MONDAY
-    TUESDAY
-    WEDNESDAY
-    THURSDAY
-    FRIDAY
-    SATURDAY
-    SUNDAY
+	MONDAY
+	TUESDAY
+	WEDNESDAY
+	THURSDAY
+	FRIDAY
+	SATURDAY
+	SUNDAY
 }
 
 type Holiday {
-    name: String
-    day: Int
-    month: Int
+	name: String
+	day: Int
+	month: Int
 }
 
 type WorkingDay {
-    day: WeekDay
-    horary: Horary
+	day: WeekDay
+	horary: Horary
 }
 
 type BusinessHours {
-    working_days: [WorkingDay]
-    holidays: [Holiday]
+	working_days: [WorkingDay]
+	holidays: [Holiday]
+}
+
+enum AutomationsType {
+	DISPATCHER
+	OBSERVER
+	SUPERVISOR
+	SCENARIO
+}
+
+union Automation = Dispatcher | Observer | Supervisor | Scenario
+
+type Condition {
+	#Campo que está siendo condicionado
+	conditioned_field: Field
+	# Operador de la condición
+	condition_operator: ConditionOperator
+	# Valor con el que va a ser comparado
+	value: FieldValue
+}
+
+type SupervisorCondition {
+	#Campo que está siendo condicionado
+	conditioned_param: TimeConditions
+	# Operador de la condición
+	condition_operator: ConditionOperator
+	# Valor con el que va a ser comparado
+	hours: Int
+}
+
+enum ConditionOperator {
+	IS
+	NOT
+	CONTAINS
+	NOT_CONTAINS
+	STARTS
+	ENDS
+	TRUE
+	FALSE
+	HIGHER
+	HIGHER_OR_EQUAL
+	LESS
+	LESS_OR_EQUAL
+}
+
+enum TimeConditions {
+	HOURS_SINCE_CREATED
+	HOURS_SINCE_PENDING
+	HOURS_SINCE_RESOLVED
+	HOURS_SINCE_ASSIGNED
+	HOURS_SINCE_REQUESTER_RESPONDED
+	HOURS_SINCE_AGENT_RESPONDED
+	HOURS_SINCE_TICKET_OVERDUE
+}
+
+enum LogicalComparator {
+	AND
+	OR
+}
+
+type Dispatcher {
+	id: String
+	name: String
+	description: String
+	comparator: LogicalComparator
+	conditions: [ Condition ]
+	actions: [ Action ]
+}
+
+type Supervisor {
+	id: String
+	name: String
+	description: String
+	comparator: LogicalComparator
+	conditions: [ Condition ]
+	actions: [ Action ]
+}
+
+type Observer {
+	id: String
+	name: String
+	description: String
+	autors: [ Agent ]
+	# En caso de que sea cualquiera, no habrá array de agentes
+	anyone: Boolean
+	events: [ Event ]
+	comparator: LogicalComparator
+	conditions: [ Condition ]
+	actions: [ Action ]
+}
+
+type Scenario {
+	id: String
+	name: String
+	description: String
+	comparator: LogicalComparator
+	conditions: [ Condition ]
+	actions: [ Action ]
+}
+
+# Los eventos se podrán configurar para cuando cambie cualquier campo del ticket
+type Events {
+	id: String
+	observer: Observer
+	field: Field
+	# Teniendo el campo podré saber si los valores que tengo son id, keys o texto, fecha, lo que sea,
+	# y podré acceder a ellos fácilmente, aunque quizá no sea necesario
+	old_value: FieldValue
+	new_value: FieldValue
+}
+
+union Action = ActionField | ActionEmail
+
+type ActionField {
+	field: Field
+	# El valor puede tener múltiples tipos de dato, pero con string se puede parsear fácilmente
+	new_value: FieldValue
+}
+
+type ActionEmail {
+	subject: String
+	body: String
+	to: String
+	receiver_type: ReceiverType
+}
+
+enum ReceiverType {
+	AGENT
+	CLIENT
+	GROUP
 }
 
 type Query {
-	customFields: [ CustomField ]
+	customFields: [ Field ]
 }
 
 schema {
