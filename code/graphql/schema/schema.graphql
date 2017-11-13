@@ -3,47 +3,55 @@ type Client {
 	name: String
 	lastname: String
 	email: String
-	phones: [String]
+	phones: [ String ]
 	address: String
 	about: String
     twitter_id: String
     facebook_id: String
     organization: Organization
-    interventions: [Intervention]
+    interventions: [ Intervention ]
+    devices: [ Device ]
     #Tickets soliticatos por el client
-    tickets: [Ticket]
+    tickets: [ Ticket ]
+}
+enum AgentRole {
+    AGENT
+    SUPERVISOR
+    ADMIN
+    ADMIN_ACCOUNT
 }
 
 type Agent {
 	id: String
+    role: AgentRole
     name: String
     lastname: String
     email: String
-    phones: [String]
+    phones: [ String ]
     about: String
     profession: String
     supplier: Supplier
     #Tickets asignados actualmente al agente
-    tickets: [Ticket]
+    tickets: [ Ticket ]
 }
 
 type Organization {
     id: String
     name: String
     about: String
-    domains: [String]
-    clients: [Client]
+    domains: [ String ]
+    clients: [ Client ]
     #Tickets creados por clientes de esta organizacion
-    tickets: [Ticket]
+    tickets: [ Ticket ]
 }
 
 type Supplier {
     id: String
     name: String
     about: String
-    agents: [Agent]
+    agents: [ Agent ]
     #Tickets asignados actualmente al proveedor
-    tickets: [Ticket]
+    tickets: [ Ticket ]
 }
 
 type Device {
@@ -51,7 +59,7 @@ type Device {
 	code: String
 	name: String
 	client: Client
-	tickets: [Ticket]
+	tickets: [ Ticket ]
 }
 
 type Task {
@@ -64,14 +72,14 @@ type Group {
     name: String
     about: String
     group_scale: Group
-    agents: [Agent]
+    agents: [ Agent ]
     #Agentes que deben ser notificados
-    notification_agents: [Agent]
+    notification_agents: [ Agent ]
     #Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
     notification_hours: Int
     notification_text: String
     #Tickets asignados actualmente al grupo
-    tickets: [Ticket]
+    tickets: [ Ticket ]
 }
 
 type Message {
@@ -82,8 +90,9 @@ type Message {
 
 type Discussion {
 	id: String
-	agents: [Agent]
-	messages: [Message]
+    ticket: Ticket
+	agents: [ Agent ]
+	messages(last: Int): [ Message ]
 }
 
 union Autor = Client | Agent
@@ -131,18 +140,18 @@ type Ticket {
     type: TicketType
     state: Status
     #Estados a los que puede ir el ticket (calculado)
-    next_states: [Status]
+    next_states: [ Status ]
     source: Source
     agente: Agent
     client: Client
-    activities: [Activity]
-    intervention: [Intervention]
+    activities: [ Activity ]
+    intervention: [ Intervention ]
     discussion: Discussion
     device: Device
     group: Group
     supplier: Supplier
-    tasks: [Task]
-    custom_fields: [TicketField]
+    tasks: [ Task ]
+    custom_fields: [ TicketField ]
     #Cuando debe o debio realizarse la primera respuesta segun el SLA
     response_by: String
     #Cuando debe o debio solucionarse el ticket segun el SLA
@@ -204,7 +213,7 @@ type SelectField {
 	key: String
 	label: String
 	type: FieldType
-	options: [SelectOption]
+	options: [ SelectOption ]
 }
 
 enum ActivityAutor {
@@ -218,7 +227,7 @@ type Activity {
 	time: String
 	type_autor: ActivityAutor
 	autor: Autor
-	changes: [Change]
+	changes: [ Change ]
 }
 
 type Change {
@@ -231,13 +240,13 @@ type Stage {
 	id: String
 	key: String
 	name: String
-	statuses: [Status]
+	statuses: [ Status ]
 }
 
-enum UserRoles {
+enum UserRole {
 	AGENT
-	SUPERVISOR
 	SUPPLIER
+    CLIENT
 }
 
 type Status {
@@ -246,16 +255,17 @@ type Status {
 	label: String
 	stage: Stage
 	# Estados a los que se puede ir hacia ese estado
-    came_from: [Status]
+    came_from: [ Status ]
 }
 
 type Category {
 	id: String
 	name: String
-	articles: [Article]
+	articles: [ Article ]
 }
 
 type Article {
+    id: String
 	name: String
 	description: String
 	time: String
@@ -266,8 +276,8 @@ union Entity = Agent | Client | Supplier
 
 type User {
 	entity: Entity
-	notifications: [Notification]
-
+    rol: UserRole
+	notifications: [ Notification ]
 }
 
 type Notification {
@@ -311,9 +321,9 @@ type SLAPolicy {
     active: Boolean
     position: Int
     #Una politica para cada prioridad
-    policies: [Policy]
-    clients: [Client]
-    organizations: [Organization]
+    policies: [ Policy ]
+    clients: [ Client ]
+    organizations: [ Organization ]
 }
 
 type Horary {
@@ -345,8 +355,8 @@ type WorkingDay {
 }
 
 type BusinessHours {
-	working_days: [WorkingDay]
-	holidays: [Holiday]
+	working_days: [ WorkingDay ]
+	holidays: [ Holiday ]
 }
 
 enum AutomationsType {
@@ -479,7 +489,37 @@ enum ReceiverType {
 }
 
 type Query {
-	customFields: [ Field ]
+    clients: [ Client ]
+	client(id: String!): Client
+    #EL ticket_id es opcional. Si no se provee, se obtiene para todos los clientes
+    devices(cliente_id: String): [ Device ]
+    organizations: [ Organization ]
+    organization(id: String!): Organization
+
+    agents: [ Agent ]
+    agent(id: String!): Agent
+    suppliers: [ Supplier ]
+    supplier(id: String!): Supplier
+    groups: [ Group ]
+    group(id: String): Group
+
+    ticket(id: String!): Ticket
+    tickets: [ Ticket ]
+    #EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
+    activities(ticket_id: String, last: Int): [ Activity ]
+    #EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
+    interventions(ticket_id: String, last: Int): [ Intervention ]
+
+    solutions: [ Category ]
+    solution(id: String!): Category
+    article(id: String!): Article
+
+    notifications(last: Int): [ Notification ]
+
+    discussion(ticket_id: String!): Discussion
+
+    businessHours: BusinessHours
+    SLAPolicies: [ SLAPolicy ]
 }
 
 schema {
