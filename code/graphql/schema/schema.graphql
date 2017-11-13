@@ -498,10 +498,10 @@ type Query {
 
     agents: [ Agent ]
     agent(id: String!): Agent
-    suppliers: [ Supplier ]
-    supplier(id: String!): Supplier
     groups: [ Group ]
     group(id: String): Group
+    suppliers: [ Supplier ]
+    supplier(id: String!): Supplier
 
     ticket(id: String!): Ticket
     tickets: [ Ticket ]
@@ -522,6 +522,38 @@ type Query {
     SLAPolicies: [ SLAPolicy ]
 }
 
+type Mutation {
+    createClient(client: client): Client
+    updateClient(client: client): Client
+    createDevice(client_id: String!): Device
+    createOrganization(organization: organization): Organization
+    updateOrganization(organization: organization): Organization
+
+    createAgent(agent: agent): Agent
+    updateAgent(agent: agent): Agent
+    createGroup(group: group): Group
+    updateGroup(group: group): Group
+    disolveGroup(group_id: String): String
+    createSupplier(supplier: supplier): Supplier
+    updateSupplier(supplier: supplier): Supplier
+
+    createTicket(ticket: ticket): Ticket
+    addIntervention(ticket_id: String): Intervention
+    updateTicket(ticket: ticketUpdate): Ticket
+
+    createCategory(category: category): Category
+    updateCategory(category: category): Category
+    addArticle(article: article): Article
+    updateArticle(article: article): Article
+
+    addAgentsToDiscussion(agents_id: [String], ticket_id: String): [ Agent ]
+
+    updateBusinessHours(business_hours: businessHours): BusinessHours
+    createSLAPolicy(slapolicy: slapolicy): SLAPolicy
+    updateSLAPolicy(slapolicy: slapolicy): SLAPolicy
+}
+
 schema {
 	query: Query
+    mutation: Mutation
 }
