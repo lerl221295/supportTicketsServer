@@ -56,6 +56,26 @@ const mocks = {
         text: casual.text,
         time: new Date(casual.integer(1003520188143, 1510691987562)).toString()
     }),
+    Discussion: () => ({
+        id: casual.uuid,
+    }),
+    Intervention: () => ({
+        id: casual.uuid,
+        text: casual.text,
+        time: new Date(casual.integer(1003520188143, 1510691987562)).toString(),
+        type_autor: casual.random_element(['AGENT', 'CLIENT']),
+    }),
+    Ticket: () => ({
+        id: casual.uuid,
+        number: casual.integer(1, 7777777777),
+        title: casual.text,
+        description: casual.description,
+        priority: casual.random_element(['low', 'medium', 'high', 'urgent']),
+        source: casual.random_element(['PORTAL', 'EMAIL', 'FACEBOOK', 'TWITTER']),
+        response_by: casual.text,
+        resolve_by: casual.text,
+        satisfaction_level: integer(1, 5),
+    }),
 	Query: () => ({
 		tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
