@@ -324,6 +324,27 @@ type SLAPolicy {
     policies: [ Policy ]
     clients: [ Client ]
     organizations: [ Organization ]
+    alerts: [ Alert ]
+}
+
+type Alert {
+	# Puede ser recordatorio o violación del SLA
+	type: AlertType
+	# Puede ser respuesta o resolución
+	motive: AlertMotive
+	hours: Float
+	to: [ Agent ]
+	message: String
+}
+
+enum AlertType {
+	REMINDER
+	SLA_VIOLATION
+}
+
+enum AlertMotive {
+	RESPONSE
+	RESOLUTION
 }
 
 type Horary {
@@ -486,6 +507,55 @@ enum ReceiverType {
 	AGENT
 	CLIENT
 	GROUP
+}
+
+type Tenant {
+	id: String
+	name: String
+	subdomain: String
+	phones: [ String ]
+	active: Boolean
+	subscription_time: String
+	# Imagen en base64
+	icon: String
+	colors: TenantColors
+	plans: [ TenantPlan ]
+}
+
+type TenantColors {
+	primary: String
+	secundary: String
+	tertiary: String
+	quaternary: String
+}
+
+type TenantPlan {
+	subscription_plan: SubscriptionPlan
+	# plan_key: String
+	start_date: String
+	end_date: String
+	annual_payment: Boolean 
+	# Calculado con dia actual y fecha_fin	
+	active: Boolean
+}
+
+type SubscriptionPlan {
+	id: String
+	name: String 
+	slogan: String
+	# Precio en dólares del mes, pagando de contado el año
+	monthly_cash_price: Int
+	# Precios del mes, pagando mensual
+	monthly_credit_price: Int
+	multiple_SLA: Boolean
+	satisfaction_survey: Boolean
+	ticket_custom_fields: Boolean
+	dispatcher: Boolean
+	observer: Boolean
+	suervisor: Boolean
+	scenario: Boolean
+	knowledge_base: Boolean
+	multichannel_support: Boolean
 }
 
 type Query {
