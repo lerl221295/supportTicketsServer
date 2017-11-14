@@ -1,74 +1,68 @@
 import { makeExecutableSchema, addMockFunctionsToSchema, MockList } from 'graphql-tools';
-import {Cliente, Tecnico, Ticket, Interaccion} from './conectors'
 import esquema from './schema.graphql'
 import casual from 'casual'
 import { PubSub, withFilter } from 'graphql-subscriptions';
 
 const mocks = {
-	Cliente : () => ({
-		id: casual.integer(1, 1000),
-		nombre: casual.first_name,
-		apellido: casual.last_name,
-		identificacion: casual.uuid,
+	Client : () => ({
+		id: casual.uuid,
+		name: casual.first_name,
+		lastname: casual.last_name,
 		email: casual.email,
-		telefono: casual.phone,
-		ubicacion: casual.address
+		phones: [casual.phone, casual.phone, casual.phone],
+		address: casual.address,
+		about: casual.text,
+        twitter_id: casual.uuid,
+        facebook_id: casual.uuid
 	}),
-	Tecnico : () => ({
-		id: casual.integer(1, 1000),
-		nombre: casual.first_name,
-		apellido: casual.last_name,
-		identificacion: casual.uuid,
-		email: casual.email,
-		telefono: casual.phone,
-		profesion:  casual.random_element(['Tecnico de soporte', 'Tecnico electronico']),
-		departamento: casual.random_element(['Soporte', 'Electronica', 'Desarrollo']),
-		fecha_nac: new Date(casual.integer(590352078814, 1503520188143)).toString()
+	Agent : () => ({
+		id: casual.uuid,
+        role: casual.random_element(['AGENT', 'SUPERVISOR', 'ADMIN', 'ADMIN_ACCOUNT']),
+        name: casual.first_name,
+        lastname: casual.last_name,
+        email: casual.email,
+        phones: [casual.phone, casual.phone, casual.phone],
+        about: casual.text,
+		profession:  casual.random_element(['Tecnico de soporte', 'Tecnico electronico']),
 	}),
-	Admin: () => ({
-		id: casual.integer(1, 1000),
-		nombre: casual.first_name,
-		apellido: casual.last_name,
-		email: casual.email,
+	Organization: () => ({
+        id: casual.uuid,
+        name: casual.first_name,
+        about: casual.text,
+        domains: [casual.domain, casual.domain, casual.domain]
 	}),
-	User : () => ({
-		id: casual.integer(1, 1000),
-		token: casual.uuid
+	Supplier : () => ({
+        id: casual.uuid,
+        name: casual.first_name,
+        about: casual.text
 	}),
-	Interaccion: () => ({
-		_id: casual.uuid,
-		timestamp: new Date(casual.integer(1003520188143, 1503520188143)).toString(),
-		text: casual.text,
-		emisor: casual.random_element(['cliente', 'tecnico', 'admin']),
-		tipo: casual.random_element(['actividad', 'mensaje'])
+	Device: () => ({
+        id: casual.uuid,
+        name: casual.first_name,
+        code: casual.uuid
 	}),
-	Ticket: () => ({
-		_id: casual.integer(1, 1000),
-		titulo: casual.title,
-		estado: casual.random_element(['abierto'/*, 'proceso', 'esperando', 'cerrado.ok', 'cerrado.bad'*/]),
-		prioridad: casual.random_element(['baja', 'media', 'alta', 'urgente']),
-		tipo: casual.random_element(['pregunta', 'solicitud', 'problema']),
-		interacciones: (_, {onlyFirst}) => {
-			let numbers = [6, 6];
-			if(onlyFirst) numbers = [1, 1]
-			return new MockList(numbers)
-		}/*,
-		cliente: null,
-		tecnico: null*/
+	Task: () => ({
+		text: casual.string,
+        done: casual.boolean
 	}),
-	Consultas: () => ({
+    Group: () => ({
+        id: casual.uuid,
+        name: casual.first_name,
+        about: casual.text,
+        notification_hours: casual.integer(0, 72),
+        notification_text: casual.text
+    }),
+    Message: () => ({
+        text: casual.text,
+        time: new Date(casual.integer(1003520188143, 1510691987562)).toString()
+    }),
+	Query: () => ({
 		tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
 			//if(!jwt) throw Error("Mamate un pipe, sapo");
 			console.log("retornare los tickets de ",subdomain);
 			return new MockList([40, 50]);
-		},
-		clientes: () => new MockList([40, 50]),
-		tecnicos: () => new MockList([40, 50]),
-		ultimasInteracciones: (_, {n = 10}) => new MockList([n, n])/*,
-		ticket: () => ({
-			tecnico: null
-		})*/
+		}
 	}),
 	Mutation: () => ({
 		/*authenticate : (_, {user}) => {
