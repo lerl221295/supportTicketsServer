@@ -225,6 +225,7 @@ enum ActivityAutor {
 type Activity {
 	id: String
 	time: String
+	ticket: Ticket
 	type_autor: ActivityAutor
 	autor: Autor
 	changes: [ Change ]
@@ -558,6 +559,15 @@ type SubscriptionPlan {
 	multichannel_support: Boolean
 }
 
+type Indicators {
+	unresolved: Int
+	overdue: Int
+	due_today: Int
+	open: Int
+	on_hold: Int
+	unassigned: Int
+}
+
 type Query {
     clients: [ Client ]
 	client(id: String!): Client
@@ -590,6 +600,8 @@ type Query {
 
     businessHours: BusinessHours
     SLAPolicies: [ SLAPolicy ]
+
+    indicators: Indicators
 }
 
 type Mutation {
@@ -623,7 +635,16 @@ type Mutation {
     updateSLAPolicy(slapolicy: slapolicy): SLAPolicy
 }
 
+type Subscription {
+	notifications: Notification
+	new_discussion: Discussion
+	discussion_message(ticket_id: String!): Message
+	activities(ticket_id: String): Activity
+	interventions(ticket_id: String): Intervention
+}
+
 schema {
 	query: Query
     mutation: Mutation
+    subscription: Subscription
 }
