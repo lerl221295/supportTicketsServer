@@ -1,13 +1,13 @@
 type Client {
-	id: String
+	id: ID
 	name: String
 	lastname: String
 	email: String
 	phones: [ String ]
 	address: String
 	about: String
-    twitter_id: String
-    facebook_id: String
+    twitter_id: ID
+    facebook_id: ID
     organization: Organization
     interventions: [ Intervention ]
     devices: [ Device ]
@@ -22,7 +22,7 @@ enum AgentRole {
 }
 
 type Agent {
-	id: String
+	id: ID
     role: AgentRole
     name: String
     lastname: String
@@ -36,7 +36,7 @@ type Agent {
 }
 
 type Organization {
-    id: String
+    id: ID
     name: String
     about: String
     domains: [ String ]
@@ -46,7 +46,7 @@ type Organization {
 }
 
 type Supplier {
-    id: String
+    id: ID
     name: String
     about: String
     agents: [ Agent ]
@@ -55,7 +55,7 @@ type Supplier {
 }
 
 type Device {
-	id: String
+	id: ID
 	code: String
 	name: String
 	client: Client
@@ -68,7 +68,7 @@ type Task {
 }
 
 type Group {
-    id: String
+    id: ID
     name: String
     about: String
     group_scale: Group
@@ -89,7 +89,7 @@ type Message {
 }
 
 type Discussion {
-	id: String
+	id: ID
     ticket: Ticket
 	agents: [ Agent ]
 	messages(last: Int): [ Message ]
@@ -103,7 +103,7 @@ enum InterventionAutor {
 }
 
 type Intervention {
-	id: String
+	id: ID
 	text: String
 	time: String
 	type_autor: InterventionAutor
@@ -131,7 +131,7 @@ enum TicketPriority {
 }
 
 type Ticket {
-    id: String
+    id: ID
     number: Int
     title: String
     description: String
@@ -223,7 +223,7 @@ enum ActivityAutor {
 }
 
 type Activity {
-	id: String
+	id: ID
 	time: String
 	ticket: Ticket
 	type_autor: ActivityAutor
@@ -238,7 +238,7 @@ type Change {
 }
 
 type Stage {
-	id: String
+	id: ID
 	key: String
 	name: String
 	statuses: [ Status ]
@@ -251,7 +251,7 @@ enum UserRole {
 }
 
 type Status {
-	id: String
+	id: ID
 	key: String
 	label: String
 	stage: Stage
@@ -260,13 +260,13 @@ type Status {
 }
 
 type Category {
-	id: String
+	id: ID
 	name: String
 	articles: [ Article ]
 }
 
 type Article {
-    id: String
+    id: ID
 	name: String
 	description: String
 	time: String
@@ -315,7 +315,7 @@ type Policy {
 }
 
 type SLAPolicy {
-    id: String
+    id: ID
     default: Boolean
     name: String
     description: String
@@ -439,7 +439,7 @@ enum LogicalComparator {
 }
 
 type Dispatcher {
-	id: String
+	id: ID
 	name: String
 	description: String
 	comparator: LogicalComparator
@@ -448,7 +448,7 @@ type Dispatcher {
 }
 
 type Supervisor {
-	id: String
+	id: ID
 	name: String
 	description: String
 	comparator: LogicalComparator
@@ -457,7 +457,7 @@ type Supervisor {
 }
 
 type Observer {
-	id: String
+	id: ID
 	name: String
 	description: String
 	autors: [ Agent ]
@@ -470,7 +470,7 @@ type Observer {
 }
 
 type Scenario {
-	id: String
+	id: ID
 	name: String
 	description: String
 	comparator: LogicalComparator
@@ -480,7 +480,7 @@ type Scenario {
 
 # Los eventos se podrán configurar para cuando cambie cualquier campo del ticket
 type Events {
-	id: String
+	id: ID
 	observer: Observer
 	field: Field
 	# Teniendo el campo podré saber si los valores que tengo son id, keys o texto, fecha, lo que sea,
@@ -511,7 +511,7 @@ enum ReceiverType {
 }
 
 type Tenant {
-	id: String
+	id: ID
 	name: String
 	subdomain: String
 	phones: [ String ]
@@ -541,7 +541,7 @@ type TenantPlan {
 }
 
 type SubscriptionPlan {
-	id: String
+	id: ID
 	name: String 
 	slogan: String
 	# Precio en dólares del mes, pagando de contado el año
@@ -570,33 +570,33 @@ type Indicators {
 
 type Query {
     clients: [ Client ]
-	client(id: String!): Client
+	client(id: ID!): Client
     #EL ticket_id es opcional. Si no se provee, se obtiene para todos los clientes
-    devices(cliente_id: String): [ Device ]
+    devices(cliente_id: ID): [ Device ]
     organizations: [ Organization ]
-    organization(id: String!): Organization
+    organization(id: ID!): Organization
 
     agents: [ Agent ]
-    agent(id: String!): Agent
+    agent(id: ID!): Agent
     groups: [ Group ]
-    group(id: String): Group
+    group(id: ID): Group
     suppliers: [ Supplier ]
-    supplier(id: String!): Supplier
+    supplier(id: ID!): Supplier
 
-    ticket(id: String!): Ticket
+    ticket(id: ID!): Ticket
     tickets: [ Ticket ]
     #EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
-    activities(ticket_id: String, last: Int): [ Activity ]
+    activities(ticket_id: ID, last: Int): [ Activity ]
     #EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
-    interventions(ticket_id: String, last: Int): [ Intervention ]
+    interventions(ticket_id: ID, last: Int): [ Intervention ]
 
     solutions: [ Category ]
-    solution(id: String!): Category
-    article(id: String!): Article
+    solution(id: ID!): Category
+    article(id: ID!): Article
 
     notifications(last: Int): [ Notification ]
 
-    discussion(ticket_id: String!): Discussion
+    discussion(ticket_id: ID!): Discussion
 
     businessHours: BusinessHours
     SLAPolicies: [ SLAPolicy ]
@@ -607,7 +607,7 @@ type Query {
 type Mutation {
     createClient(client: client): Client
     updateClient(client: client): Client
-    createDevice(client_id: String!): Device
+    createDevice(client_id: ID!): Device
     createOrganization(organization: organization): Organization
     updateOrganization(organization: organization): Organization
 
@@ -615,12 +615,12 @@ type Mutation {
     updateAgent(agent: agent): Agent
     createGroup(group: group): Group
     updateGroup(group: group): Group
-    disolveGroup(group_id: String): String
+    disolveGroup(group_id: ID): String
     createSupplier(supplier: supplier): Supplier
     updateSupplier(supplier: supplier): Supplier
 
     createTicket(ticket: ticket): Ticket
-    addIntervention(ticket_id: String): Intervention
+    addIntervention(ticket_id: ID): Intervention
     updateTicket(ticket: ticketUpdate): Ticket
 
     createCategory(category: category): Category
@@ -628,7 +628,7 @@ type Mutation {
     addArticle(article: article): Article
     updateArticle(article: article): Article
 
-    addAgentsToDiscussion(agents_id: [String], ticket_id: String): [ Agent ]
+    addAgentsToDiscussion(agents_id: [String], ticket_id: ID): [ Agent ]
 
     updateBusinessHours(business_hours: businessHours): BusinessHours
     createSLAPolicy(slapolicy: slapolicy): SLAPolicy
@@ -638,9 +638,9 @@ type Mutation {
 type Subscription {
 	notifications: Notification
 	new_discussion: Discussion
-	discussion_message(ticket_id: String!): Message
-	activities(ticket_id: String): Activity
-	interventions(ticket_id: String): Intervention
+	discussion_message(ticket_id: ID!): Message
+	activities(ticket_id: ID): Activity
+	interventions(ticket_id: ID): Intervention
 }
 
 schema {
