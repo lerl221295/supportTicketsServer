@@ -56,7 +56,23 @@ const mocks = {
         text: casual.text,
         time: new Date(casual.integer(1003520188143, 1510691987562)).toString()
     }),
-	Query: () => ({
+    Tenant: () => ({
+		id: casual.uuid,
+		name: casual.company_name,
+		subdomain: casual.domain,
+		phones: casual.phone,
+		active: casual.boolean,
+		subscription_time: new Date(casual.integer(1003520188143, 1510691987562)).toString()
+    }),
+    TenantColors: () => ({
+    }),
+    TenantPlan: () => ({
+    }),
+    SubscriptionPlan: () => ({
+    }),
+    Indicators: () => ({
+    }),
+    Query: () => ({
 		tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
 			//if(!jwt) throw Error("Mamate un pipe, sapo");
