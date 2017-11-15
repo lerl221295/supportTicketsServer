@@ -39,6 +39,7 @@ type Agent {
     supplier: Supplier
     #Tickets asignados actualmente al agente
     tickets: [ Ticket ]
+    groups: [ Group ]
 }
 
 type Organization {
@@ -576,6 +577,165 @@ type Indicators {
 	open: Int
 	on_hold: Int
 	unassigned: Int
+}
+
+#################### INPUTS ####################
+
+input client {
+	name: String!
+	lastname: String!
+	email: String!
+	phones: [ String ]!
+	address: String
+	about: String
+	twitter_id: ID
+	facebook_id: ID
+	# ID'S de dispositivos existentes del cliente
+	devices: [ ID ]
+	# Crear nuevos equipos y asociarlos con el cliente de una
+	new_devices: [ device ]
+	# ID de la organización a la que pertenece
+	organization: ID
+}
+
+input organization {
+	name: String!
+	about: String
+	domains: [ String ]
+	# ID's de clientes de la organización
+	clients: [ ID ]
+}
+
+input agent {
+	role: AgentRole
+	name: String!
+	lastname: String!
+	sex: Sex!
+	email: String!
+	phones: [ String ]!
+	about: String!
+	profession: String!
+	# ID del proveedor al que pertenece
+	supplier: ID,
+	groups: [ ID ]
+}
+
+input group {
+	name: String!
+	about: String
+	group_scale: Group
+	# ID's de los agentes del grupo
+	agents: [ ID ]
+	# Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
+	notification_hours: Int
+	# Agentes que deben ser notificados
+	notification_agents: [ ID ]
+	notification_text: String
+}
+
+input supplier {
+	name: String!
+	about: String
+	# ID's de agentes del proveedor
+	agents: [ ID ]
+}
+
+input ticket {
+	title: String!
+	description: String!
+	type: ticketType!
+	device: ID
+	custom_fields: [ ticketField ]
+}
+
+input ticketType {
+	key: String!
+	text: String!
+}
+
+# VOY POR AQUIiiIIIII
+
+type ticketField {
+	# El valor puede ser de distintos tipos
+	value: FieldValue
+	# ID de la metadata del campo
+	metadata: ID
+}
+
+input ticketUpdate {
+	
+}
+
+input category {
+	name: String!
+}
+
+input article {
+	# ID de la categoría a la que pertenece
+	category: ID!
+	name: String!
+	description: String!
+	# ID del agente publicador
+	publisher_user: ID!
+}
+
+input businessHours {
+	working_days: [ workingDay ]
+	holidays: [ holiday ]
+}
+
+input workingDay {
+	day: WeekDay
+	horary: horary
+}
+
+type horary {
+	#Hora del dia en que se comienza a trabajar
+	start: Int!
+	#Hora del dia en que se termina de trabajar
+	end: Int!
+}
+
+type holiday {
+	name: String!
+	day: Int!
+	month: Int!
+}
+
+input slapolicy {
+	name: String!
+	description: String!
+	active: Boolean!
+	position: Int!
+	#Una politica para cada prioridad
+	policies: [ policy ]
+	clients: [ ID ]
+	organizations: [ ID ]
+	alerts: [ alert ]
+}
+
+input policy {
+	priority: TicketPriority
+	first_response: policyTime
+	solved: policyTime
+	#Si el tiempo correra en horas habiles o 24x7
+	operational_hours: OperationalHours
+}
+
+input policyTime {
+	value: Int
+	unity: UnityTime
+}
+
+input alert {
+	# Puede ser recordatorio o violación del SLA
+	type: AlertType
+	# Puede ser respuesta o resolución
+	motive: AlertMotive
+	hours: Float
+	# ID's de agentes a los que le llegará la alerta
+	to: [ ID ]
+	message: String
 }
 
 type Query {
