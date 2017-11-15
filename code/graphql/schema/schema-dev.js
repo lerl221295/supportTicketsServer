@@ -67,24 +67,86 @@ const mocks = {
     Ticket: () => ({
         id: casual.uuid,
         time: faker.date.between('2017-08-01', '2017-12-31'),
-        number: casual.integer(1, 7777777777),
+        number: casual.integer(1, 7777),
         title: casual.text,
         description: casual.description,
         response_by: casual.text,
         resolve_by: casual.text,
-        satisfaction_level: integer(1, 5),
+        satisfaction_level: casual.integer(1, 5),
     }),
     Activity: () => ({
         id: casual.uuid,
         time: faker.date.between('2017-08-01', '2017-12-31'),
+    }),
+    Change: () => ({
+        prop_name: casual.short_description,
+        old_value: casual.short_description,
+        new_value: casual.short_description
     }),
     Stage: () => ({
         id: casual.uuid,
         key: casual.text,
         name: casual.name,
     }),
+    Status: () => ({
+        id: casual.uuid,
+        key: casual.text,
+        label: casual.text,
+    }),
+    Category: () => ({
+        id: casual.uuid,
+        name: casual.name,
+    }),
+    Article: () => ({
+        id: casual.uuid,
+        name: casual.name,
+        description: casual.description,
+        time: faker.date.between('2017-08-01', '2017-12-31'),
+    }),
+    Notification: () => ({
+        text: casual.text,
+        time: faker.date.between('2017-08-01', '2017-12-31'),
+        readed: casual.boolean,
+    }),
+    PolicyTime: () => ({
+        value: casual.integer(1, 48),
+        unity: casual.random_element(['MINUTES', 'HOURS', 'DAYS', 'MONTHS'])
+    }),
+    Policy: () => ({
+        priority: casual.random_element(['low', 'medium', 'high', 'urgent']),
+        operational_hours: casual.random_element(['CALENDAR', 'BUSINESS'])
+    }),
+    SLAPolicy: () => ({
+        id: casual.uuid,
+        default: casual.boolean,
+        name: casual.text,
+        description: casual.text,
+        active: casual.boolean,
+        position: casual.integer(1, 77777),
+    }),
+    Alert: () => ({
+        type: casual.random_element(['REMINDER', 'SLA_VIOLATION']),
+        motive: casual.random_element(['RESPONSE', 'RESOLUTION']),
+        hours: casual.integer(1, 144),
+        message: casual.text,
+    }),
+    Horary: () => ({
+        start:casual.integer(7, 11),
+        end: casual.integer(17, 21)
+    }),
+    Holiday: () => ({
+        name: casual.name,
+        day: casual.day_of_month,
+        month: casual.month_number
+    }),
+    WorkingDay: () => ({
+        day: casual.random_element(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']),
+    }),
     SupervisorCondition: () => ({
         hours: casual.integer(0, 24),
+    }),
+    Dispatcher: () => ({
+        id: casual.uuid,
         name: casual.short_description,
         description: casual.description
     }),
@@ -160,55 +222,27 @@ const mocks = {
 			//console.log(jwt);
 			//if(!jwt) throw Error("Mamate un pipe, sapo");
 			console.log("retornare los tickets de ",subdomain);
-			return new MockList([40, 50]);
+			() => return new MockList([40, 50]);
 		},*/
-        clients: new MockList([40, 50]),
+        clients: () => new MockList([40, 50]),
         devices: (_, { cliente_id }) => new MockList([40, 50]),
-        organizations: new MockList([40, 50]),
+        organizations: () => new MockList([40, 50]),
 
-        agents: new MockList([40, 50]),
-        groups: new MockList([40, 50]),
-        suppliers: new MockList([40, 50]),
+        agents: () => new MockList([40, 50]),
+        groups: () => new MockList([40, 50]),
+        suppliers: () => new MockList([40, 50]),
 
-        tickets: new MockList([40, 50]),
+        tickets: () => new MockList([40, 50]),
         activities: (_, { ticket_id, last}) => new MockList([40, 50]),
         interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
 
-        solutions: new MockList([40, 50]),
+        solutions: () => new MockList([40, 50]),
         notifications: (_, { last }) => new MockList([40, 50]),
-        SLAPolicies: new MockList([40, 50])
-	}),
-	Mutation: () => ({
-		/*authenticate : (_, {user}) => {
-			if(user.email == "luis@gmail.com") return({
-				id: casual.integer(1, 1000),
-				token: casual.uuid
-			});
-			throw Error("Mamate un pipe, sapo");
-		},*/
-		addInteraccion: (_, {interaccion}, { subdomain }) => {
-			pubsub.publish('interacciones', {newInteracciones: {
-				...interaccion,
-				timestamp: faker.date.between('2017-08-01', '2017-12-31'),
-				_id: casual.uuid,
-				subdomain
-			}});
-			return "Interaccion agregada con exito";
-		},
-		updateTicket: (_, {ticket}) => {
-			console.log(JSON.stringify(ticket));
-			return "Ticket actualizado con exito!";
-		},
-		tomarTicket: (_, {ticket_id}) => {
-			console.log(`han tomado el ticket ${ticket_id}`);
-			return "Agarra tu ticket sapo!";
-		}
-	}),
-	String: () => 'Operacion realizada con exito!'
-    })
+        SLAPolicies: () => new MockList([40, 50])
+	})
 }
 
-const pubsub = new PubSub();
+/*const pubsub = new PubSub();
 
 const resolvers = {
 	Subscription: {
@@ -221,9 +255,9 @@ const resolvers = {
             )
 		}
     }
-}
+}*/
 
-const schema = makeExecutableSchema({ typeDefs: esquema, resolvers });
+const schema = makeExecutableSchema({ typeDefs: esquema/*, resolvers*/ });
 
 addMockFunctionsToSchema({ schema, mocks });
 
