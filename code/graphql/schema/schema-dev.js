@@ -1,4 +1,7 @@
 import { makeExecutableSchema, addMockFunctionsToSchema, MockList } from 'graphql-tools';
+import enums from './enums.graphql'
+import inputs from './inputs.graphql'
+import types from './types.graphql'
 import esquema from './schema.graphql'
 import casual from 'casual'
 import faker from 'faker'
@@ -250,7 +253,14 @@ const resolvers = {
     }
 }*/
 
-const schema = makeExecutableSchema({ typeDefs: esquema/*, resolvers*/ });
+const graphQLSchema = `
+${enums}
+${types}
+${inputs}
+${esquema}
+`;
+
+const schema = makeExecutableSchema({ typeDefs: graphQLSchema/*, resolvers*/ });
 
 addMockFunctionsToSchema({ schema, mocks });
 
