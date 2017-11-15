@@ -88,67 +88,9 @@ const mocks = {
         key: casual.text,
         name: casual.name,
     }),
-    Status: () => ({
-        id: casual.uuid,
-        key: casual.text,
-        label: casual.text,
-    }),
-    Category: () => ({
-        id: casual.uuid,
-        name: casual.name,
-    }),
-    Article: () => ({
-        id: casual.uuid,
-        name: casual.name,
-        description: casual.description,
-        time: faker.date.between('2017-08-01', '2017-12-31'),
-    }),
-    Notification: () => ({
-        text: casual.text,
-        time: faker.date.between('2017-08-01', '2017-12-31'),
-        readed: casual.boolean,
-    }),
-    PolicyTime: () => ({
-        value: casual.integer(1, 48),
-        unity: casual.random_element(['MINUTES', 'HOURS', 'DAYS', 'MONTHS'])
-    }),
-    Policy: () => ({
-        priority: casual.random_element(['low', 'medium', 'high', 'urgent']),
-        operational_hours: casual.random_element(['CALENDAR', 'BUSINESS'])
-    }),
-    SLAPolicy: () => ({
-        id: casual.uuid,
-        default: casual.boolean,
-        name: casual.text,
-        description: casual.text,
-        active: casual.boolean,
-        position: casual.integer(1, 77777),
-    }),
-    Alert: () => ({
-        type: casual.random_element(['REMINDER', 'SLA_VIOLATION']),
-        motive: casual.random_element(['RESPONSE', 'RESOLUTION']),
-        hours: casual.integer(1, 144),
-        message: casual.text,
-    }),
-    Horary: () => ({
-        start:casual.integer(7, 11),
-        end: casual.integer(17, 21)
-    }),
-    Holiday: () => ({
-        name: casual.name,
-        day: casual.day_of_month,
-        month: casual.month_number
-    }),
-    WorkingDay: () => ({
-        day: casual.random_element(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']),
-    }),
     SupervisorCondition: () => ({
         hours: casual.integer(0, 24),
         conditioned_param: casual.random_element(['HOURS_SINCE_CREATED', 'HOURS_SINCE_PENDING', 'HOURS_SINCE_RESOLVED', 'HOURS_SINCE_ASSIGNED', 'HOURS_SINCE_REQUESTER_RESPONDED', 'HOURS_SINCE_AGENT_RESPONDED', 'HOURS_SINCE_TICKET_OVERDUE']),
-        condition_operator: casual.random_element(['IS', 'NOT', 'CONTAINS', 'NOT_CONTAINS', 'STARTS', 'ENDS', 'TRUE', 'FALSE', 'HIGHER', 'HIGHER_OR_EQUAL', 'LESS', 'LESS_OR_EQUAL'])
-    }),
-    Dispatcher: () => ({
-        id: casual.uuid,
         name: casual.short_description,
         description: casual.description,
         comparator: casual.random_element(['AND', 'OR'])
@@ -181,12 +123,12 @@ const mocks = {
         receiver_type: casual.random_element(['AGENT', 'CLIENT', 'GROUP'])
     }),
     Tenant: () => ({
-		id: casual.uuid,
-		name: casual.company_name,
-		subdomain: casual.domain,
-		phones: casual.phone,
-		active: casual.boolean,
-		subscription_time: faker.date.between('2017-08-01', '2017-12-31'),
+        id: casual.uuid,
+        name: casual.company_name,
+        subdomain: casual.domain,
+        phones: casual.phone,
+        active: casual.boolean,
+        subscription_time: faker.date.between('2017-08-01', '2017-12-31'),
         icon: faker.image.avatar()
     }),
     TenantColors: () => ({
@@ -223,42 +165,7 @@ const mocks = {
         open: casual.integer(2,30),
         on_hold: casual.integer(2,30),
         unassigned: casual.integer(2,30)
-    }),
-    Query: () => ({
-		tickets: (root, args, { subdomain }) => {
-			//console.log(jwt);
-			//if(!jwt) throw Error("Mamate un pipe, sapo");
-			console.log("retornare los tickets de ",subdomain);
-			return new MockList([40, 50]);
-		}
-	}),
-	Mutation: () => ({
-		/*authenticate : (_, {user}) => {
-			if(user.email == "luis@gmail.com") return({
-				id: casual.integer(1, 1000),
-				token: casual.uuid
-			});
-			throw Error("Mamate un pipe, sapo");
-		},*/
-		addInteraccion: (_, {interaccion}, { subdomain }) => {
-			pubsub.publish('interacciones', {newInteracciones: {
-				...interaccion,
-				timestamp: faker.date.between('2017-08-01', '2017-12-31'),
-				_id: casual.uuid,
-				subdomain
-			}});
-			return "Interaccion agregada con exito";
-		},
-		updateTicket: (_, {ticket}) => {
-			console.log(JSON.stringify(ticket));
-			return "Ticket actualizado con exito!";
-		},
-		tomarTicket: (_, {ticket_id}) => {
-			console.log(`han tomado el ticket ${ticket_id}`);
-			return "Agarra tu ticket sapo!";
-		}
-	}),
-	String: () => 'Operacion realizada con exito!'
+    })
 }
 
 const pubsub = new PubSub();
@@ -276,7 +183,7 @@ const resolvers = {
     }
 }
 
-const schema = makeExecutableSchema({ typeDefs: esquema, resolvers });
+const schema = makeExecutableSchema({ typeDefs: esquema/*, resolvers */});
 
 addMockFunctionsToSchema({ schema, mocks });
 

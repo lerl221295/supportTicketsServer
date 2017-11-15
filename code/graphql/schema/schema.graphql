@@ -481,7 +481,7 @@ type Scenario {
 }
 
 # Los eventos se podrán configurar para cuando cambie cualquier campo del ticket
-type Events {
+type Event {
 	id: ID
 	observer: Observer
 	field: Field
