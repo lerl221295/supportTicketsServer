@@ -6,52 +6,52 @@ type Client {
 	phones: [ String ]
 	address: String
 	about: String
-    twitter_id: ID
-    facebook_id: ID
-    organization: Organization
-    interventions: [ Intervention ]
-    devices: [ Device ]
-    #Tickets soliticatos por el client
-    tickets: [ Ticket ]
+	twitter_id: ID
+	facebook_id: ID
+	organization: Organization
+	interventions: [ Intervention ]
+	devices: [ Device ]
+	#Tickets soliticatos por el client
+	tickets: [ Ticket ]
 }
 enum AgentRole {
-    AGENT
-    SUPERVISOR
-    ADMIN
-    ADMIN_ACCOUNT
+	AGENT
+	SUPERVISOR
+	ADMIN
+	ADMIN_ACCOUNT
 }
 
 type Agent {
 	id: ID
-    role: AgentRole
-    name: String
-    lastname: String
-    email: String
-    phones: [ String ]
-    about: String
-    profession: String
-    supplier: Supplier
-    #Tickets asignados actualmente al agente
-    tickets: [ Ticket ]
+	role: AgentRole
+	name: String
+	lastname: String
+	email: String
+	phones: [ String ]
+	about: String
+	profession: String
+	supplier: Supplier
+	#Tickets asignados actualmente al agente
+	tickets: [ Ticket ]
 }
 
 type Organization {
-    id: ID
-    name: String
-    about: String
-    domains: [ String ]
-    clients: [ Client ]
-    #Tickets creados por clientes de esta organizacion
-    tickets: [ Ticket ]
+	id: ID
+	name: String
+	about: String
+	domains: [ String ]
+	clients: [ Client ]
+	#Tickets creados por clientes de esta organizacion
+	tickets: [ Ticket ]
 }
 
 type Supplier {
-    id: ID
-    name: String
-    about: String
-    agents: [ Agent ]
-    #Tickets asignados actualmente al proveedor
-    tickets: [ Ticket ]
+	id: ID
+	name: String
+	about: String
+	agents: [ Agent ]
+	#Tickets asignados actualmente al proveedor
+	tickets: [ Ticket ]
 }
 
 type Device {
@@ -68,18 +68,18 @@ type Task {
 }
 
 type Group {
-    id: ID
-    name: String
-    about: String
-    group_scale: Group
-    agents: [ Agent ]
-    #Agentes que deben ser notificados
-    notification_agents: [ Agent ]
-    #Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
-    notification_hours: Int
-    notification_text: String
-    #Tickets asignados actualmente al grupo
-    tickets: [ Ticket ]
+	id: ID
+	name: String
+	about: String
+	group_scale: Group
+	agents: [ Agent ]
+	#Agentes que deben ser notificados
+	notification_agents: [ Agent ]
+	#Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
+	notification_hours: Int
+	notification_text: String
+	#Tickets asignados actualmente al grupo
+	tickets: [ Ticket ]
 }
 
 type Message {
@@ -90,7 +90,7 @@ type Message {
 
 type Discussion {
 	id: ID
-    ticket: Ticket
+	ticket: Ticket
 	agents: [ Agent ]
 	messages(last: Int): [ Message ]
 }
@@ -119,46 +119,46 @@ enum Source {
 }
 
 type TicketType {
-    key: String
-    text: String
+	key: String
+	text: String
 }
 
 enum TicketPriority {
-    low
-    medium
-    high
-    urgent
+	low
+	medium
+	high
+	urgent
 }
 
 type Ticket {
-    id: ID
-    time: String
-    number: Int
-    title: String
-    description: String
-    #Las prioridades como enum ya que no son modificables
-    priority: TicketPriority
-    type: TicketType
-    state: Status
-    #Estados a los que puede ir el ticket (calculado)
-    next_states: [ Status ]
-    source: Source
-    agente: Agent
-    client: Client
-    activities: [ Activity ]
-    intervention: [ Intervention ]
-    discussion: Discussion
-    device: Device
-    group: Group
-    supplier: Supplier
-    tasks: [ Task ]
-    custom_fields: [ TicketField ]
-    #Cuando debe o debio realizarse la primera respuesta segun el SLA
-    response_by: String
-    #Cuando debe o debio solucionarse el ticket segun el SLA
-    resolve_by: String
-    #Sera null en los tickets que no esten solucionados (1-5, no satisfecho- satisfecho)
-    satisfaction_level: Int
+	id: ID
+	time: String
+	number: Int
+	title: String
+	description: String
+	#Las prioridades como enum ya que no son modificables
+	priority: TicketPriority
+	type: TicketType
+	state: Status
+	#Estados a los que puede ir el ticket (calculado)
+	next_states: [ Status ]
+	source: Source
+	agente: Agent
+	client: Client
+	activities: [ Activity ]
+	intervention: [ Intervention ]
+	discussion: Discussion
+	device: Device
+	group: Group
+	supplier: Supplier
+	tasks: [ Task ]
+	custom_fields: [ TicketField ]
+	#Cuando debe o debio realizarse la primera respuesta segun el SLA
+	response_by: String
+	#Cuando debe o debio solucionarse el ticket segun el SLA
+	resolve_by: String
+	#Sera null en los tickets que no esten solucionados (1-5, no satisfecho- satisfecho)
+	satisfaction_level: Int
 }
 
 type TicketField {
@@ -248,7 +248,7 @@ type Stage {
 enum UserRole {
 	AGENT
 	SUPPLIER
-    CLIENT
+	CLIENT
 }
 
 type Status {
@@ -257,7 +257,7 @@ type Status {
 	label: String
 	stage: Stage
 	# Estados a los que se puede ir hacia ese estado
-    came_from: [ Status ]
+	came_from: [ Status ]
 }
 
 type Category {
@@ -267,7 +267,7 @@ type Category {
 }
 
 type Article {
-    id: ID
+	id: ID
 	name: String
 	description: String
 	time: String
@@ -278,7 +278,7 @@ union Entity = Agent | Client | Supplier
 
 type User {
 	entity: Entity
-    rol: UserRole
+	rol: UserRole
 	notifications: [ Notification ]
 }
 
@@ -308,25 +308,25 @@ type PolicyTime {
 }
 
 type Policy {
-    priority: TicketPriority
-    first_response: PolicyTime
-    solved: PolicyTime
-    #Si el tiempo correra en horas habiles o 24x7
-    operational_hours: OperationalHours
+	priority: TicketPriority
+	first_response: PolicyTime
+	solved: PolicyTime
+	#Si el tiempo correra en horas habiles o 24x7
+	operational_hours: OperationalHours
 }
 
 type SLAPolicy {
-    id: ID
-    default: Boolean
-    name: String
-    description: String
-    active: Boolean
-    position: Int
-    #Una politica para cada prioridad
-    policies: [ Policy ]
-    clients: [ Client ]
-    organizations: [ Organization ]
-    alerts: [ Alert ]
+	id: ID
+	default: Boolean
+	name: String
+	description: String
+	active: Boolean
+	position: Int
+	#Una politica para cada prioridad
+	policies: [ Policy ]
+	clients: [ Client ]
+	organizations: [ Organization ]
+	alerts: [ Alert ]
 }
 
 type Alert {
@@ -350,10 +350,10 @@ enum AlertMotive {
 }
 
 type Horary {
-    #Hora del dia en que se comienza a trabajar
-    start: Int
-    #Hora del dia en que se termina de trabajar
-    end: Int
+	#Hora del dia en que se comienza a trabajar
+	start: Int
+	#Hora del dia en que se termina de trabajar
+	end: Int
 }
 
 enum WeekDay {
@@ -573,70 +573,70 @@ type Indicators {
 }
 
 type Query {
-    clients: [ Client ]
+	clients: [ Client ]
 	client(id: ID!): Client
-    #EL ticket_id es opcional. Si no se provee, se obtiene para todos los clientes
-    devices(cliente_id: ID): [ Device ]
-    organizations: [ Organization ]
-    organization(id: ID!): Organization
+	#EL ticket_id es opcional. Si no se provee, se obtiene para todos los clientes
+	devices(cliente_id: ID): [ Device ]
+	organizations: [ Organization ]
+	organization(id: ID!): Organization
 
-    agents: [ Agent ]
-    agent(id: ID!): Agent
-    groups: [ Group ]
-    group(id: ID): Group
-    suppliers: [ Supplier ]
-    supplier(id: ID!): Supplier
+	agents: [ Agent ]
+	agent(id: ID!): Agent
+	groups: [ Group ]
+	group(id: ID): Group
+	suppliers: [ Supplier ]
+	supplier(id: ID!): Supplier
 
-    ticket(id: ID!): Ticket
-    tickets: [ Ticket ]
-    #EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
-    activities(ticket_id: ID, last: Int): [ Activity ]
-    #EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
-    interventions(ticket_id: ID, last: Int): [ Intervention ]
+	ticket(id: ID!): Ticket
+	tickets: [ Ticket ]
+	#EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
+	activities(ticket_id: ID, last: Int): [ Activity ]
+	#EL ticket_id es opcional. Si no se provee, se obtiene para todos los tickets
+	interventions(ticket_id: ID, last: Int): [ Intervention ]
 
-    solutions: [ Category ]
-    solution(id: ID!): Category
-    article(id: ID!): Article
+	solutions: [ Category ]
+	solution(id: ID!): Category
+	article(id: ID!): Article
 
-    notifications(last: Int): [ Notification ]
+	notifications(last: Int): [ Notification ]
 
-    discussion(ticket_id: ID!): Discussion
+	discussion(ticket_id: ID!): Discussion
 
-    businessHours: BusinessHours
-    SLAPolicies: [ SLAPolicy ]
+	businessHours: BusinessHours
+	SLAPolicies: [ SLAPolicy ]
 
-    indicators: Indicators
+	indicators: Indicators
 }
 
 type Mutation {
-    createClient(client: client): Client
-    updateClient(client: client): Client
-    createDevice(client_id: ID!): Device
-    createOrganization(organization: organization): Organization
-    updateOrganization(organization: organization): Organization
+	createClient(client: client): Client
+	updateClient(client: client): Client
+	createDevice(client_id: ID!): Device
+	createOrganization(organization: organization): Organization
+	updateOrganization(organization: organization): Organization
 
-    createAgent(agent: agent): Agent
-    updateAgent(agent: agent): Agent
-    createGroup(group: group): Group
-    updateGroup(group: group): Group
-    disolveGroup(group_id: ID): String
-    createSupplier(supplier: supplier): Supplier
-    updateSupplier(supplier: supplier): Supplier
+	createAgent(agent: agent): Agent
+	updateAgent(agent: agent): Agent
+	createGroup(group: group): Group
+	updateGroup(group: group): Group
+	disolveGroup(group_id: ID): String
+	createSupplier(supplier: supplier): Supplier
+	updateSupplier(supplier: supplier): Supplier
 
-    createTicket(ticket: ticket): Ticket
-    addIntervention(ticket_id: ID): Intervention
-    updateTicket(ticket: ticketUpdate): Ticket
+	createTicket(ticket: ticket): Ticket
+	addIntervention(ticket_id: ID): Intervention
+	updateTicket(ticket: ticketUpdate): Ticket
 
-    createCategory(category: category): Category
-    updateCategory(category: category): Category
-    addArticle(article: article): Article
-    updateArticle(article: article): Article
+	createCategory(category: category): Category
+	updateCategory(category: category): Category
+	addArticle(article: article): Article
+	updateArticle(article: article): Article
 
-    addAgentsToDiscussion(agents_id: [String], ticket_id: ID): [ Agent ]
+	addAgentsToDiscussion(agents_id: [String], ticket_id: ID): [ Agent ]
 
-    updateBusinessHours(business_hours: businessHours): BusinessHours
-    createSLAPolicy(slapolicy: slapolicy): SLAPolicy
-    updateSLAPolicy(slapolicy: slapolicy): SLAPolicy
+	updateBusinessHours(business_hours: businessHours): BusinessHours
+	createSLAPolicy(slapolicy: slapolicy): SLAPolicy
+	updateSLAPolicy(slapolicy: slapolicy): SLAPolicy
 }
 
 type Subscription {
@@ -649,6 +649,6 @@ type Subscription {
 
 schema {
 	query: Query
-    mutation: Mutation
-    subscription: Subscription
+	mutation: Mutation
+	subscription: Subscription
 }

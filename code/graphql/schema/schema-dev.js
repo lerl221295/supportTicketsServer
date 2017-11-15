@@ -184,7 +184,7 @@ const mocks = {
 		id: casual.uuid,
 		name: casual.company_name,
 		subdomain: casual.domain,
-		phones: casual.phone,
+		phones: [ casual.phone, casual.phone ],
 		active: casual.boolean,
 		subscription_time: faker.date.between('2017-08-01', '2017-12-31'),
         icon: faker.image.avatar()
@@ -225,12 +225,27 @@ const mocks = {
         unassigned: casual.integer(2,30)
     }),
     Query: () => ({
-		tickets: (root, args, { subdomain }) => {
+		/*tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
 			//if(!jwt) throw Error("Mamate un pipe, sapo");
 			console.log("retornare los tickets de ",subdomain);
 			return new MockList([40, 50]);
-		}
+		},*/
+        clients: new MockList([40, 50]),
+        devices: (_, { cliente_id }) => new MockList([40, 50]),
+        organizations: new MockList([40, 50]),
+
+        agents: new MockList([40, 50]),
+        groups: new MockList([40, 50]),
+        suppliers: new MockList([40, 50]),
+
+        tickets: new MockList([40, 50]),
+        activities: (_, { ticket_id, last}) => new MockList([40, 50]),
+        interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
+
+        solutions: new MockList([40, 50]),
+        notifications: (_, { last }) => new MockList([40, 50]),
+        SLAPolicies: new MockList([40, 50])
 	}),
 	Mutation: () => ({
 		/*authenticate : (_, {user}) => {
