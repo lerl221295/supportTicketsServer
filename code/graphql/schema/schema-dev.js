@@ -17,8 +17,7 @@ const mocks = {
         facebook_id: casual.uuid
 	}),
 	Agent : () => ({
-		id: casual.uuid,
-        role: casual.random_element(['AGENT', 'SUPERVISOR', 'ADMIN', 'ADMIN_ACCOUNT']),
+        id: casual.uuid,
         name: casual.first_name,
         lastname: casual.last_name,
         email: casual.email,
@@ -64,7 +63,6 @@ const mocks = {
         id: casual.uuid,
         text: casual.text,
         time: faker.date.between('2017-08-01', '2017-12-31'),
-        type_autor: casual.random_element(['AGENT', 'CLIENT']),
     }),
     Ticket: () => ({
         id: casual.uuid,
@@ -72,8 +70,6 @@ const mocks = {
         number: casual.integer(1, 7777777777),
         title: casual.text,
         description: casual.description,
-        priority: casual.random_element(['low', 'medium', 'high', 'urgent']),
-        source: casual.random_element(['PORTAL', 'EMAIL', 'FACEBOOK', 'TWITTER']),
         response_by: casual.text,
         resolve_by: casual.text,
         satisfaction_level: integer(1, 5),
@@ -81,7 +77,6 @@ const mocks = {
     Activity: () => ({
         id: casual.uuid,
         time: faker.date.between('2017-08-01', '2017-12-31'),
-        type_autor: casual.random_element(['AGENT', 'CLIENT', 'SYSTEM']),
     }),
     Stage: () => ({
         id: casual.uuid,
@@ -90,37 +85,31 @@ const mocks = {
     }),
     SupervisorCondition: () => ({
         hours: casual.integer(0, 24),
-        conditioned_param: casual.random_element(['HOURS_SINCE_CREATED', 'HOURS_SINCE_PENDING', 'HOURS_SINCE_RESOLVED', 'HOURS_SINCE_ASSIGNED', 'HOURS_SINCE_REQUESTER_RESPONDED', 'HOURS_SINCE_AGENT_RESPONDED', 'HOURS_SINCE_TICKET_OVERDUE']),
         name: casual.short_description,
-        description: casual.description,
-        comparator: casual.random_element(['AND', 'OR'])
+        description: casual.description
     }),
     Supervisor: () => ({
         id: casual.uuid,
         name: casual.short_description,
         description: casual.description,
-        comparator: casual.random_element(['AND', 'OR'])
     }),
     Observer: () => ({
         id: casual.uuid,
         name: casual.short_description,
         description: casual.description,
         anyone: casual.boolean,
-        comparator: casual.random_element(['AND', 'OR'])
     }),
     Scenario: () => ({
         id: casual.uuid,
         name: casual.short_description,
-        description: casual.description,
-        comparator: casual.random_element(['AND', 'OR'])
+        description: casual.description
     }),
     Events: () => ({
         id: casual.uuid
     }),
     ActionEmail: () => ({
         subject: casual.description,
-        body: casual.text,
-        receiver_type: casual.random_element(['AGENT', 'CLIENT', 'GROUP'])
+        body: casual.text
     }),
     Tenant: () => ({
         id: casual.uuid,

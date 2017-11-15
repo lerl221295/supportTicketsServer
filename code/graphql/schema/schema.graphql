@@ -21,11 +21,17 @@ enum AgentRole {
     ADMIN_ACCOUNT
 }
 
+enum Sex {
+	FEMALE
+	MALE
+}
+
 type Agent {
 	id: ID
     role: AgentRole
     name: String
     lastname: String
+	sex: Sex
     email: String
     phones: [ String ]
     about: String
