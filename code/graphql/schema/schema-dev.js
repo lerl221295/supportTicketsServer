@@ -88,6 +88,60 @@ const mocks = {
         key: casual.text,
         name: casual.name,
     }),
+    Status: () => ({
+        id: casual.uuid,
+        key: casual.text,
+        label: casual.text,
+    }),
+    Category: () => ({
+        id: casual.uuid,
+        name: casual.name,
+    }),
+    Article: () => ({
+        id: casual.uuid,
+        name: casual.name,
+        description: casual.description,
+        time: faker.date.between('2017-08-01', '2017-12-31'),
+    }),
+    Notification: () => ({
+        text: casual.text,
+        time: faker.date.between('2017-08-01', '2017-12-31'),
+        readed: casual.boolean,
+    }),
+    PolicyTime: () => ({
+        value: casual.integer(1, 48),
+        unity: casual.random_element(['MINUTES', 'HOURS', 'DAYS', 'MONTHS'])
+    }),
+    Policy: () => ({
+        priority: casual.random_element(['low', 'medium', 'high', 'urgent']),
+        operational_hours: casual.random_element(['CALENDAR', 'BUSINESS'])
+    }),
+    SLAPolicy: () => ({
+        id: casual.uuid,
+        default: casual.boolean,
+        name: casual.text,
+        description: casual.text,
+        active: casual.boolean,
+        position: casual.integer(1, 77777),
+    }),
+    Alert: () => ({
+        type: casual.random_element(['REMINDER', 'SLA_VIOLATION']),
+        motive: casual.random_element(['RESPONSE', 'RESOLUTION']),
+        hours: casual.integer(1, 144),
+        message: casual.text,
+    }),
+    Horary: () => ({
+        start:casual.integer(7, 11),
+        end: casual.integer(17, 21)
+    }),
+    Holiday: () => ({
+        name: casual.name,
+        day: casual.day_of_month,
+        month: casual.month_number
+    }),
+    WorkingDay: () => ({
+        day: casual.random_element(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']),
+    }),
     Tenant: () => ({
 		id: casual.uuid,
 		name: casual.company_name,
