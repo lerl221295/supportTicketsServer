@@ -1,6 +1,7 @@
 import { makeExecutableSchema, addMockFunctionsToSchema, MockList } from 'graphql-tools';
 import esquema from './schema.graphql'
 import casual from 'casual'
+import faker from 'faker'
 import { PubSub, withFilter } from 'graphql-subscriptions';
 
 const mocks = {
@@ -54,7 +55,7 @@ const mocks = {
     }),
     Message: () => ({
         text: casual.text,
-        time: new Date(casual.integer(1003520188143, 1510691987562)).toString()
+        time: faker.date.between('2017-08-01', '2017-12-31'),
     }),
     Discussion: () => ({
         id: casual.uuid,
@@ -62,11 +63,12 @@ const mocks = {
     Intervention: () => ({
         id: casual.uuid,
         text: casual.text,
-        time: new Date(casual.integer(1003520188143, 1510691987562)).toString(),
+        time: faker.date.between('2017-08-01', '2017-12-31'),
         type_autor: casual.random_element(['AGENT', 'CLIENT']),
     }),
     Ticket: () => ({
         id: casual.uuid,
+        time: faker.date.between('2017-08-01', '2017-12-31'),
         number: casual.integer(1, 7777777777),
         title: casual.text,
         description: casual.description,
@@ -76,14 +78,24 @@ const mocks = {
         resolve_by: casual.text,
         satisfaction_level: integer(1, 5),
     }),
-	Query: () => ({
+    Activity: () => ({
+        id: casual.uuid,
+        time: faker.date.between('2017-08-01', '2017-12-31'),
+        type_autor: casual.random_element(['AGENT', 'CLIENT', 'SYSTEM']),
+    }),
+    Stage: () => ({
+        id: casual.uuid,
+        key: casual.text,
+        name: casual.name,
+    }),
     Tenant: () => ({
 		id: casual.uuid,
 		name: casual.company_name,
 		subdomain: casual.domain,
 		phones: casual.phone,
 		active: casual.boolean,
-		subscription_time: new Date(casual.integer(1003520188143, 1510691987562)).toString()
+		subscription_time: faker.date.between('2017-08-01', '2017-12-31'),
+        icon: faker.image.avatar()
     }),
     TenantColors: () => ({
     }),
@@ -112,7 +124,7 @@ const mocks = {
 		addInteraccion: (_, {interaccion}, { subdomain }) => {
 			pubsub.publish('interacciones', {newInteracciones: {
 				...interaccion,
-				timestamp: new Date().toString(),
+				timestamp: faker.date.between('2017-08-01', '2017-12-31'),
 				_id: casual.uuid,
 				subdomain
 			}});

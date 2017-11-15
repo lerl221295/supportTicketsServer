@@ -132,6 +132,7 @@ enum TicketPriority {
 
 type Ticket {
     id: ID
+    time: String
     number: Int
     title: String
     description: String
