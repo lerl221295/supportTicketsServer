@@ -454,6 +454,7 @@ type Supervisor {
 	description: String
 	comparator: LogicalComparator
 	conditions: [ Condition ]
+	time_conditions: [ SupervisorCondition ]
 	actions: [ Action ]
 }
 
@@ -498,10 +499,12 @@ type ActionField {
 	new_value: FieldValue
 }
 
+union EmailReceiver = Agent | Client | Group
+
 type ActionEmail {
 	subject: String
 	body: String
-	to: String
+	to: EmailReceiver
 	receiver_type: ReceiverType
 }
 
@@ -554,7 +557,7 @@ type SubscriptionPlan {
 	ticket_custom_fields: Boolean
 	dispatcher: Boolean
 	observer: Boolean
-	suervisor: Boolean
+	supervisor: Boolean
 	scenario: Boolean
 	knowledge_base: Boolean
 	multichannel_support: Boolean

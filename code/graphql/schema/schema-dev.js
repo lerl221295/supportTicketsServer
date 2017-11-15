@@ -142,6 +142,44 @@ const mocks = {
     WorkingDay: () => ({
         day: casual.random_element(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']),
     }),
+    SupervisorCondition: () => ({
+        hours: casual.integer(0, 24),
+        conditioned_param: casual.random_element(['HOURS_SINCE_CREATED', 'HOURS_SINCE_PENDING', 'HOURS_SINCE_RESOLVED', 'HOURS_SINCE_ASSIGNED', 'HOURS_SINCE_REQUESTER_RESPONDED', 'HOURS_SINCE_AGENT_RESPONDED', 'HOURS_SINCE_TICKET_OVERDUE']),
+        condition_operator: casual.random_element(['IS', 'NOT', 'CONTAINS', 'NOT_CONTAINS', 'STARTS', 'ENDS', 'TRUE', 'FALSE', 'HIGHER', 'HIGHER_OR_EQUAL', 'LESS', 'LESS_OR_EQUAL'])
+    }),
+    Dispatcher: () => ({
+        id: casual.uuid,
+        name: casual.short_description,
+        description: casual.description,
+        comparator: casual.random_element(['AND', 'OR'])
+    }),
+    Supervisor: () => ({
+        id: casual.uuid,
+        name: casual.short_description,
+        description: casual.description,
+        comparator: casual.random_element(['AND', 'OR'])
+    }),
+    Observer: () => ({
+        id: casual.uuid,
+        name: casual.short_description,
+        description: casual.description,
+        anyone: casual.boolean,
+        comparator: casual.random_element(['AND', 'OR'])
+    }),
+    Scenario: () => ({
+        id: casual.uuid,
+        name: casual.short_description,
+        description: casual.description,
+        comparator: casual.random_element(['AND', 'OR'])
+    }),
+    Events: () => ({
+        id: casual.uuid
+    }),
+    ActionEmail: () => ({
+        subject: casual.description,
+        body: casual.text,
+        receiver_type: casual.random_element(['AGENT', 'CLIENT', 'GROUP'])
+    }),
     Tenant: () => ({
 		id: casual.uuid,
 		name: casual.company_name,
@@ -152,12 +190,39 @@ const mocks = {
         icon: faker.image.avatar()
     }),
     TenantColors: () => ({
+        primary: casual.rgb_hex,
+        secundary: casual.rgb_hex,
+        tertiary: casual.rgb_hex,
+        quaternary: casual.rgb_hex
     }),
     TenantPlan: () => ({
+        start_date: faker.date.between('2017-08-01', '2017-12-31'),
+        end_date: null,
+        annual_payment: casual.boolean,
+        active: casual.boolean
     }),
     SubscriptionPlan: () => ({
+        name: "El plan vergatario",
+        slogan: "Chiabe bibe, la luchia zigue",
+        monthly_cash_price: 2000,
+        monthly_credit_price: 1900,
+        multiple_SLA: casual.boolean ,
+        satisfaction_survey: casual.boolean ,
+        ticket_custom_fields: casual.boolean ,
+        dispatcher: casual.boolean ,
+        observer: casual.boolean ,
+        supervisor: casual.boolean ,
+        scenario: casual.boolean ,
+        knowledge_base: casual.boolean ,
+        multichannel_support: casual.boolean
     }),
     Indicators: () => ({
+        unresolved: casual.integer(2, 30),
+        overdue: casual.integer(2,30),
+        due_today: casual.integer(2,30),
+        open: casual.integer(2,30),
+        on_hold: casual.integer(2,30),
+        unassigned: casual.integer(2,30)
     }),
     Query: () => ({
 		tickets: (root, args, { subdomain }) => {
