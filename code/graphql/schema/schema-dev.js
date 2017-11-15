@@ -68,7 +68,7 @@ const mocks = {
         id: casual.uuid,
         time: faker.date.between('2017-08-01', '2017-12-31'),
         number: casual.integer(1, 7777),
-        title: casual.text,
+        title: casual.short_description,
         description: casual.description,
         response_by: casual.text,
         resolve_by: casual.text,
@@ -85,13 +85,13 @@ const mocks = {
     }),
     Stage: () => ({
         id: casual.uuid,
-        key: casual.text,
-        name: casual.name,
+        key: casual.description,
+        name: casual.random_element(['preparation', 'progress', 'final']),
     }),
     Status: () => ({
         id: casual.uuid,
-        key: casual.text,
-        label: casual.text,
+        key: casual.random_element(['new', 'process', 'pending', 'resolved', 'failed']),
+        label: casual.random_element(['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido']),
     }),
     Category: () => ({
         id: casual.uuid,
@@ -109,12 +109,10 @@ const mocks = {
         readed: casual.boolean,
     }),
     PolicyTime: () => ({
-        value: casual.integer(1, 48),
-        unity: casual.random_element(['MINUTES', 'HOURS', 'DAYS', 'MONTHS'])
+        value: casual.integer(1, 48)
     }),
     Policy: () => ({
-        priority: casual.random_element(['low', 'medium', 'high', 'urgent']),
-        operational_hours: casual.random_element(['CALENDAR', 'BUSINESS'])
+        priority: casual.random_element(['low', 'medium', 'high', 'urgent'])
     }),
     SLAPolicy: () => ({
         id: casual.uuid,
@@ -125,8 +123,6 @@ const mocks = {
         position: casual.integer(1, 77777),
     }),
     Alert: () => ({
-        type: casual.random_element(['REMINDER', 'SLA_VIOLATION']),
-        motive: casual.random_element(['RESPONSE', 'RESOLUTION']),
         hours: casual.integer(1, 144),
         message: casual.text,
     }),
@@ -138,9 +134,6 @@ const mocks = {
         name: casual.name,
         day: casual.day_of_month,
         month: casual.month_number
-    }),
-    WorkingDay: () => ({
-        day: casual.random_element(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']),
     }),
     SupervisorCondition: () => ({
         hours: casual.integer(0, 24),
