@@ -21,18 +21,24 @@ enum AgentRole {
 	ADMIN_ACCOUNT
 }
 
+enum Sex {
+	FEMALE
+	MALE
+}
+
 type Agent {
 	id: ID
-	role: AgentRole
-	name: String
-	lastname: String
-	email: String
-	phones: [ String ]
-	about: String
-	profession: String
-	supplier: Supplier
-	#Tickets asignados actualmente al agente
-	tickets: [ Ticket ]
+    role: AgentRole
+    name: String
+    lastname: String
+	sex: Sex
+    email: String
+    phones: [ String ]
+    about: String
+    profession: String
+    supplier: Supplier
+    #Tickets asignados actualmente al agente
+    tickets: [ Ticket ]
 }
 
 type Organization {
@@ -481,7 +487,7 @@ type Scenario {
 }
 
 # Los eventos se podrán configurar para cuando cambie cualquier campo del ticket
-type Events {
+type Event {
 	id: ID
 	observer: Observer
 	field: Field
