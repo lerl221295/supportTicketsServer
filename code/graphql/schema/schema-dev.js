@@ -114,9 +114,6 @@ const mocks = {
     PolicyTime: () => ({
         value: casual.integer(1, 48)
     }),
-    Policy: () => ({
-        priority: casual.random_element(['low', 'medium', 'high', 'urgent'])
-    }),
     SLAPolicy: () => ({
         id: casual.uuid,
         default: casual.boolean,
@@ -191,8 +188,8 @@ const mocks = {
         active: casual.boolean
     }),
     SubscriptionPlan: () => ({
-        name: "El plan vergatario",
-        slogan: "Chiabe bibe, la luchia zigue",
+        name: "Full great plan",
+        slogan: "Perfect to custom your own workflow",
         monthly_cash_price: 2000,
         monthly_credit_price: 1900,
         multiple_SLA: casual.boolean ,
