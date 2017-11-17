@@ -25,7 +25,7 @@ graphQLServer.use('/graphql', (request, res, next) => {
     else res.send("no tienes aseso menol");
 })
 
-graphQLServer.use('/graphql', bodyParser.json(), 
+graphQLServer.use('/graphql', bodyParser.json({limit: '8mb'}), 
     graphqlExpress( request => ({
             schema,
             context: { 

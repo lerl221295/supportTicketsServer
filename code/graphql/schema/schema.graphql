@@ -6,7 +6,7 @@ type Query {
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
 	interventions(ticket_number: Int, last: Int): [ Intervention ]
 
-	clients: [ Client ]
+	clients(search_text: String, offset: Int, limit: Int): ClientsResponse
 	client(id: ID!): Client
 	#EL cliente_id es opcional. Si no se provee, se obtiene para todos los clientes
 	devices(cliente_id: ID): [ Device ]
@@ -43,30 +43,30 @@ type Mutation {
 	# -> !done del task con el text indicado
 	checkTask(ticket_number: Int!, text: String!): Task
 
-	createClient(client: ClientInput): Client
-	updateClient(client: ClientInput): Client
+	createClient(client: ClientInput!): Client
+	updateClient(client: ClientInput!): Client
 	createDevice(client_id: ID!): Device
-	createOrganization(organization: OrganizationInput): Organization
-	updateOrganization(organization: OrganizationInput): Organization
+	createOrganization(organization: OrganizationInput!): Organization
+	updateOrganization(organization: OrganizationInput!): Organization
 
-	createAgent(agent: AgentInput): Agent
-	updateAgent(agent: AgentInput): Agent
-	createGroup(group: GroupInput): Group
-	updateGroup(group: GroupInput): Group
-	disolveGroup(group_id: ID): String
-	createSupplier(supplier: SupplierInput): Supplier
-	updateSupplier(supplier: SupplierInput): Supplier
+	createAgent(agent: AgentInput!): Agent
+	updateAgent(agent: AgentInput!): Agent
+	createGroup(group: GroupInput!): Group
+	updateGroup(group: GroupInput!): Group
+	disolveGroup(group_id: ID!): String
+	createSupplier(supplier: SupplierInput!): Supplier
+	updateSupplier(supplier: SupplierInput!): Supplier
 
-	createCategory(category: CategoryInput): Category
-	updateCategory(category: CategoryInput): Category
-	addArticle(article: ArticleInput): Article
-	updateArticle(article: ArticleInput): Article
+	createCategory(category: CategoryInput!): Category
+	updateCategory(category: CategoryInput!): Category
+	addArticle(article: ArticleInput!): Article
+	updateArticle(article: ArticleInput!): Article
 
 	addAgentsToDiscussion(agents_id: [ ID ], ticket_number: Int!): [ Agent ]
 
-	updateBusinessHours(business_hours: BusinessHoursInput): BusinessHours
-	createSLAPolicy(slapolicy: SlapolicyInput): SLAPolicy
-	updateSLAPolicy(slapolicy: SlapolicyInput): SLAPolicy
+	updateBusinessHours(business_hours: BusinessHoursInput!): BusinessHours
+	createSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
+	updateSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
 }
 
 type Subscription {

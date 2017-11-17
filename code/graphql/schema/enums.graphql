@@ -1,0 +1,125 @@
+enum AgentRole {
+    AGENT
+    SUPERVISOR
+    ADMIN
+    ADMIN_ACCOUNT
+}
+
+enum Sex {
+    FEMALE
+    MALE
+}
+enum InterventionAutor {
+    AGENT
+    CLIENT
+}
+
+enum Source {
+    PORTAL
+    EMAIL
+    FACEBOOK
+    TWITTER
+}
+
+enum TicketPriority {
+    LOW
+    MEDIUM
+    HIGH
+    URGENT
+}
+
+enum FieldType {
+    TEXT
+    TEXTAREA
+    NUMBER
+    DATE
+    SELECT
+    CHECKBOX
+}
+
+enum ActivityAutor {
+    AGENT
+    CLIENT
+    SYSTEM
+}
+
+enum UserRole {
+    AGENT
+    SUPPLIER
+    CLIENT
+}
+
+enum UnityTime {
+    MINUTES
+    HOURS
+    DAYS
+    MONTHS
+}
+
+enum OperationalHours {
+    CALENDAR
+    BUSINESS
+}
+
+enum AlertType {
+    REMINDER
+    SLA_VIOLATION
+}
+
+enum AlertMotive {
+    RESPONSE
+    RESOLUTION
+}
+
+enum WeekDay {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+enum AutomationsType {
+    DISPATCHER
+    OBSERVER
+    SUPERVISOR
+    SCENARIO
+}
+
+enum ConditionOperator {
+    IS
+    NOT
+    CONTAINS
+    NOT_CONTAINS
+    STARTS
+    ENDS
+    TRUE
+    FALSE
+    HIGHER
+    HIGHER_OR_EQUAL
+    LESS
+    LESS_OR_EQUAL
+}
+
+enum TimeConditions {
+    HOURS_SINCE_CREATED
+    HOURS_SINCE_PENDING
+    HOURS_SINCE_RESOLVED
+    HOURS_SINCE_ASSIGNED
+    HOURS_SINCE_REQUESTER_RESPONDED
+    HOURS_SINCE_AGENT_RESPONDED
+    HOURS_SINCE_TICKET_OVERDUE
+}
+
+enum LogicalComparator {
+    AND
+    OR
+}
+
+enum ReceiverType {
+    AGENT
+    CLIENT
+    GROUP
+}

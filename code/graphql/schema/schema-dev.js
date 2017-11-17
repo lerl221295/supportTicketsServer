@@ -6,19 +6,38 @@ import esquema from './schema.graphql'
 import casual from 'casual'
 import faker from 'faker'
 import { PubSub, withFilter } from 'graphql-subscriptions';
+import images from './base64'
+
+const generateClient = () => ({
+    id: casual.uuid,
+    name: casual.first_name,
+    lastname: casual.last_name,
+    email: casual.email,
+    phones: [casual.phone, casual.phone, casual.phone],
+    address: casual.address,
+    about: casual.text,
+    twitter_id: casual.uuid,
+    facebook_id: casual.uuid,
+    face_base64: () =>  {
+        //console.log('calculando el base64 de la imagen');
+        return images.emma;
+    },
+    count_tickets: () => {
+        //console.log("calculo la cantidad de tickets en una funcion");
+        return 12;
+    },
+    tickets: () => new MockList([12,12])
+})
 
 const mocks = {
-	Client : () => ({
-		id: casual.uuid,
-		name: casual.first_name,
-		lastname: casual.last_name,
-		email: casual.email,
-		phones: [casual.phone, casual.phone, casual.phone],
-		address: casual.address,
-		about: casual.text,
-        twitter_id: casual.uuid,
-        facebook_id: casual.uuid
-	}),
+	Client : generateClient,
+    ClientsResponse : (_, {limit}) => ({
+        nodes: () => {
+            if(limit) return new MockList([limit, limit]);
+            return new MockList([46, 46])
+        },
+        count: 46
+    }),
 	Agent : () => ({
         id: casual.uuid,
         name: casual.first_name,
@@ -27,10 +46,15 @@ const mocks = {
         phones: [casual.phone, casual.phone, casual.phone],
         about: casual.text,
 		profession:  casual.random_element(['Tecnico de soporte', 'Tecnico electronico']),
+        count_tickets: () => {
+            //console.log("calculo la cantidad de tickets en una funcion");
+            return 12;
+        },
+        tickets: () => new MockList([12,12])
 	}),
 	Organization: () => ({
         id: casual.uuid,
-        name: casual.first_name,
+        name: casual.company_name,
         about: casual.text,
         domains: [casual.domain, casual.domain, casual.domain]
 	}),
@@ -217,7 +241,6 @@ const mocks = {
 			console.log("retornare los tickets de ",subdomain);
 			() => return new MockList([40, 50]);
 		},*/
-        clients: () => new MockList([40, 50]),
         devices: (_, { cliente_id }) => new MockList([40, 50]),
         organizations: () => new MockList([40, 50]),
 
@@ -232,23 +255,35 @@ const mocks = {
         solutions: () => new MockList([40, 50]),
         notifications: (_, { last }) => new MockList([40, 50]),
         SLAPolicies: () => new MockList([40, 50])
-	})
+	}),
+    Mutation: () => ({
+        updateClient: (_, {client}) => {
+            let generated = generateClient();
+            return {
+                ...generated,
+                id: client.id,
+                name: client.name,
+                lastname: client.lastname,
+                face_base64: client.face_base64
+            }
+        }
+    })
 }
 
-/*const pubsub = new PubSub();
+const pubsub = new PubSub();
 
 const resolvers = {
-	Subscription: {
-        newInteracciones: {
+    Subscription: {
+        notifications: {
             subscribe: withFilter(
-                () => pubsub.asyncIterator('interacciones'),
-                ({ newInteracciones }, variables, context) => {
-                	return newInteracciones.subdomain === context.subdomain;
+                () => pubsub.asyncIterator('notifications'),
+                ({ notification }, variables, context) => {
+                	return notification.subdomain === context.subdomain;
                 }
             )
 		}
     }
-}*/
+}
 
 const graphQLSchema = `
 ${enums}
@@ -257,7 +292,7 @@ ${inputs}
 ${esquema}
 `;
 
-const schema = makeExecutableSchema({ typeDefs: graphQLSchema/*, resolvers*/ });
+const schema = makeExecutableSchema({ typeDefs: graphQLSchema, resolvers });
 
 addMockFunctionsToSchema({ schema, mocks });
 
