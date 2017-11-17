@@ -51,6 +51,11 @@ type Organization {
     tickets: [ Ticket ]
 }
 
+type OrganizationsResponse {
+    nodes: [ Organization ]
+    count: Int
+}
+
 type Supplier {
     id: ID
     name: String

@@ -29,15 +29,24 @@ const generateClient = () => ({
     tickets: () => new MockList([12,12])
 })
 
+const generateOrganization = () => ({
+    id: casual.uuid,
+    name: casual.company_name,
+    about: casual.text,
+    domains: [casual.domain, casual.domain, casual.domain]
+});
+
+const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
+    nodes: () => {
+        if(limit) return new MockList(limit, entityGenerator);
+        return new MockList(46)
+    },
+    count: 46
+})
+
 const mocks = {
 	Client : generateClient,
-    ClientsResponse : (_, {limit}) => ({
-        nodes: () => {
-            if(limit) return new MockList([limit, limit]);
-            return new MockList([46, 46])
-        },
-        count: 46
-    }),
+    ClientsResponse : paginatedMocks(generateClient),
 	Agent : () => ({
         id: casual.uuid,
         name: casual.first_name,
@@ -52,12 +61,8 @@ const mocks = {
         },
         tickets: () => new MockList([12,12])
 	}),
-	Organization: () => ({
-        id: casual.uuid,
-        name: casual.company_name,
-        about: casual.text,
-        domains: [casual.domain, casual.domain, casual.domain]
-	}),
+	Organization: generateOrganization,
+    OrganizationsResponse: paginatedMocks(generateOrganization),
 	Supplier : () => ({
         id: casual.uuid,
         name: casual.first_name,
@@ -242,7 +247,6 @@ const mocks = {
 			() => return new MockList([40, 50]);
 		},*/
         devices: (_, { cliente_id }) => new MockList([40, 50]),
-        organizations: () => new MockList([40, 50]),
 
         agents: () => new MockList([40, 50]),
         groups: () => new MockList([40, 50]),

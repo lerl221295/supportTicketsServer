@@ -10,7 +10,7 @@ type Query {
 	client(id: ID!): Client
 	#EL cliente_id es opcional. Si no se provee, se obtiene para todos los clientes
 	devices(cliente_id: ID): [ Device ]
-	organizations: [ Organization ]
+	organizations(search_text: String, offset: Int, limit: Int): OrganizationsResponse
 	organization(id: ID!): Organization
 
 	agents: [ Agent ]
