@@ -33,12 +33,18 @@ type Agent {
     phones: [ String ]
     about: String
     profession: String
+    face_base64: String
     supplier: Supplier
     #Tickets asignados actualmente al agente
     tickets: [ Ticket ]
     groups: [ Group ]
     #Cantidad de tickets del agente
     count_tickets(state_key: String, priority: TicketPriority, type_key: String): Int
+}
+
+type AgentsResponse {
+    nodes: [ Agent ]
+    count: Int
 }
 
 type Organization {
@@ -63,6 +69,11 @@ type Supplier {
     agents: [ Agent ]
     #Tickets asignados actualmente al proveedor
     tickets: [ Ticket ]
+}
+
+type SuppliersResponse {
+    nodes: [ Supplier ]
+    count: Int
 }
 
 type Device {

@@ -13,11 +13,11 @@ type Query {
 	organizations(search_text: String, offset: Int, limit: Int): OrganizationsResponse
 	organization(id: ID!): Organization
 
-	agents: [ Agent ]
+	agents(search_text: String, offset: Int, limit: Int): AgentsResponse
 	agent(id: ID!): Agent
 	groups: [ Group ]
 	group(id: ID): Group
-	suppliers: [ Supplier ]
+	suppliers(search_text: String, offset: Int, limit: Int): SuppliersResponse
 	supplier(id: ID!): Supplier
 
 	solutions: [ Category ]

@@ -32,13 +32,16 @@ input OrganizationInput {
 }
 
 input AgentInput {
-    role: AgentRole
+    #Requerido para actualizar, no para crear
+    id: ID
     name: String!
     lastname: String!
+    role: AgentRole
     sex: Sex!
     email: String!
     phones: [ String ]!
     about: String!
+    face_base64: String!
     profession: String!
     # ID del proveedor al que pertenece
     supplier_id: ID
