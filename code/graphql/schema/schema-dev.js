@@ -39,7 +39,7 @@ const generateOrganization = () => ({
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
     nodes: () => {
         if(limit) return new MockList(limit, entityGenerator);
-        return new MockList(46)
+        return new MockList(46, entityGenerator)
     },
     count: 46
 })
