@@ -2,7 +2,6 @@ enum AgentRole {
     AGENT
     SUPERVISOR
     ADMIN
-    ADMIN_ACCOUNT
 }
 
 enum Sex {
