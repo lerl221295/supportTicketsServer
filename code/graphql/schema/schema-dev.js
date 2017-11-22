@@ -275,10 +275,14 @@ const mocks = {
 			let generated = generateClient();
 			return {
 				...generated,
-				id: client.id,
-				name: client.name,
-				lastname: client.lastname,
-				face_base64: client.face_base64
+				...client
+			}
+		},
+		updateOrganization: (_, {organization}) => {
+			let generated = generateOrganization();
+			return {
+				...generated,
+				...organization
 			}
 		},
 		updateAgent: (_, {agent}) => {
