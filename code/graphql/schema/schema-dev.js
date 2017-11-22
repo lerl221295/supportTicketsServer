@@ -71,11 +71,11 @@ const generateGroup = () => ({
 });
 
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
-	nodes: () => {
-		if(limit) return new MockList(limit, entityGenerator);
-		return new MockList(46)
-	},
-	count: 46
+    nodes: () => {
+        if(limit) return new MockList(limit, entityGenerator);
+        return new MockList(46, entityGenerator)
+    },
+    count: 46
 });
 
 const mocks = {
