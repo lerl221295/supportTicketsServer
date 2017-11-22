@@ -76,6 +76,11 @@ type SuppliersResponse {
     count: Int
 }
 
+type GroupsResponse {
+    nodes: [ Group ]
+    count: Int
+}
+
 type Device {
     id: ID
     code: String

@@ -62,6 +62,14 @@ const generateSupplier = () => ({
 	domains: [casual.domain, casual.domain, casual.domain]
 });
 
+const generateGroup = () => ({
+	id: casual.uuid,
+	name: casual.first_name,
+	about: casual.text,
+	notification_hours: casual.integer(0, 72),
+	notification_text: casual.text
+});
+
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
     nodes: () => {
         if(limit) return new MockList(limit, entityGenerator);
@@ -79,6 +87,8 @@ const mocks = {
 	AgentsResponse : paginatedMocks(generateAgent),
 	Supplier: generateSupplier,
 	SuppliersResponse: paginatedMocks(generateSupplier),
+	Group: () => generateGroup,
+	GroupsResponse: paginatedMocks(generateGroup),
 	Device: () => ({
 		id: casual.uuid,
 		name: casual.first_name,
@@ -87,13 +97,6 @@ const mocks = {
 	Task: () => ({
 		text: casual.string,
 		done: casual.boolean
-	}),
-	Group: () => ({
-		id: casual.uuid,
-		name: casual.first_name,
-		about: casual.text,
-		notification_hours: casual.integer(0, 72),
-		notification_text: casual.text
 	}),
 	Message: () => ({
 		text: casual.text,
@@ -258,7 +261,6 @@ const mocks = {
 			() => return new MockList([40, 50]);
 		},*/
 		devices: (_, { cliente_id }) => new MockList([40, 50]),
-		groups: () => new MockList([40, 50]),
 		
 		tickets: () => new MockList([40, 50]),
 		activities: (_, { ticket_id, last}) => new MockList([40, 50]),
