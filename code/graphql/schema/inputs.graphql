@@ -24,6 +24,7 @@ input DeviceInput {
 }
 
 input OrganizationInput {
+    id: ID
     name: String!
     about: String
     domains: [ String ]
