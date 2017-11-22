@@ -87,7 +87,7 @@ const mocks = {
 	AgentsResponse : paginatedMocks(generateAgent),
 	Supplier: generateSupplier,
 	SuppliersResponse: paginatedMocks(generateSupplier),
-	Group: () => generateGroup,
+	Group: generateGroup,
 	GroupsResponse: paginatedMocks(generateGroup),
 	Device: () => ({
 		id: casual.uuid,
