@@ -80,6 +80,19 @@ input TicketInput {
     custom_fields: [ TicketFieldInput ]
 }
 
+input FilterTicketInput {
+    agents: [ ID ]
+    groups: [ ID ]
+    suppliers: [ ID ]
+    clients: [ ID ]
+    groups: [ ID ]
+    #Keys de los estados
+    states_keys: [ String ]
+    types_keys: [ String ]
+    priorities: [ TicketPriority ]
+    due_by: [ DueBy ]
+}
+
 #A diferencia de con los clientes, con los tickets no vale la pena mantener el mismo input
 input TicketUpdateInput {
     ticket_number: Int!

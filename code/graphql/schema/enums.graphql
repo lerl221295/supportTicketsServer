@@ -122,3 +122,9 @@ enum ReceiverType {
     CLIENT
     GROUP
 }
+
+enum DueBy {
+    OVERDUE
+    TODAY
+    TOMORROW
+}
