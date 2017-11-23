@@ -50,9 +50,10 @@ input AgentInput {
 }
 
 input GroupInput {
+    id: ID
     name: String!
     about: String
-    group_scale: GroupInput
+    group_scale: ID
     # ID's de los agentes del grupo
     agents: [ ID ]
     # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
@@ -63,11 +64,11 @@ input GroupInput {
 }
 
 input SupplierInput {
+    id: ID
     name: String!
     about: String
-    email: String!
     # ID's de agentes del proveedor
-    agents: [ ID ]
+    agents_id: [ ID ]
 }
 
 input TicketInput {

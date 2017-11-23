@@ -291,9 +291,19 @@ const mocks = {
 				...generated,
         ...agent
 			}
+		},
+		updateSupplier: (_, {supplier}) => {
+			return {
+				...supplier
+			}
+		},
+		updateGroup: (_, {group}) => {
+			return {
+				...group
+			}
 		}
 	})
-}
+};
 
 const pubsub = new PubSub();
 
