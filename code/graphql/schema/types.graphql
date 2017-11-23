@@ -2,6 +2,7 @@ type Client {
     id: ID
     name: String
     lastname: String
+    fullName: String
     email: String
     phones: [ String ]
     address: String
@@ -28,6 +29,7 @@ type Agent {
     role: AgentRole
     name: String
     lastname: String
+    fullName: String
     sex: Sex
     email: String
     phones: [ String ]

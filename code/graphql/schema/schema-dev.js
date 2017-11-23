@@ -8,45 +8,53 @@ import faker from 'faker'
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import images from './base64'
 
-const generateClient = () => ({
-	id: casual.uuid,
-	name: casual.first_name,
-	lastname: casual.last_name,
-	email: casual.email,
-	phones: [casual.phone, casual.phone, casual.phone],
-	address: casual.address,
-	about: casual.text,
-	twitter_id: casual.uuid,
-	facebook_id: casual.uuid,
-	face_base64: () =>  {
-		//console.log('calculando el base64 de la imagen');
-		return images.emma;
-	},
-	count_tickets: () => {
-		//console.log("calculo la cantidad de tickets en una funcion");
-		return 12;
-	},
-	tickets: () => new MockList([12,12])
-});
+const generateClient = () => {
+	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
+	return({
+		id: casual.uuid,
+		name,
+		lastname,
+		fullName: `${name} ${lastname}`,
+		email: casual.email,
+		phones: [casual.phone, casual.phone, casual.phone],
+		address: casual.address,
+		about: casual.text,
+		twitter_id: casual.uuid,
+		facebook_id: casual.uuid,
+		face_base64: () =>  {
+			//console.log('calculando el base64 de la imagen');
+			return images.emma;
+		},
+		count_tickets: () => {
+			//console.log("calculo la cantidad de tickets en una funcion");
+			return 12;
+		},
+		tickets: () => new MockList([12,12])
+	})
+};
 
-const generateAgent = () => ({
-	id: casual.uuid,
-	name: casual.first_name,
-	lastname: casual.last_name,
-	email: casual.email,
-	phones: [casual.phone, casual.phone, casual.phone],
-	about: casual.text,
-	profession:  casual.random_element(['Tecnico de soporte', 'Tecnico electronico']),
-	face_base64: () =>  {
-		//console.log('calculando el base64 de la imagen');
-		return images.emma;
-	},
-	count_tickets: () => {
-		//console.log("calculo la cantidad de tickets en una funcion");
-		return 12;
-	},
-	tickets: () => new MockList([12,12])
-});
+const generateAgent = () => {
+	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
+	return({
+		id: casual.uuid,
+		name,
+		lastname,
+		fullName: `${name} ${lastname}`,
+		email: casual.email,
+		phones: [casual.phone, casual.phone, casual.phone],
+		about: casual.text,
+		profession:  casual.random_element(['Tecnico de soporte', 'Tecnico electronico']),
+		face_base64: () =>  {
+			//console.log('calculando el base64 de la imagen');
+			return images.emma;
+		},
+		count_tickets: () => {
+			//console.log("calculo la cantidad de tickets en una funcion");
+			return 12;
+		},
+		tickets: () => new MockList([12,12])
+	})
+};
 
 const generateOrganization = () => ({
 	id: casual.uuid,
