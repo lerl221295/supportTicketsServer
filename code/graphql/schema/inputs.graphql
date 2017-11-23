@@ -53,13 +53,13 @@ input GroupInput {
     id: ID
     name: String!
     about: String
-    group_scale: ID
+    group_scale_id: ID
     # ID's de los agentes del grupo
-    agents: [ ID ]
+    agents_id: [ ID ]
     # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
     notification_hours: Int
-    # Agentes que deben ser notificados
-    notification_agents: [ ID ]
+    # Agente que debe ser notificado
+    notification_agent_id: ID
     notification_text: String
 }
 

@@ -101,7 +101,7 @@ type Group {
     group_scale: Group
     agents: [ Agent ]
     #Agentes que deben ser notificados
-    notification_agents: [ Agent ]
+    notification_agent: Agent
     #Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
     notification_hours: Int
     notification_text: String
