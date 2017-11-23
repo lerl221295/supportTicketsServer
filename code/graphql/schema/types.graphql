@@ -137,7 +137,7 @@ type Intervention {
 
 type TicketType {
     key: String
-    text: String
+    label: String
 }
 
 #El number del ticket, sumado al dominio del tenant, es la clave univoca
@@ -153,7 +153,7 @@ type Ticket {
     #Estados a los que puede ir el ticket (calculado)
     next_states: [ Status ]
     source: Source
-    agente: Agent
+    agent: Agent
     client: Client
     activities: [ Activity ]
     intervention: [ Intervention ]
@@ -169,6 +169,11 @@ type Ticket {
     resolve_by: String
     #Sera null en los tickets que no esten solucionados (1-5, no satisfecho- satisfecho)
     satisfaction_level: Int
+}
+
+type TicketsResponse {
+    nodes: [ Ticket ]
+    count: Int
 }
 
 type TicketField {
@@ -241,7 +246,6 @@ type Stage {
 }
 
 type Status {
-    id: ID
     key: String
     label: String
     stage: Stage

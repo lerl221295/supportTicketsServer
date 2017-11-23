@@ -78,6 +78,17 @@ const generateGroup = () => ({
 	notification_text: casual.text
 });
 
+const generateTicket = () => ({
+	id: casual.uuid,
+	time: faker.date.between('2017-08-01', '2017-12-31'),
+	number: casual.integer(1, 7777),
+	title: casual.short_description,
+	description: casual.description,
+	response_by: faker.date.between('2017-08-01', '2017-12-31'),
+	resolve_by: faker.date.between('2017-08-01', '2017-12-31'),
+	satisfaction_level: casual.integer(1, 5),
+});
+
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
     nodes: () => {
         if(limit) return new MockList(limit, entityGenerator);
@@ -118,16 +129,8 @@ const mocks = {
 		text: casual.text,
 		time: faker.date.between('2017-08-01', '2017-12-31'),
 	}),
-	Ticket: () => ({
-		id: casual.uuid,
-		time: faker.date.between('2017-08-01', '2017-12-31'),
-		number: casual.integer(1, 7777),
-		title: casual.short_description,
-		description: casual.description,
-		response_by: faker.date.between('2017-08-01', '2017-12-31'),
-		resolve_by: faker.date.between('2017-08-01', '2017-12-31'),
-		satisfaction_level: casual.integer(1, 5),
-	}),
+	Ticket: generateTicket,
+	TicketsResponse: paginatedMocks(generateTicket),
 	Activity: () => ({
 		id: casual.uuid,
 		time: faker.date.between('2017-08-01', '2017-12-31'),
@@ -140,13 +143,20 @@ const mocks = {
 	Stage: () => ({
 		id: casual.uuid,
 		key: casual.description,
-		name: casual.random_element(['preparation', 'progress', 'final']),
+		name: casual.random_element(['preparation', 'progress', 'final'])
 	}),
-	Status: () => ({
-		id: casual.uuid,
-		key: casual.random_element(['new', 'process', 'pending', 'resolved', 'failed']),
-		label: casual.random_element(['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido']),
-	}),
+	Status: () => {
+		const random = casual.integer(0, 4);
+		const keys = ['new', 'process', 'pending', 'resolved', 'falied'];
+		const labels = ['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido'];
+		return(({key: keys[random], label: labels[random]}));
+	},
+	TicketType: () =>{
+		const random = casual.integer(0, 2);
+		const keys = ['incident', 'problem', 'question'];
+		const labels = ['Incidente', 'Problema', 'Pregunta'];
+		return(({key: keys[random], label: labels[random]}));
+	},
 	Category: () => ({
 		id: casual.uuid,
 		name: casual.name,
@@ -270,7 +280,21 @@ const mocks = {
 		},*/
 		devices: (_, { cliente_id }) => new MockList([40, 50]),
 		
-		tickets: () => new MockList([40, 50]),
+		//tickets: () => new MockList([40, 50]),
+
+		ticketTypes: () => ([
+			{key: "incident", label: "Incidente"},
+			{key: "problem", label: "Problema"},
+			{key: "question", label: "Pregunta"}
+		]),
+		ticketStatus: () => ([
+			{key: "new", label: "Nuevo"},
+			{key: "process", label: "En Proceso"},
+			{key: "pending", label: "En Espera"},
+			{key: "resolved", label: "Resuelto"},
+			{key: "falied", label: "Fallido"}
+		]),
+
 		activities: (_, { ticket_id, last}) => new MockList([40, 50]),
 		interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
 		

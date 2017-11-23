@@ -86,9 +86,10 @@ input FilterTicketInput {
     groups: [ ID ]
     suppliers: [ ID ]
     clients: [ ID ]
-    groups: [ ID ]
+    organizations: [ ID ]
     #Keys de los estados
     states_keys: [ String ]
+    #Keys de los tipos
     types_keys: [ String ]
     priorities: [ TicketPriority ]
     due_by: [ DueBy ]
