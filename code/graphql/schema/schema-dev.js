@@ -8,45 +8,55 @@ import faker from 'faker'
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import images from './base64'
 
-const generateClient = () => ({
-	id: casual.uuid,
-	name: casual.first_name,
-	lastname: casual.last_name,
-	email: casual.email,
-	phones: [casual.phone, casual.phone, casual.phone],
-	address: casual.address,
-	about: casual.text,
-	twitter_id: casual.uuid,
-	facebook_id: casual.uuid,
-	face_base64: () =>  {
-		//console.log('calculando el base64 de la imagen');
-		return images.emma;
-	},
-	count_tickets: () => {
-		//console.log("calculo la cantidad de tickets en una funcion");
-		return 12;
-	},
-	tickets: () => new MockList([12,12])
-});
+const pubsub = new PubSub();
 
-const generateAgent = () => ({
-	id: casual.uuid,
-	name: casual.first_name,
-	lastname: casual.last_name,
-	email: casual.email,
-	phones: [casual.phone, casual.phone, casual.phone],
-	about: casual.text,
-	profession:  casual.random_element(['Tecnico de soporte', 'Tecnico electronico']),
-	face_base64: () =>  {
-		//console.log('calculando el base64 de la imagen');
-		return images.emma;
-	},
-	count_tickets: () => {
-		//console.log("calculo la cantidad de tickets en una funcion");
-		return 12;
-	},
-	tickets: () => new MockList([12,12])
-});
+const generateClient = () => {
+	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
+	return({
+		id: casual.uuid,
+		name,
+		lastname,
+		fullName: `${name} ${lastname}`,
+		email: casual.email,
+		phones: [casual.phone, casual.phone, casual.phone],
+		address: casual.address,
+		about: casual.text,
+		twitter_id: casual.uuid,
+		facebook_id: casual.uuid,
+		face_base64: () =>  {
+			//console.log('calculando el base64 de la imagen');
+			return images.emma;
+		},
+		count_tickets: () => {
+			//console.log("calculo la cantidad de tickets en una funcion");
+			return 12;
+		},
+		tickets: () => new MockList([12,12])
+	})
+};
+
+const generateAgent = () => {
+	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
+	return({
+		id: casual.uuid,
+		name,
+		lastname,
+		fullName: `${name} ${lastname}`,
+		email: casual.email,
+		phones: [casual.phone, casual.phone, casual.phone],
+		about: casual.text,
+		profession:  casual.random_element(['Tecnico de soporte', 'Tecnico electronico']),
+		face_base64: () =>  {
+			//console.log('calculando el base64 de la imagen');
+			return images.emma;
+		},
+		count_tickets: () => {
+			//console.log("calculo la cantidad de tickets en una funcion");
+			return 12;
+		},
+		tickets: () => new MockList([12,12])
+	})
+};
 
 const generateOrganization = () => ({
 	id: casual.uuid,
@@ -68,6 +78,17 @@ const generateGroup = () => ({
 	about: casual.text,
 	notification_hours: casual.integer(0, 72),
 	notification_text: casual.text
+});
+
+const generateTicket = () => ({
+	id: casual.uuid,
+	time: faker.date.between('2017-08-01', '2017-12-31'),
+	number: casual.integer(1, 7777),
+	title: casual.short_description,
+	description: casual.description,
+	response_by: faker.date.between('2017-08-01', '2017-12-31'),
+	resolve_by: faker.date.between('2017-08-01', '2017-12-31'),
+	satisfaction_level: casual.integer(1, 5),
 });
 
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
@@ -110,16 +131,8 @@ const mocks = {
 		text: casual.text,
 		time: faker.date.between('2017-08-01', '2017-12-31'),
 	}),
-	Ticket: () => ({
-		id: casual.uuid,
-		time: faker.date.between('2017-08-01', '2017-12-31'),
-		number: casual.integer(1, 7777),
-		title: casual.short_description,
-		description: casual.description,
-		response_by: faker.date.between('2017-08-01', '2017-12-31'),
-		resolve_by: faker.date.between('2017-08-01', '2017-12-31'),
-		satisfaction_level: casual.integer(1, 5),
-	}),
+	Ticket: generateTicket,
+	TicketsResponse: paginatedMocks(generateTicket),
 	Activity: () => ({
 		id: casual.uuid,
 		time: faker.date.between('2017-08-01', '2017-12-31'),
@@ -132,13 +145,20 @@ const mocks = {
 	Stage: () => ({
 		id: casual.uuid,
 		key: casual.description,
-		name: casual.random_element(['preparation', 'progress', 'final']),
+		name: casual.random_element(['preparation', 'progress', 'final'])
 	}),
-	Status: () => ({
-		id: casual.uuid,
-		key: casual.random_element(['new', 'process', 'pending', 'resolved', 'failed']),
-		label: casual.random_element(['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido']),
-	}),
+	Status: () => {
+		const random = casual.integer(0, 4);
+		const keys = ['new', 'process', 'pending', 'resolved', 'falied'];
+		const labels = ['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido'];
+		return(({key: keys[random], label: labels[random]}));
+	},
+	TicketType: () =>{
+		const random = casual.integer(0, 2);
+		const keys = ['incident', 'problem', 'question'];
+		const labels = ['Incidente', 'Problema', 'Pregunta'];
+		return(({key: keys[random], label: labels[random]}));
+	},
 	Category: () => ({
 		id: casual.uuid,
 		name: casual.name,
@@ -262,7 +282,21 @@ const mocks = {
 		},*/
 		devices: (_, { cliente_id }) => new MockList([40, 50]),
 		
-		tickets: () => new MockList([40, 50]),
+		//tickets: () => new MockList([40, 50]),
+
+		ticketTypes: () => ([
+			{key: "incident", label: "Incidente"},
+			{key: "problem", label: "Problema"},
+			{key: "question", label: "Pregunta"}
+		]),
+		ticketStatus: () => ([
+			{key: "new", label: "Nuevo"},
+			{key: "process", label: "En Proceso"},
+			{key: "pending", label: "En Espera"},
+			{key: "resolved", label: "Resuelto"},
+			{key: "falied", label: "Fallido"}
+		]),
+
 		activities: (_, { ticket_id, last}) => new MockList([40, 50]),
 		interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
 		
@@ -301,14 +335,29 @@ const mocks = {
 			return {
 				...group
 			}
+		},
+		prueba: (_, args, { subdomain }) => {
+			const newTicket = {
+				...generateTicket(),
+				subdomain
+			}
+			pubsub.publish('tickets', { newTicket });
+			return "Fino!";
 		}
 	})
 };
 
-const pubsub = new PubSub();
-
 const resolvers = {
 	Subscription: {
+		newTicket: {
+			subscribe: withFilter(
+				() => pubsub.asyncIterator('tickets'),
+				({ newTicket }, variables, context) => {
+					console.log(`${newTicket.subdomain} === ${context.subdomain}`)
+					return newTicket.subdomain === context.subdomain;
+				}
+			)
+		},
 		notifications: {
 			subscribe: withFilter(
 				() => pubsub.asyncIterator('notifications'),

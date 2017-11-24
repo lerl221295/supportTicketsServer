@@ -1,6 +1,10 @@
 type Query {
 	ticket(number: Int!): Ticket
-	tickets: [ Ticket ]
+	tickets(filter: FilterTicketInput, offset: Int, limit: Int): TicketsResponse
+	#Metadata de los tipos de tickets disponibles (considerar type metadata)
+	ticketTypes: [ TicketType ]
+	#Metadata de los estatus de tickets disponibles (considerar type metadata)
+	ticketStatus: [ Status ]
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
 	activities(ticket_number: Int, last: Int): [ Activity ]
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
@@ -67,12 +71,15 @@ type Mutation {
 	updateBusinessHours(business_hours: BusinessHoursInput!): BusinessHours
 	createSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
 	updateSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
+
+	prueba: String
 }
 
 type Subscription {
+	newTicket(filter: FilterTicketInput): Ticket
 	notifications: Notification
-	new_discussion: Discussion
-	discussion_message(ticket_number: Int!): Message
+	newDiscussion: Discussion
+	discussionMessage(ticket_number: Int!): Message
 	activities(ticket_number: Int): Activity
 	interventions(ticket_number: Int): Intervention
 }
