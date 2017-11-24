@@ -8,6 +8,8 @@ import faker from 'faker'
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import images from './base64'
 
+const pubsub = new PubSub();
+
 const generateClient = () => {
 	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
 	return({
@@ -333,14 +335,29 @@ const mocks = {
 			return {
 				...group
 			}
+		},
+		prueba: (_, args, { subdomain }) => {
+			const newTicket = {
+				...generateTicket(),
+				subdomain
+			}
+			pubsub.publish('tickets', { newTicket });
+			return "Fino!";
 		}
 	})
 };
 
-const pubsub = new PubSub();
-
 const resolvers = {
 	Subscription: {
+		newTicket: {
+			subscribe: withFilter(
+				() => pubsub.asyncIterator('tickets'),
+				({ newTicket }, variables, context) => {
+					console.log(`${newTicket.subdomain} === ${context.subdomain}`)
+					return newTicket.subdomain === context.subdomain;
+				}
+			)
+		},
 		notifications: {
 			subscribe: withFilter(
 				() => pubsub.asyncIterator('notifications'),

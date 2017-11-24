@@ -71,12 +71,15 @@ type Mutation {
 	updateBusinessHours(business_hours: BusinessHoursInput!): BusinessHours
 	createSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
 	updateSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
+
+	prueba: String
 }
 
 type Subscription {
+	newTicket(filter: FilterTicketInput): Ticket
 	notifications: Notification
-	new_discussion: Discussion
-	discussion_message(ticket_number: Int!): Message
+	newDiscussion: Discussion
+	discussionMessage(ticket_number: Int!): Message
 	activities(ticket_number: Int): Activity
 	interventions(ticket_number: Int): Intervention
 }

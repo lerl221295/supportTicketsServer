@@ -49,11 +49,14 @@ ws.listen(GRAPHQL_PORT, () => {
         execute,
         subscribe,
         schema,
-        onConnect: (connectionParams, webSocket) => ({
-            //subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
-            //falta validar el connectionParams.token
-            subdomain: connectionParams.subdomain
-        }),
+        onConnect: ({subdomain}, webSocket) => {
+            console.log(subdomain)
+            return({
+                //subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
+                //falta validar el connectionParams.token
+                subdomain
+            })
+        },
     }, {
         server: ws,
         path: '/subscriptions',
