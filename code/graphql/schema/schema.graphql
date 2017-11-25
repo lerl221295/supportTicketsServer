@@ -6,7 +6,7 @@ type Query {
 	#Metadata de los estatus de tickets disponibles (considerar type metadata)
 	ticketStatus: [ Status ]
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
-	activities(ticket_number: Int, last: Int): [ Activity ]
+    activities(ticket_number: Int, offset: Int, limit: Int): ActivitiesResponse
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
 	interventions(ticket_number: Int, last: Int): [ Intervention ]
 

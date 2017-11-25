@@ -232,6 +232,11 @@ type Activity {
     changes: [ Change ]
 }
 
+type ActivitiesResponse {
+    nodes: [ Activity ]
+    count: Int
+}
+
 type Change {
     prop_name: String
     old_value: String

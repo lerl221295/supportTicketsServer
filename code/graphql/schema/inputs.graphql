@@ -57,7 +57,7 @@ input GroupInput {
     # ID's de los agentes del grupo
     agents_id: [ ID ]
     # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
-    notification_hours: Int
+    notification_hours: Float
     # Agente que debe ser notificado
     notification_agent_id: ID
     notification_text: String

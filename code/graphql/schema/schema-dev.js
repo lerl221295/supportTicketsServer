@@ -10,6 +10,8 @@ import images from './base64'
 
 const pubsub = new PubSub();
 
+let dateRange = (start = '2017-08-01', end = '2017-12-31') => (faker.date.between(start, end));
+
 const generateClient = () => {
 	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
 	return({
@@ -82,13 +84,18 @@ const generateGroup = () => ({
 
 const generateTicket = () => ({
 	id: casual.uuid,
-	time: faker.date.between('2017-08-01', '2017-12-31'),
+	time: dateRange(),
 	number: casual.integer(1, 7777),
 	title: casual.short_description,
 	description: casual.description,
-	response_by: faker.date.between('2017-08-01', '2017-12-31'),
-	resolve_by: faker.date.between('2017-08-01', '2017-12-31'),
+	response_by: dateRange(),
+	resolve_by: dateRange(),
 	satisfaction_level: casual.integer(1, 5),
+});
+
+const generateActivity = () => ({
+	id: casual.uuid,
+	time: dateRange()
 });
 
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
@@ -121,7 +128,7 @@ const mocks = {
 	}),
 	Message: () => ({
 		text: casual.text,
-		time: faker.date.between('2017-08-01', '2017-12-31'),
+		time: dateRange(),
 	}),
 	Discussion: () => ({
 		id: casual.uuid,
@@ -129,14 +136,12 @@ const mocks = {
 	Intervention: () => ({
 		id: casual.uuid,
 		text: casual.text,
-		time: faker.date.between('2017-08-01', '2017-12-31'),
+		time: dateRange(),
 	}),
 	Ticket: generateTicket,
 	TicketsResponse: paginatedMocks(generateTicket),
-	Activity: () => ({
-		id: casual.uuid,
-		time: faker.date.between('2017-08-01', '2017-12-31'),
-	}),
+	Activity: generateActivity,
+	ActivitiesResponse: paginatedMocks(generateActivity),
 	Change: () => ({
 		prop_name: casual.short_description,
 		old_value: casual.short_description,
@@ -167,11 +172,11 @@ const mocks = {
 		id: casual.uuid,
 		name: casual.name,
 		description: casual.description,
-		time: faker.date.between('2017-08-01', '2017-12-31'),
+		time: dateRange(),
 	}),
 	Notification: () => ({
 		text: casual.short_description,
-		time: faker.date.between('2017-08-01', '2017-12-31'),
+		time: dateRange(),
 		readed: casual.boolean,
 	}),
 	PolicyTime: () => ({
@@ -235,7 +240,7 @@ const mocks = {
 		subdomain: casual.domain,
 		phones: [ casual.phone, casual.phone ],
 		active: casual.boolean,
-		subscription_time: faker.date.between('2017-08-01', '2017-12-31'),
+		subscription_time: dateRange(),
 		icon: faker.image.avatar()
 	}),
 	TenantColors: () => ({
@@ -245,7 +250,7 @@ const mocks = {
 		quaternary: casual.rgb_hex
 	}),
 	TenantPlan: () => ({
-		start_date: faker.date.between('2017-08-01', '2017-12-31'),
+		start_date: dateRange(),
 		end_date: null,
 		annual_payment: casual.boolean,
 		active: casual.boolean
@@ -296,8 +301,6 @@ const mocks = {
 			{key: "resolved", label: "Resuelto"},
 			{key: "falied", label: "Fallido"}
 		]),
-
-		activities: (_, { ticket_id, last}) => new MockList([40, 50]),
 		interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
 		
 		solutions: () => new MockList([40, 50]),
