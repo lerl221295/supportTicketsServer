@@ -82,16 +82,19 @@ const generateGroup = () => ({
 	notification_text: casual.text
 });
 
-const generateTicket = () => ({
-	id: casual.uuid,
-	time: dateRange(),
-	number: casual.integer(1, 7777),
-	title: casual.short_description,
-	description: casual.description,
-	response_by: dateRange(),
-	resolve_by: dateRange(),
-	satisfaction_level: casual.integer(1, 5),
-});
+const generateTicket = () => {
+	const date = new Date();
+	return({
+		id: casual.uuid,
+		time: faker.date.recent(),
+		number: casual.integer(1, 7777),
+		title: casual.short_description,
+		description: casual.description,
+		response_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(1, 3)))),
+		resolve_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(2, 6)))),
+		satisfaction_level: casual.integer(1, 5),
+	})
+};
 
 const generateActivity = () => ({
 	id: casual.uuid,
