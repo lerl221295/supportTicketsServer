@@ -329,7 +329,8 @@ const mocks = {
 			let generated = generateAgent();
 			return {
 				...generated,
-        ...agent
+				fullName: `${agent.name} ${agent.lastname}`,
+        		...agent
 			}
 		},
 		updateSupplier: (_, {supplier}) => {
