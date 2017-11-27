@@ -35,7 +35,12 @@ type Query {
 	businessHours: BusinessHours
 	SLAPolicies: [ SLAPolicy ]
 
+	# DASHBOARD INDICATORS
 	indicators: Indicators
+
+	# REPORTES
+	ticketsCountByDay(last: Int): [ TicketByDay ]
+
 }
 
 type Mutation {

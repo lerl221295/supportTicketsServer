@@ -1,7 +1,7 @@
 enum AgentRole {
+    ADMIN
     AGENT
     SUPERVISOR
-    ADMIN
 }
 
 enum Sex {
@@ -40,6 +40,12 @@ enum ActivityAutor {
     AGENT
     CLIENT
     SYSTEM
+}
+
+enum ActivityActionType {
+    ASSIGNMENT
+    CREATION
+    UPDATE
 }
 
 enum UserRole {

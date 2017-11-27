@@ -223,13 +223,17 @@ type SelectField {
     options: [ SelectOption ]
 }
 
+# La actividad puede tener 3 autores, por lo cuál hice una interfaz para manejar los distintos casos
 type Activity {
     id: ID
     time: String
     ticket: Ticket
+    # Sistema, cliente o agente
     type_autor: ActivityAutor
+    # En caso de ser el sistema, esto viene vacio
     autor: Autor
-    changes: [ Change ]
+    # En caso de que sea el cliente, se trata de la creación de un ticket, entonces viene una sola acción
+    actions: [ ActivityAction ]
 }
 
 type ActivitiesResponse {
@@ -237,10 +241,25 @@ type ActivitiesResponse {
     count: Int
 }
 
-type Change {
+# El tipo para la creación del ticket está medio forzado xD
+union ActivityAction = ActivityActionUpdate | ActivityActionAssignment | ActivityActionCeation
+
+type ActivityActionUpdate {
+    type: ActivityActionType
     prop_name: String
-    old_value: String
     new_value: String
+}
+
+type ActivityActionAssignment {
+    type: ActivityActionType
+    # Agente que fue asignado en la acción
+    agent: Agent
+}
+
+type ActivityActionCeation {
+    type: ActivityActionType
+    # Cliente que creó el ticket, también puede ser sacado del ticket (obviamente), lo quise forzar así xD
+    client: Client
 }
 
 type Stage {
@@ -495,4 +514,13 @@ type Indicators {
     open: Int
     on_hold: Int
     unassigned: Int
+}
+
+# REPORTES
+
+type TicketByDay {
+    # Día
+    day: String
+    # Números de tickets del día
+    tickets: Int
 }

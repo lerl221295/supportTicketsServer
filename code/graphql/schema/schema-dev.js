@@ -10,8 +10,6 @@ import images from './base64'
 
 const pubsub = new PubSub();
 
-let dateRange = (start = '2017-08-01', end = '2017-12-31') => (faker.date.between(start, end));
-
 const generateClient = () => {
 	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
 	return({
@@ -96,17 +94,35 @@ const generateTicket = () => {
 	})
 };
 
-const generateActivity = () => ({
-	id: casual.uuid,
-	time: dateRange()
-});
+const generateActivity = () => {
+	const type_autor = casual.random_element(['AGENT', 'CLIENT', 'SYSTEM']);
+	return ({
+		id: casual.uuid,
+		time: faker.date.recent(),
+		type_autor: type_autor,
+		/*autor: () => do {
+			if(type_autor === 'CLIENT') { __typename: "Agent", generateClient }
+		},*/
+		actions: () => do {
+			if(type_autor === 'CLIENT') new MockList(1);
+			else new MockList([1, 3]);
+		}
+	});
+};
+
+const generateTicketByDay = (day) => {
+	return ({
+		day: day,
+		tickets: casual.integer(0, 500)
+	})
+};
 
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
-    nodes: () => {
-        if(limit) return new MockList(limit, entityGenerator);
-        return new MockList(46, entityGenerator)
-    },
-    count: 46
+	nodes: () => {
+		if(limit) return new MockList(limit, entityGenerator);
+		return new MockList(46, entityGenerator)
+	},
+	count: 46
 });
 
 const mocks = {
@@ -131,7 +147,7 @@ const mocks = {
 	}),
 	Message: () => ({
 		text: casual.text,
-		time: dateRange(),
+		time: faker.date.recent(),
 	}),
 	Discussion: () => ({
 		id: casual.uuid,
@@ -139,12 +155,43 @@ const mocks = {
 	Intervention: () => ({
 		id: casual.uuid,
 		text: casual.text,
-		time: dateRange(),
+		time: faker.date.recent(),
 	}),
 	Ticket: generateTicket,
 	TicketsResponse: paginatedMocks(generateTicket),
 	Activity: generateActivity,
 	ActivitiesResponse: paginatedMocks(generateActivity),
+	ActivityActionUpdate: () => {
+		const props = ['type', 'priority', 'status'];
+		const values = {
+			type: [
+				'Incidente',
+				'Problema',
+				'Pregunta'
+			],
+			priority: [
+				'baja',
+				'media',
+				'alta',
+				'urgente'
+			],
+			status: [
+				'abierto',
+				'proceso',
+				'solucionado',
+				'cerrado'
+			]
+		};
+		const randomProp = casual.integer(0, 2);
+		const randomValue = casual.integer(0, values[props[randomProp]].length - 1);
+		return ({
+			type: 'UPDATE',
+			prop_name: props[randomProp],
+			new_value: values[props[randomProp]][randomValue]
+		})
+	},
+	ActivityActionAssignment: () => ({type: 'ASSIGNMENT'}),
+	ActivityActionCeation: () => ({type: 'CREATION'}),
 	Change: () => ({
 		prop_name: casual.short_description,
 		old_value: casual.short_description,
@@ -175,11 +222,11 @@ const mocks = {
 		id: casual.uuid,
 		name: casual.name,
 		description: casual.description,
-		time: dateRange(),
+		time: faker.date.recent(),
 	}),
 	Notification: () => ({
 		text: casual.short_description,
-		time: dateRange(),
+		time: faker.date.recent(),
 		readed: casual.boolean,
 	}),
 	PolicyTime: () => ({
@@ -243,7 +290,7 @@ const mocks = {
 		subdomain: casual.domain,
 		phones: [ casual.phone, casual.phone ],
 		active: casual.boolean,
-		subscription_time: dateRange(),
+		subscription_time: faker.date.recent(),
 		icon: faker.image.avatar()
 	}),
 	TenantColors: () => ({
@@ -253,7 +300,7 @@ const mocks = {
 		quaternary: casual.rgb_hex
 	}),
 	TenantPlan: () => ({
-		start_date: dateRange(),
+		start_date: faker.date.past(2),
 		end_date: null,
 		annual_payment: casual.boolean,
 		active: casual.boolean
@@ -274,13 +321,14 @@ const mocks = {
 		multichannel_support: casual.boolean
 	}),
 	Indicators: () => ({
-		unresolved: casual.integer(2, 30),
-		overdue: casual.integer(2,30),
-		due_today: casual.integer(2,30),
-		open: casual.integer(2,30),
-		on_hold: casual.integer(2,30),
-		unassigned: casual.integer(2,30)
+		unresolved: casual.integer(2, 50),
+		overdue: casual.integer(2, 50),
+		due_today: casual.integer(2, 50),
+		open: casual.integer(2, 50),
+		on_hold: casual.integer(2, 50),
+		unassigned: casual.integer(2, 50)
 	}),
+	// Reportes
 	Query: () => ({
 		/*tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
@@ -291,7 +339,7 @@ const mocks = {
 		devices: (_, { cliente_id }) => new MockList([40, 50]),
 		
 		//tickets: () => new MockList([40, 50]),
-
+		
 		ticketTypes: () => ([
 			{key: "incident", label: "Incidente"},
 			{key: "problem", label: "Problema"},
@@ -308,7 +356,17 @@ const mocks = {
 		
 		solutions: () => new MockList([40, 50]),
 		notifications: (_, { last }) => new MockList([40, 50]),
-		SLAPolicies: () => new MockList([40, 50])
+		SLAPolicies: () => new MockList([40, 50]),
+		
+		ticketsCountByDay: (_, { last = 7 }) => {
+			let ticketsByDay = [];
+			for (let i = 0; i < last; i++) {
+				let date = new Date();
+				date.setDate(date.getDate() - (last - i));
+				ticketsByDay.push(generateTicketByDay(date));
+			}
+			return ticketsByDay;
+		}
 	}),
 	Mutation: () => ({
 		updateClient: (_, {client}) => {
@@ -329,7 +387,7 @@ const mocks = {
 			let generated = generateAgent();
 			return {
 				...generated,
-        ...agent
+				...agent
 			}
 		},
 		updateSupplier: (_, {supplier}) => {
