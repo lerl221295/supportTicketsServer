@@ -1,10 +1,7 @@
 type Query {
 	ticket(number: Int!): Ticket
 	tickets(filter: FilterTicketInput, offset: Int, limit: Int): TicketsResponse
-	#Metadata de los tipos de tickets disponibles (considerar type metadata)
-	ticketTypes: [ TicketType ]
-	#Metadata de los estatus de tickets disponibles (considerar type metadata)
-	ticketStatus: [ Status ]
+	ticketMetadata: TicketMetadata
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
     activities(ticket_number: Int, offset: Int, limit: Int): ActivitiesResponse
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets

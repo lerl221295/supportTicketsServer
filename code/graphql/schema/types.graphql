@@ -162,7 +162,7 @@ type Ticket {
     group: Group
     supplier: Supplier
     tasks: [ Task ]
-    custom_fields: [ TicketField ]
+    custom_fields: [ FieldValue ]
     #Cuando debe o debio realizarse la primera respuesta segun el SLA
     response_by: String
     #Cuando debe o debio solucionarse el ticket segun el SLA
@@ -176,50 +176,65 @@ type TicketsResponse {
     count: Int
 }
 
-type TicketField {
-    value: FieldValue
+type TicketMetadata {
+    types_values: [ TicketType ]
+    status_values: [ Status ]
+    custom_fields: [ Field ]
+}
+
+interface FieldValue {
     metadata: Field
 }
 
-union FieldValue = TextValue | NumberValue | SelectValue | CheckValue
-
-type TextValue {
+type TextValue implements FieldValue {
+    metadata: Field
     text: String
 }
 
-type NumberValue {
+type NumberValue implements FieldValue {
+    metadata: Field
     number: Int
 }
 
-type SelectValue {
+type SelectValue implements FieldValue {
+    metadata: Field
     key: String
 }
 
-type CheckValue {
+type CheckValue implements FieldValue {
+    metadata: Field
     check: Boolean
 }
 
-
-union Field = FreeField | SelectField
-
-type FreeField {
+interface Field {
     position: Int
     key: String
     label: String
     type: FieldType
+    #Para cuando se accede a la metadata del ticket (no a traves del FieldValue)
+    value(ticket_number: Int!): FieldValue
+}
+
+type FreeField implements Field {
+    position: Int
+    key: String
+    label: String
+    type: FieldType
+    value(ticket_number: Int!): FieldValue
 }
 
 type SelectOption {
-    text: String
+    label: String
     key: String
     position: Int
 }
 
-type SelectField {
+type SelectField implements Field {
     position: Int
     key: String
     label: String
     type: FieldType
+    value(ticket_number: Int!): FieldValue
     options: [ SelectOption ]
 }
 
@@ -254,7 +269,7 @@ type Status {
     key: String
     label: String
     stage: Stage
-    # Estados a los que se puede ir hacia ese estado
+    # Estados desde donde se puede pasar a este estado
     came_from: [ Status ]
 }
 
