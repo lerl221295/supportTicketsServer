@@ -239,16 +239,11 @@ type SelectField implements Field {
 }
 
 # La actividad puede tener 3 autores, por lo cuál hice una interfaz para manejar los distintos casos
-type Activity {
+
+interface Activity {
     id: ID
-    time: String
     ticket: Ticket
-    # Sistema, cliente o agente
-    type_autor: ActivityAutor
-    # En caso de ser el sistema, esto viene vacio
-    autor: Autor
-    # En caso de que sea el cliente, se trata de la creación de un ticket, entonces viene una sola acción
-    actions: [ ActivityAction ]
+    type: ActivityType
 }
 
 type ActivitiesResponse {
@@ -256,25 +251,41 @@ type ActivitiesResponse {
     count: Int
 }
 
-# El tipo para la creación del ticket está medio forzado xD
-union ActivityAction = ActivityActionUpdate | ActivityActionAssignment | ActivityActionCeation
+type UpgradeActivity implements Activity {
+    id: ID
+    ticket: Ticket
+    type: ActivityType
+    time: String
+    # Sistema, cliente o agente
+    type_autor: ActivityAutor
+    # En caso de ser el sistema, esto viene vacio
+    autor: Autor
+    # En caso de que sea el cliente, se trata de la creación de un ticket, entonces viene una sola acción
+    actions: [ UpgradeActivityAction ]
+}
 
-type ActivityActionUpdate {
-    type: ActivityActionType
+type CreationActivity implements Activity {
+    id: ID
+    ticket: Ticket
+    type: ActivityType
+}
+
+# El tipo para la creación del ticket está medio forzado xD
+union UpgradeActivityAction = UpgradeActivityActionUpdate | UpgradeActivityActionAssignment
+
+union TicketBearer = Agent | Supplier | Group
+
+type UpgradeActivityActionUpdate {
+    type: UpgradeActivityActionType
     prop_name: String
+    old_value: String
     new_value: String
 }
 
-type ActivityActionAssignment {
-    type: ActivityActionType
-    # Agente que fue asignado en la acción
-    agent: Agent
-}
-
-type ActivityActionCeation {
-    type: ActivityActionType
-    # Cliente que creó el ticket, también puede ser sacado del ticket (obviamente), lo quise forzar así xD
-    client: Client
+type UpgradeActivityActionAssignment {
+    type: UpgradeActivityActionType
+    # Agente / grupo / proveedor que fue asignado en la acción
+    bearer: TicketBearer
 }
 
 type Stage {

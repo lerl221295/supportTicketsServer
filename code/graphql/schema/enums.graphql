@@ -36,15 +36,19 @@ enum FieldType {
     CHECKBOX
 }
 
+enum ActivityType {
+    CREATION
+    UPGRADE
+}
+
 enum ActivityAutor {
     AGENT
     CLIENT
     SYSTEM
 }
 
-enum ActivityActionType {
+enum UpgradeActivityActionType {
     ASSIGNMENT
-    CREATION
     UPDATE
 }
 

@@ -75,6 +75,7 @@ type Mutation {
 	updateSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
 
 	prueba: String
+	addActivity: String
 }
 
 type Subscription {

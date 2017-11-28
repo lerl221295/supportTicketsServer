@@ -484,6 +484,15 @@ const mocks = {
 			}
 			pubsub.publish('tickets', { newTicket });
 			return "Fino!";
+		},
+		addActivity: (_, args, { subdomain }) => {
+			const newActivity = {
+				...generateActivity(),
+				subdomain
+			}
+			console.log('-------', newActivity);
+			pubsub.publish('activities', { newActivity });
+			return "Fino!";
 		}
 	})
 };
@@ -506,7 +515,16 @@ const resolvers = {
 					return notification.subdomain === context.subdomain;
 				}
 			)
-		}
+		},
+		activities: {
+			subscribe: withFilter(
+				() => pubsub.asyncIterator('activities'),
+				({ newActivity }, variables, context) => {
+					console.log(`${newActivity.subdomain} === ${context.subdomain}`)
+					return newActivity.subdomain === context.subdomain;
+				}
+			)
+		},
 	}
 }
 
