@@ -28,10 +28,10 @@ graphQLServer.use('/graphql', (request, res, next) => {
 graphQLServer.use('/graphql', bodyParser.json({limit: '8mb'}), 
     graphqlExpress( request => ({
             schema,
-            context: { 
+            context: {
                 subdomain: request.headers.host.split(".")[0]
             }
-        }) 
+        })
     ) 
 );
 
@@ -50,7 +50,7 @@ ws.listen(GRAPHQL_PORT, () => {
         subscribe,
         schema,
         onConnect: ({subdomain}, webSocket) => {
-            console.log(subdomain)
+            // console.log("sub--", subdomain)
             return({
                 //subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
                 //falta validar el connectionParams.token
