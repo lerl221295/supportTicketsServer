@@ -156,7 +156,7 @@ type Ticket {
     agent: Agent
     client: Client
     activities: [ Activity ]
-    intervention: [ Intervention ]
+    interventions: [ Intervention ]
     discussion: Discussion
     device: Device
     group: Group
@@ -256,10 +256,10 @@ type UpgradeActivity implements Activity {
     ticket: Ticket
     type: ActivityType
     time: String
-    # Sistema, cliente o agente
-    type_autor: ActivityAutor
+    # Sistema o agente
+    type_autor: UpgradeActivityAutor
     # En caso de ser el sistema, esto viene vacio
-    autor: Autor
+    autor: Agent
     # En caso de que sea el cliente, se trata de la creación de un ticket, entonces viene una sola acción
     actions: [ UpgradeActivityAction ]
 }
