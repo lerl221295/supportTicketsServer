@@ -10,30 +10,29 @@ import images from './base64'
 
 const pubsub = new PubSub();
 
-const generateClient = () => {
-	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
-	return({
-		id: casual.uuid,
-		name,
-		lastname,
-		fullName: `${name} ${lastname}`,
-		email: casual.email,
-		phones: [casual.phone, casual.phone, casual.phone],
-		address: casual.address,
-		about: casual.text,
-		twitter_id: casual.uuid,
-		facebook_id: casual.uuid,
-		face_base64: () =>  {
-			//console.log('calculando el base64 de la imagen');
-			return images.emma;
-		},
-		count_tickets: () => {
-			//console.log("calculo la cantidad de tickets en una funcion");
-			return 12;
-		},
-		tickets: () => new MockList([12,12])
-	})
-};
+let dateRange = (start = '2017-08-01', end = '2017-12-31') => (faker.date.between(start, end));
+
+const generateClient = () => ({
+	id: casual.uuid,
+	name: casual.first_name,
+	lastname: casual.last_name,
+	fullName: ({name, lastname}) => `${name} ${lastname}`,
+	email: casual.email,
+	phones: [casual.phone, casual.phone, casual.phone],
+	address: casual.address,
+	about: casual.text,
+	twitter_id: casual.uuid,
+	facebook_id: casual.uuid,
+	face_base64: () =>  {
+		//console.log('calculando el base64 de la imagen');
+		return images.emma;
+	},
+	count_tickets: () => {
+		//console.log("calculo la cantidad de tickets en una funcion");
+		return 12;
+	},
+	tickets: () => new MockList([12,12])
+});
 
 const generateAgent = () => {
 	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
@@ -328,7 +327,6 @@ const mocks = {
 		on_hold: casual.integer(2, 50),
 		unassigned: casual.integer(2, 50)
 	}),
-	// Reportes
 	Query: () => ({
 		/*tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
@@ -339,19 +337,97 @@ const mocks = {
 		devices: (_, { cliente_id }) => new MockList([40, 50]),
 		
 		//tickets: () => new MockList([40, 50]),
-		
-		ticketTypes: () => ([
-			{key: "incident", label: "Incidente"},
-			{key: "problem", label: "Problema"},
-			{key: "question", label: "Pregunta"}
-		]),
-		ticketStatus: () => ([
-			{key: "new", label: "Nuevo"},
-			{key: "process", label: "En Proceso"},
-			{key: "pending", label: "En Espera"},
-			{key: "resolved", label: "Resuelto"},
-			{key: "falied", label: "Fallido"}
-		]),
+		ticket: () => ({
+			...generateClient(),
+			custom_fields: [
+				{
+					__typename: "TextValue",
+					text: "Un comentario fino",
+					metadata: {
+						__typename: "FreeField",
+						key: "comment",
+						label: "Comentario",
+						position: 3,
+						type: "TEXT"
+					}
+				},
+				{
+					__typename: "TextValue",
+					text: "Sun Nov 26 2017 22:22:26 GMT-0400 (VET)",
+					metadata: {
+						__typename: "FreeField",
+						key: "DATE",
+						label: "Fecha de Atencion",
+						position: 1,
+						type: "DATE"
+					}
+				},
+				{
+					__typename: "SelectValue",
+					key: "white",
+					metadata: {
+						__typename: "SelectField",
+						key: "color",
+						label: "Color",
+						position: 2,
+						type: "SELECT"
+					}
+				}
+			]
+		}),
+		ticketMetadata: () => ({
+			types_values: [
+				{key: "incident", label: "Incidente"},
+				{key: "problem", label: "Problema"},
+				{key: "question", label: "Pregunta"}
+			],
+			status_values: [
+				{key: "new", label: "Nuevo"},
+				{key: "process", label: "En Proceso"},
+				{key: "pending", label: "En Espera"},
+				{key: "resolved", label: "Resuelto"},
+				{key: "falied", label: "Fallido"}
+			],
+			custom_fields: [
+				{
+					__typename: "FreeField",
+					position: 1,
+					key: "date",
+					label: "Fecha de Atencion",
+					type: "DATE",
+					value: {
+						__typename: "TextValue",
+						text: "Sun Nov 26 2017 22:22:26 GMT-0400 (VET)"
+					}
+				},
+				{
+					__typename: "FreeField",
+					position: 3,
+					key: "comment",
+					label: "Comentario",
+					type: "TEXT",
+					value: {
+						__typename: "TextValue",
+						text: "Un comentario fino"
+					}
+				},
+				{
+					__typename: "SelectField",
+					position: 2,
+					key: "color",
+					label: "Color",
+					type: "SELECT",
+					value: {
+						__typename: "SelectValue",
+						key: "white"
+					},
+					options: [
+						{label: "Blanco", key: "white", position: 2},
+						{label: "Negro", key: "black", position: 1}
+					]
+				}
+			]
+		}),
 		interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
 		
 		solutions: () => new MockList([40, 50]),
@@ -387,7 +463,8 @@ const mocks = {
 			let generated = generateAgent();
 			return {
 				...generated,
-				...agent
+				fullName: `${agent.name} ${agent.lastname}`,
+        		...agent
 			}
 		},
 		updateSupplier: (_, {supplier}) => {
