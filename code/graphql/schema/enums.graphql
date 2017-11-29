@@ -41,9 +41,8 @@ enum ActivityType {
     UPGRADE
 }
 
-enum ActivityAutor {
+enum UpgradeActivityAutor {
     AGENT
-    CLIENT
     SYSTEM
 }
 

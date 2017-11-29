@@ -89,24 +89,102 @@ const generateTicket = () => {
 		description: casual.description,
 		response_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(1, 3)))),
 		resolve_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(2, 6)))),
-		satisfaction_level: casual.integer(1, 5),
+		satisfaction_level: casual.integer(1, 5)
 	})
 };
 
-const generateActivity = () => {
-	const type_autor = casual.random_element(['AGENT', 'CLIENT', 'SYSTEM']);
+const generateActivityActionUpdate = () => {
+	const props = ['type', 'priority', 'status'];
+	const values = {
+		type: [
+			'Incidencia',
+			'Problema',
+			'Pregunta'
+		],
+		priority: [
+			'baja',
+			'media',
+			'alta',
+			'urgente'
+		],
+		status: [
+			'abierto',
+			'proceso',
+			'solucionado',
+			'cerrado'
+		]
+	};
+	const randomProp = casual.integer(0, 2),
+		randomPropValue = values[props[randomProp]],
+		randomPropValueLength = randomPropValue.length - 1,
+		randomValue = casual.integer(0, randomPropValueLength),
+		oldRandomValue = do {
+			if (randomPropValueLength == randomValue) randomValue - 1;
+			else
+			if (randomPropValueLength == 0) 1;
+			else randomValue + 1
+		}
+	
 	return ({
-		id: casual.uuid,
-		time: faker.date.recent(),
-		type_autor: type_autor,
-		/*autor: () => do {
-			if(type_autor === 'CLIENT') { __typename: "Agent", generateClient }
-		},*/
-		actions: () => do {
-			if(type_autor === 'CLIENT') new MockList(1);
-			else new MockList([1, 3]);
+		__typename: "UpgradeActivityActionUpdate",
+		type: 'UPDATE',
+		prop_name: props[randomProp],
+		old_value: randomPropValue[oldRandomValue],
+		new_value: randomPropValue[randomValue]
+	})
+};
+
+const generateActivityActionAssignment = () => {
+	const bearer =  casual.random_element(['AGENT', 'SUPPLIER', 'GROUP']);
+	// console.log("bearer---", bearer)
+	return ({
+		__typename: "UpgradeActivityActionAssignment",
+		type: 'ASSIGNMENT',
+		bearer: do {
+			if (bearer == 'AGENT') ({__typename: 'Agent', ...generateAgent()});
+			else
+				if (bearer == 'SUPPLIER') ({__typename: 'Supplier', ...generateSupplier()});
+				else ({__typename: 'Group', ...generateGroup()});
 		}
 	});
+}
+
+// const generateActivity = (first = false) => () => {
+const generateActivity = () => generateCreationUpgradeActivity();
+
+// El atributo first, indica si es la primera actividad
+// si no lo trae definido se le setea true o false al azar
+const generateCreationUpgradeActivity = (first = casual.boolean) => {
+	const
+		type_autor = casual.random_element(['AGENT', 'SYSTEM']),
+		upgradeType = casual.random_element(['UPDATE', 'ASSIGNMENT']),
+		type = do {
+			if (first) 'CREATION';
+			else 'UPGRADE';
+		},
+		// type = casual.random_element(['CREATION', 'UPGRADE']),
+		activity = {
+			id: casual.uuid,
+			type
+		}
+	
+	return do {
+		if (type == 'CREATION') ({
+			__typename: "CreationActivity",
+			...activity
+		});
+		else ({
+			__typename: "UpgradeActivity",
+			...activity,
+			time: faker.date.recent(),
+			type_autor,
+			autor: do {
+				if (type_autor == 'AGENT') generateAgent();
+				else null;
+			},
+			actions: generateNActivitiesActions()
+		});
+	}
 };
 
 const generateTicketByDay = (day) => {
@@ -114,6 +192,22 @@ const generateTicketByDay = (day) => {
 		day: day,
 		tickets: casual.integer(0, 500)
 	})
+};
+
+const generateNTicketActivities = (n = casual.integer(1, 6)) => {
+	let generatedMocks = [];
+	for (let i = 0; i < n; i++) generatedMocks.push(generateCreationUpgradeActivity(i == 0));
+	return generatedMocks;
+};
+
+const generateNActivitiesActions = (n = casual.integer(1, 4)) => {
+	let generatedMocks = [];
+	for (let i = 0; i < n; i++)
+		generatedMocks[i] =do {
+			if (casual.boolean && i == 0) generateActivityActionAssignment();
+			else generateActivityActionUpdate();
+		}
+	return generatedMocks;
 };
 
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
@@ -160,37 +254,6 @@ const mocks = {
 	TicketsResponse: paginatedMocks(generateTicket),
 	Activity: generateActivity,
 	ActivitiesResponse: paginatedMocks(generateActivity),
-	ActivityActionUpdate: () => {
-		const props = ['type', 'priority', 'status'];
-		const values = {
-			type: [
-				'Incidente',
-				'Problema',
-				'Pregunta'
-			],
-			priority: [
-				'baja',
-				'media',
-				'alta',
-				'urgente'
-			],
-			status: [
-				'abierto',
-				'proceso',
-				'solucionado',
-				'cerrado'
-			]
-		};
-		const randomProp = casual.integer(0, 2);
-		const randomValue = casual.integer(0, values[props[randomProp]].length - 1);
-		return ({
-			type: 'UPDATE',
-			prop_name: props[randomProp],
-			new_value: values[props[randomProp]][randomValue]
-		})
-	},
-	ActivityActionAssignment: () => ({type: 'ASSIGNMENT'}),
-	ActivityActionCeation: () => ({type: 'CREATION'}),
 	Change: () => ({
 		prop_name: casual.short_description,
 		old_value: casual.short_description,
@@ -338,7 +401,7 @@ const mocks = {
 		
 		//tickets: () => new MockList([40, 50]),
 		ticket: () => ({
-			...generateClient(),
+			// ...generateClient(),
 			custom_fields: [
 				{
 					__typename: "TextValue",
@@ -373,7 +436,8 @@ const mocks = {
 						type: "SELECT"
 					}
 				}
-			]
+			],
+			activities: generateNTicketActivities()
 		}),
 		ticketMetadata: () => ({
 			types_values: [
