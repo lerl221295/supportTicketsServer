@@ -156,7 +156,7 @@ type Ticket {
     agent: Agent
     client: Client
     activities: [ Activity ]
-    intervention: [ Intervention ]
+    interventions: [ Intervention ]
     discussion: Discussion
     device: Device
     group: Group
