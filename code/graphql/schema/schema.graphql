@@ -83,7 +83,7 @@ type Subscription {
 	notifications: Notification
 	newDiscussion: Discussion
 	discussionMessage(ticket_number: Int!): Message
-	activities(ticket_number: Int): Activity
+	newActivity(ticket_number: Int): Activity
 	interventions(ticket_number: Int): Intervention
 }
 
