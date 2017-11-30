@@ -94,20 +94,20 @@ const generateTicket = () => {
 };
 
 const generateActivityActionUpdate = () => {
-	const props = ['type', 'priority', 'status'];
+	const props = ['tipo', 'prioridad', 'estado'];
 	const values = {
-		type: [
+		tipo: [
 			'Incidencia',
 			'Problema',
 			'Pregunta'
 		],
-		priority: [
+		prioridad: [
 			'baja',
 			'media',
 			'alta',
 			'urgente'
 		],
-		status: [
+		estado: [
 			'abierto',
 			'proceso',
 			'solucionado',
@@ -554,7 +554,7 @@ const mocks = {
 				...generateActivity(),
 				subdomain
 			}
-			console.log('-------', newActivity);
+			console.log('-------activity', newActivity);
 			pubsub.publish('activities', { newActivity });
 			return "Fino!";
 		}
@@ -567,7 +567,7 @@ const resolvers = {
 			subscribe: withFilter(
 				() => pubsub.asyncIterator('tickets'),
 				({ newTicket }, variables, context) => {
-					console.log(`${newTicket.subdomain} === ${context.subdomain}`)
+					// console.log(`${newTicket.subdomain} === ${context.subdomain}`)
 					return newTicket.subdomain === context.subdomain;
 				}
 			)
@@ -580,11 +580,11 @@ const resolvers = {
 				}
 			)
 		},
-		activities: {
+		newActivity: {
 			subscribe: withFilter(
 				() => pubsub.asyncIterator('activities'),
 				({ newActivity }, variables, context) => {
-					console.log(`${newActivity.subdomain} === ${context.subdomain}`)
+					// console.log(`${newActivity.subdomain} === ${context.subdomain}`)
 					return newActivity.subdomain === context.subdomain;
 				}
 			)
