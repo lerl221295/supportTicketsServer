@@ -14,7 +14,7 @@ type Query {
 	organizations(search_text: String, offset: Int, limit: Int): OrganizationsResponse
 	organization(id: ID!): Organization
 
-	agents(search_text: String, offset: Int, limit: Int): AgentsResponse
+	agents(search_text: String, offset: Int, limit: Int, groups: [ID], organizations: [ID]): AgentsResponse
 	agent(id: ID!): Agent
 	groups(search_text: String, offset: Int, limit: Int): GroupsResponse
 	group(id: ID): Group
