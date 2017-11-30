@@ -554,7 +554,7 @@ const mocks = {
 				...generateActivity(),
 				subdomain
 			}
-			console.log('-------activity', newActivity);
+			// console.log('-------activity', newActivity);
 			pubsub.publish('activities', { newActivity });
 			return "Fino!";
 		}
