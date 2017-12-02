@@ -89,7 +89,8 @@ const generateTicket = () => {
 		description: casual.description,
 		response_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(1, 3)))),
 		resolve_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(2, 6)))),
-		satisfaction_level: casual.integer(1, 5)
+		satisfaction_level: casual.integer(1, 5),
+		interventions: () => new MockList(6, generateIntervention)
 	})
 };
 
@@ -210,6 +211,17 @@ const generateNActivitiesActions = (n = casual.integer(1, 4)) => {
 	return generatedMocks;
 };
 
+const generateIntervention = () => ({
+	id: casual.uuid,
+	text: casual.text,
+	time: faker.date.recent(),
+	type_autor: casual.random_element(["AGENT", "CLIENT"]),
+	autor: ({type_autor}) => {
+		if(type_autor === "AGENT") return({__typename: 'Agent', ...generateAgent()});
+		else return({__typename: 'Client', ...generateClient()});
+	}
+});
+
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
 	nodes: () => {
 		if(limit) return new MockList(limit, entityGenerator);
@@ -245,11 +257,7 @@ const mocks = {
 	Discussion: () => ({
 		id: casual.uuid,
 	}),
-	Intervention: () => ({
-		id: casual.uuid,
-		text: casual.text,
-		time: faker.date.recent(),
-	}),
+	Intervention: generateIntervention,
 	Ticket: generateTicket,
 	TicketsResponse: paginatedMocks(generateTicket),
 	Activity: generateActivity,
@@ -437,7 +445,7 @@ const mocks = {
 					}
 				}
 			],
-			activities: generateNTicketActivities()
+			activities: generateNTicketActivities()		
 		}),
 		ticketMetadata: () => ({
 			types_values: [
@@ -492,7 +500,7 @@ const mocks = {
 				}
 			]
 		}),
-		interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
+		interventions: (_, { ticket_id, last}) => new MockList([40, 50], generateIntervention),
 		
 		solutions: () => new MockList([40, 50]),
 		notifications: (_, { last }) => new MockList([40, 50]),
