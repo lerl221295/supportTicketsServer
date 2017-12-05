@@ -29,7 +29,8 @@ type Query {
 
 	discussion(ticket_number: Int!): Discussion
 
-	businessHours: BusinessHours
+	# Pasando el atributo days, solo obtienes el horario de esos dias indicados
+	businessHours(days: [WeekDay!]): BusinessHours
 	SLAPolicies: [ SLAPolicy ]
 
 	# DASHBOARD INDICATORS

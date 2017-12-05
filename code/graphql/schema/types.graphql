@@ -370,11 +370,16 @@ type Alert {
     message: String
 }
 
+type HourAndMinutes {
+    hour: Int
+    minutes: Int
+}
+
 type Horary {
-    #Hora del dia en que se comienza a trabajar
-    start: Int
-    #Hora del dia en que se termina de trabajar
-    end: Int
+    #Hora exacta del dia en que se comienza a trabajar
+    start: HourAndMinutes
+    #Hora exacta del dia en que se termina de trabajar
+    end: HourAndMinutes
 }
 
 type Holiday {
@@ -385,10 +390,14 @@ type Holiday {
 
 type WorkingDay {
     day: WeekDay
+    # Si es falso, horary = null
+    workeable: Boolean
     horary: Horary
 }
 
 type BusinessHours {
+    # Si es true, working_days debe devolver 24x7
+    twentyfour_seven: Boolean
     working_days: [ WorkingDay ]
     holidays: [ Holiday ]
 }

@@ -135,20 +135,29 @@ input ArticleInput {
 }
 
 input BusinessHoursInput {
+    # Si es true, el parametro working_day sera ignorado
+    twentyfour_seven: Boolean
     working_days: [ WorkingDayInput ]
     holidays: [ HolidayInput ]
 }
 
 input WorkingDayInput {
     day: WeekDay
+    # Si es falso, se ignora el atributo horary
+    workeable: Boolean
     horary: HoraryInput
 }
 
+input HourAndMinutesInput {
+    hour: Int
+    minutes: Int
+}
+
 input HoraryInput {
-    #Hora del dia en que se comienza a trabajar
-    start: Int!
-    #Hora del dia en que se termina de trabajar
-    end: Int!
+    #Hora exacta del dia en que se comienza a trabajar
+    start: HourAndMinutesInput!
+    #Hora exacta del dia en que se termina de trabajar
+    end: HourAndMinutesInput!
 }
 
 input HolidayInput {

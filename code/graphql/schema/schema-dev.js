@@ -314,9 +314,9 @@ const mocks = {
 		hours: casual.integer(1, 144),
 		message: casual.text,
 	}),
-	Horary: () => ({
-		start:casual.integer(7, 11),
-		end: casual.integer(17, 21)
+	HourAndMinutes: () => ({
+		hour:casual.integer(7, 11),
+		minutes: casual.integer(17, 21)
 	}),
 	Holiday: () => ({
 		name: casual.name,
@@ -514,6 +514,31 @@ const mocks = {
 				ticketsByDay.push(generateTicketByDay(date));
 			}
 			return ticketsByDay;
+		},
+
+		businessHours: (_, {days}) => {			
+			let working_days = [
+				{day: "MONDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "TUESDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "WEDNESDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "THURSDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "FRIDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "SATURDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "SUNDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+			];
+			const holidays = [
+				{name: "Navidad", day: 25, month: 12},
+				{name: "Carnaval", day: 25, month: 2}
+			]
+
+			if(days)
+				working_days = working_days.filter(weekday => days.includes(weekday.day));
+			
+			return {
+				twentyfour_seven: false,
+				working_days,
+				holidays
+			}		
 		}
 	}),
 	Mutation: () => ({
