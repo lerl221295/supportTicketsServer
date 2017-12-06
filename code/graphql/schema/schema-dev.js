@@ -89,7 +89,8 @@ const generateTicket = () => {
 		description: casual.description,
 		response_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(1, 3)))),
 		resolve_by: faker.date.between(date, new Date(date.setHours(date.getHours() + casual.integer(2, 6)))),
-		satisfaction_level: casual.integer(1, 5)
+		satisfaction_level: casual.integer(1, 5),
+		interventions: () => new MockList(6, generateIntervention)
 	})
 };
 
@@ -210,6 +211,17 @@ const generateNActivitiesActions = (n = casual.integer(1, 4)) => {
 	return generatedMocks;
 };
 
+const generateIntervention = () => ({
+	id: casual.uuid,
+	text: casual.text,
+	time: faker.date.recent(),
+	type_autor: casual.random_element(["AGENT", "CLIENT"]),
+	autor: ({type_autor}) => {
+		if(type_autor === "AGENT") return({__typename: 'Agent', ...generateAgent()});
+		else return({__typename: 'Client', ...generateClient()});
+	}
+});
+
 const generateSLAPolicy = (position, by_default) => ({
 	id: casual.uuid,
 	by_default: by_default,
@@ -287,11 +299,7 @@ const mocks = {
 	Discussion: () => ({
 		id: casual.uuid,
 	}),
-	Intervention: () => ({
-		id: casual.uuid,
-		text: casual.text,
-		time: faker.date.recent(),
-	}),
+	Intervention: generateIntervention,
 	Ticket: generateTicket,
 	TicketsResponse: paginatedMocks(generateTicket),
 	Activity: generateActivity,
@@ -345,9 +353,9 @@ const mocks = {
 		time: casual.integer(1, 144),
 		message: casual.text,
 	}),
-	Horary: () => ({
-		start:casual.integer(7, 11),
-		end: casual.integer(17, 21)
+	HourAndMinutes: () => ({
+		hour:casual.integer(7, 11),
+		minutes: casual.integer(17, 21)
 	}),
 	Holiday: () => ({
 		name: casual.name,
@@ -531,7 +539,7 @@ const mocks = {
 				}
 			]
 		}),
-		interventions: (_, { ticket_id, last}) => new MockList([40, 50]),
+		interventions: (_, { ticket_id, last}) => new MockList([40, 50], generateIntervention),
 		
 		solutions: () => new MockList([40, 50]),
 		notifications: (_, { last }) => new MockList([40, 50]),
@@ -544,6 +552,31 @@ const mocks = {
 				ticketsByDay.push(generateTicketByDay(date));
 			}
 			return ticketsByDay;
+		},
+
+		businessHours: (_, {days}) => {
+			let working_days = [
+				{day: "MONDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "TUESDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "WEDNESDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "THURSDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "FRIDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "SATURDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "SUNDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+			];
+			const holidays = [
+				{name: "Navidad", day: 25, month: 12},
+				{name: "Carnaval", day: 25, month: 2}
+			]
+
+			if(days)
+				working_days = working_days.filter(weekday => days.includes(weekday.day));
+			
+			return {
+				twentyfour_seven: false,
+				working_days,
+				holidays
+			}
 		}
 	}),
 	Mutation: () => ({

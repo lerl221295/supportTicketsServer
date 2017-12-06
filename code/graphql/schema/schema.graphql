@@ -14,7 +14,7 @@ type Query {
 	organizations(search_text: String, offset: Int, limit: Int): OrganizationsResponse
 	organization(id: ID!): Organization
 
-	agents(search_text: String, offset: Int, limit: Int): AgentsResponse
+	agents(search_text: String, offset: Int, limit: Int, groups: [ID], organizations: [ID]): AgentsResponse
 	agent(id: ID!): Agent
 	groups(search_text: String, offset: Int, limit: Int): GroupsResponse
 	group(id: ID): Group
@@ -29,7 +29,8 @@ type Query {
 
 	discussion(ticket_number: Int!): Discussion
 
-	businessHours: BusinessHours
+	# Pasando el atributo days, solo obtienes el horario de esos dias indicados
+	businessHours(days: [WeekDay!]): BusinessHours
 	SLAPolicies: [ SLAPolicy ]
 	SLAPolicy(id: ID!): SLAPolicy
 
