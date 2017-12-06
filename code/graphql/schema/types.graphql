@@ -396,11 +396,22 @@ type WorkingDay {
     horary: Horary
 }
 
-type BusinessHours {
-    # Si es true, working_days debe devolver 24x7
-    twentyfour_seven: Boolean
-    working_days: [ WorkingDay ]
+interface BusinessHours {
+    mode: BusinessHoursModes
     holidays: [ Holiday ]
+}
+
+type Customized implements BusinessHours {
+    mode: BusinessHoursModes
+    holidays: [ Holiday ]
+    working_days: [ WorkingDay ]
+}
+
+type SameForDays implements BusinessHours {
+    mode: BusinessHoursModes
+    holidays: [ Holiday ]
+    week_days: [ WeekDay ]
+    horary: Horary
 }
 
 union Automation = Dispatcher | Observer | Supervisor | Scenario

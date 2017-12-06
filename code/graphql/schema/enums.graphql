@@ -89,6 +89,15 @@ enum WeekDay {
     SUNDAY
 }
 
+enum BusinessHoursModes {
+    # Working_days debe devolver 24x7
+    TWENTYFOUR_SEVEN
+    # Working_days debe devolver mismo horario para los dias laborables, y workeable false para los no laborables 
+    SAME_FOR_DAYS
+    # Personalizado
+    CUSTOMIZED
+}
+
 enum AutomationsType {
     DISPATCHER
     OBSERVER

@@ -135,10 +135,15 @@ input ArticleInput {
 }
 
 input BusinessHoursInput {
-    # Si es true, el parametro working_day sera ignorado
-    twentyfour_seven: Boolean
-    working_days: [ WorkingDayInput ]
-    holidays: [ HolidayInput ]
+    mode: BusinessHoursModes!
+    holidays: [ HolidayInput! ]
+    # Solo si mode = CUSTOMIZED
+    working_days: [ WorkingDayInput! ]
+    # Solo si mode = SAME_FOR_DAYS
+    days: [ WeekDay! ]
+    # Solo si mode = SAME_FOR_DAYS
+    horary: HoraryInput
+    
 }
 
 input WorkingDayInput {

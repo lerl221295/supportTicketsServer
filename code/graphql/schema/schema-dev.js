@@ -561,8 +561,8 @@ const mocks = {
 				{day: "WEDNESDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
 				{day: "THURSDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
 				{day: "FRIDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
-				{day: "SATURDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
-				{day: "SUNDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "SATURDAY", workeable: true, horary: {start: {hour: 13, minutes: 30}, end: {hour: 17, minutes: 0} }},
+				{day: "SUNDAY", workeable: true, horary: {start: {hour: 13, minutes: 30}, end: {hour: 17, minutes: 0} }},
 			];
 			const holidays = [
 				{name: "Navidad", day: 25, month: 12},
@@ -573,7 +573,8 @@ const mocks = {
 				working_days = working_days.filter(weekday => days.includes(weekday.day));
 			
 			return {
-				twentyfour_seven: false,
+				__typename: "Customized",
+				mode: "CUSTOMIZED",
 				working_days,
 				holidays
 			}
