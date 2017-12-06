@@ -264,17 +264,6 @@ const generateSLAPolicies = () => {
 	return slaPolices;
 };
 
-const generateIntervention = () => ({
-	id: casual.uuid,
-	text: casual.text,
-	time: faker.date.recent(),
-	type_autor: casual.random_element(["AGENT", "CLIENT"]),
-	autor: ({type_autor}) => {
-		if(type_autor === "AGENT") return({__typename: 'Agent', ...generateAgent()});
-		else return({__typename: 'Client', ...generateClient()});
-	}
-});
-
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
 	nodes: () => {
 		if(limit) return new MockList(limit, entityGenerator);
