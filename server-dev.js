@@ -23,7 +23,7 @@ graphQLServer.use('/graphql', (request, res, next) => {
     if(subdomains.includes(subdomain))
         next();
     else res.send("no tienes aseso menol");
-})
+});
 
 graphQLServer.use('/graphql', bodyParser.json({limit: '8mb'}), 
     graphqlExpress( request => ({

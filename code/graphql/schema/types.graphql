@@ -333,22 +333,9 @@ type Notification {
 
 }
 
-type PolicyTime {
-    value: Int
-    unity: UnityTime
-}
-
-type Policy {
-    priority: TicketPriority
-    first_response: PolicyTime
-    solved: PolicyTime
-    #Si el tiempo correra en horas habiles o 24x7
-    operational_hours: OperationalHours
-}
-
 type SLAPolicy {
     id: ID
-    default: Boolean
+    by_default: Boolean
     name: String
     description: String
     active: Boolean
@@ -360,12 +347,26 @@ type SLAPolicy {
     alerts: [ Alert ]
 }
 
+type Policy {
+    priority: TicketPriority
+    first_response: PolicyTime
+    solved: PolicyTime
+    #Si el tiempo correra en horas habiles o 24x7
+    operational_hours: OperationalHours
+}
+
+type PolicyTime {
+    value: Int
+    unity: UnityTime
+}
+
 type Alert {
     # Puede ser recordatorio o violación del SLA
     type: AlertType
     # Puede ser respuesta o resolución
     motive: AlertMotive
-    hours: Float
+    # Tiempo en horas
+    time: Int
     to: [ Agent ]
     message: String
 }

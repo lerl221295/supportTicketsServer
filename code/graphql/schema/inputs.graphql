@@ -157,11 +157,17 @@ input HolidayInput {
     month: Int!
 }
 
-input SlapolicyInput {
-    name: String!
-    description: String
-    active: Boolean!
+input SlapoliciesOrderInput {
+    id: ID!
     position: Int!
+}
+
+input SlapolicyInput {
+    id: ID
+    name: String
+    description: String
+    active: Boolean
+    position: Int
     #Una politica para cada prioridad
     policies: [ PolicyInput ]
     clients: [ ID ]

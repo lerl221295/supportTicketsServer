@@ -31,6 +31,7 @@ type Query {
 
 	businessHours: BusinessHours
 	SLAPolicies: [ SLAPolicy ]
+	SLAPolicy(id: ID!): SLAPolicy
 
 	# DASHBOARD INDICATORS
 	indicators: Indicators
@@ -71,8 +72,11 @@ type Mutation {
 	addAgentsToDiscussion(agents_id: [ ID ], ticket_number: Int!): [ Agent ]
 
 	updateBusinessHours(business_hours: BusinessHoursInput!): BusinessHours
+
 	createSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
 	updateSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
+	deleteSLAPolicy(id: ID!): String
+	updateSLAPoliciesOrder(slapolicies: [SlapoliciesOrderInput]!): [ SLAPolicy ]
 
 	prueba: String
 	addActivity: String

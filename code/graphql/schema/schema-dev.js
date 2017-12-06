@@ -210,6 +210,48 @@ const generateNActivitiesActions = (n = casual.integer(1, 4)) => {
 	return generatedMocks;
 };
 
+const generateSLAPolicy = (position, by_default) => ({
+	id: casual.uuid,
+	by_default: by_default,
+	name: do {
+		if (by_default) "Política SLA por defecto";
+		else casual.title;
+	},
+	description: do {
+		if (by_default) "Política SLA por defecto del sistema. No se puede desactivar ni eliminar.";
+		else casual.short_description;
+	},
+	active: do {
+		if (by_default) true;
+		else casual.boolean;
+	},
+	position: position,
+	policies: [generatePolicy('LOW'), generatePolicy('MEDIUM'), generatePolicy('HIGH'), generatePolicy('URGENT')],
+	clients: () => new MockList([1,7]),
+	organizations: () => new MockList([1, 7]),
+	alerts: () => new MockList([1, 7])
+});
+
+const generatePolicy = (priority = casual.random_element(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])) => {
+	return ({
+		priority,
+		first_response: { value: casual.integer(1, 12) },
+		solved: { value: casual.integer(1, 12) }
+	})
+}
+
+const generateSLAPolicies = () => {
+	const random_number = casual.integer(4, 10);
+	let slaPolices = [];
+	for (let i = 0; i < random_number; i++) {
+		if (i === random_number - 1)
+			slaPolices.push(generateSLAPolicy(i, true))
+		else
+			slaPolices.push(generateSLAPolicy(i, false))
+	}
+	return slaPolices;
+};
+
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
 	nodes: () => {
 		if(limit) return new MockList(limit, entityGenerator);
@@ -294,16 +336,13 @@ const mocks = {
 	PolicyTime: () => ({
 		value: casual.integer(1, 48)
 	}),
-	SLAPolicy: () => ({
-		id: casual.uuid,
-		default: casual.boolean,
-		name: casual.text,
-		description: casual.text,
-		active: casual.boolean,
-		position: casual.integer(1, 77777),
-	}),
+	SLAPolicy: () => {
+		const position = casual.integer(1, 10);
+		const by_default = casual.boolean;
+		return generateSLAPolicy(position, by_default)
+	},
 	Alert: () => ({
-		hours: casual.integer(1, 144),
+		time: casual.integer(1, 144),
 		message: casual.text,
 	}),
 	Horary: () => ({
@@ -496,8 +535,7 @@ const mocks = {
 		
 		solutions: () => new MockList([40, 50]),
 		notifications: (_, { last }) => new MockList([40, 50]),
-		SLAPolicies: () => new MockList([40, 50]),
-		
+		SLAPolicies: generateSLAPolicies(),
 		ticketsCountByDay: (_, { last = 7 }) => {
 			let ticketsByDay = [];
 			for (let i = 0; i < last; i++) {
@@ -535,6 +573,16 @@ const mocks = {
 			return {
 				...supplier
 			}
+		},
+		updateSLAPolicy: (_, {slapolicy}) => {
+			return {
+				...generateSLAPolicy(casual.integer(1, 10), false),
+				...slapolicy
+			}
+		},
+		updateSLAPoliciesOrder: generateSLAPolicies(),
+		deleteSLAPolicy: (_, {id}) => {
+			return "Política SLA eliminada con éxito!"
 		},
 		updateGroup: (_, {group}) => {
 			return {
