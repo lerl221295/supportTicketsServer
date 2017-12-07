@@ -140,7 +140,7 @@ input BusinessHoursInput {
     # Solo si mode = CUSTOMIZED
     working_days: [ WorkingDayInput! ]
     # Solo si mode = SAME_FOR_DAYS
-    days: [ WeekDay! ]
+    week_days: [ WeekDay! ]
     # Solo si mode = SAME_FOR_DAYS
     horary: HoraryInput
     

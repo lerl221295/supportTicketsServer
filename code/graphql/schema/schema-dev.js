@@ -283,6 +283,9 @@ const mocks = {
 	SuppliersResponse: paginatedMocks(generateSupplier),
 	Group: generateGroup,
 	GroupsResponse: paginatedMocks(generateGroup),
+	TwentyFourSeven: () => ({mode: "TWENTYFOUR_SEVEN"}),
+	Customized: () => ({mode: "CUSTOMIZED"}),
+	SameForDays: () => ({mode: "SAME_FOR_DAYS"}),
 	Device: () => ({
 		id: casual.uuid,
 		name: casual.first_name,
@@ -353,9 +356,19 @@ const mocks = {
 		time: casual.integer(1, 144),
 		message: casual.text,
 	}),
-	HourAndMinutes: () => ({
-		hour:casual.integer(7, 11),
+	/*HourAndMinutes: () => ({
+		hour: casual.integer(7, 11),
 		minutes: casual.integer(17, 21)
+	}),*/
+	Horary: () => ({
+		start: () => ({
+			hour: casual.integer(7, 11),
+			minutes: casual.integer(0, 59)
+		}),
+		end: () => ({
+			hour: casual.integer(14, 16),
+			minutes: casual.integer(0, 59)
+		})
 	}),
 	Holiday: () => ({
 		name: casual.name,

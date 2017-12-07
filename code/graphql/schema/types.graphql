@@ -401,6 +401,11 @@ interface BusinessHours {
     holidays: [ Holiday ]
 }
 
+type TwentyFourSeven implements BusinessHours {
+    mode: BusinessHoursModes
+    holidays: [ Holiday ]
+}
+
 type Customized implements BusinessHours {
     mode: BusinessHoursModes
     holidays: [ Holiday ]
