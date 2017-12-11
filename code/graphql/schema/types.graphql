@@ -177,8 +177,8 @@ type TicketsResponse {
 }
 
 type TicketMetadata {
-    types_values: [ TicketType ]
-    status_values: [ Status ]
+    types: [ TicketType ]
+    status: [ Status ]
     custom_fields: [ Field ]
 }
 
@@ -286,13 +286,6 @@ type UpgradeActivityActionAssignment {
     type: UpgradeActivityActionType
     # Agente / grupo / proveedor que fue asignado en la acción
     bearer: TicketBearer
-}
-
-type Stage {
-    id: ID
-    key: String
-    name: String
-    statuses: [ Status ]
 }
 
 type Status {

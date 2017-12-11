@@ -312,11 +312,6 @@ const mocks = {
 		old_value: casual.short_description,
 		new_value: casual.short_description
 	}),
-	Stage: () => ({
-		id: casual.uuid,
-		key: casual.description,
-		name: casual.random_element(['preparation', 'progress', 'final'])
-	}),
 	Status: () => {
 		const random = casual.integer(0, 4);
 		const keys = ['new', 'process', 'pending', 'resolved', 'falied'];
@@ -500,17 +495,17 @@ const mocks = {
 			activities: generateNTicketActivities()
 		}),
 		ticketMetadata: () => ({
-			types_values: [
+			types: [
 				{key: "incident", label: "Incidente"},
 				{key: "problem", label: "Problema"},
 				{key: "question", label: "Pregunta"}
 			],
-			status_values: [
-				{key: "new", label: "Nuevo"},
-				{key: "process", label: "En Proceso"},
-				{key: "pending", label: "En Espera"},
-				{key: "resolved", label: "Resuelto"},
-				{key: "falied", label: "Fallido"}
+			status: [
+				{key: "new", label: "Nuevo", stage: "PREPARATION"},
+				{key: "process", label: "En Proceso", stage: "PROGRESS"},
+				{key: "pending", label: "En Espera", stage: "PROGRESS"},
+				{key: "resolved", label: "Resuelto", stage: "END"},
+				{key: "falied", label: "Fallido", stage: "END"}
 			],
 			custom_fields: [
 				{
@@ -529,7 +524,7 @@ const mocks = {
 					position: 3,
 					key: "comment",
 					label: "Comentario",
-					type: "TEXT",
+					type: "TEXTAREA",
 					value: {
 						__typename: "TextValue",
 						text: "Un comentario fino"
@@ -549,6 +544,28 @@ const mocks = {
 						{label: "Blanco", key: "white", position: 2},
 						{label: "Negro", key: "black", position: 1}
 					]
+				},
+				{
+					__typename: "FreeField",
+					position: 5,
+					key: "numero",
+					label: "Numero",
+					type: "NUMBER",
+					value: {
+						__typename: "NumberValue",
+						number: 12345
+					}
+				},
+				{
+					__typename: "FreeField",
+					position: 4,
+					key: "pato",
+					label: "Pargolete",
+					type: "CHECKBOX",
+					value: {
+						__typename: "CheckValue",
+						check: false
+					}
 				}
 			]
 		}),
