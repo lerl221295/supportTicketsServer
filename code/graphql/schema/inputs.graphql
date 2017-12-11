@@ -111,7 +111,7 @@ input TicketUpdateInput {
 
 input TicketFieldInput {
     #El key del customField. Determinara cual de los siguientes values leer
-    key: String!
+    field_key: String!
     #Para los valores de texto
     text: String
     #Para los numeros
@@ -119,7 +119,7 @@ input TicketFieldInput {
     #Para los booleanos
     bool: Boolean
     #Para los select options
-    key_value: String
+    key: String
 
 }
 
