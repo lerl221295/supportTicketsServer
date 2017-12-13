@@ -76,7 +76,7 @@ type Mutation {
 
 	createSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
 	updateSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
-	deleteSLAPolicy(id: ID!): String
+	deleteSLAPolicy(id: ID!): SLAPolicy
 	updateSLAPoliciesOrder(slapolicies: [SlapoliciesOrderInput]!): [ SLAPolicy ]
 
 	prueba: String

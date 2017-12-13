@@ -224,7 +224,7 @@ const generateIntervention = () => ({
 
 const generateSLAPolicy = (position, by_default) => ({
 	id: casual.uuid,
-	by_default: by_default,
+	by_default: by_default || false,
 	name: do {
 		if (by_default) "Política SLA por defecto";
 		else casual.title;
@@ -237,11 +237,16 @@ const generateSLAPolicy = (position, by_default) => ({
 		if (by_default) true;
 		else casual.boolean;
 	},
-	position: position,
+	position: position || casual.integer(1, 10),
 	policies: [generatePolicy('LOW'), generatePolicy('MEDIUM'), generatePolicy('HIGH'), generatePolicy('URGENT')],
 	clients: () => new MockList([1,7]),
 	organizations: () => new MockList([1, 7]),
-	alerts: () => new MockList([1, 7])
+	alerts: () => [
+		generateAlert('REMINDER', 'RESPONSE'),
+		generateAlert('REMINDER', 'RESOLUTION'),
+		generateAlert('SLA_VIOLATION', 'RESPONSE'),
+		generateAlert('SLA_VIOLATION', 'RESOLUTION'),
+	]
 });
 
 const generatePolicy = (priority = casual.random_element(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])) => {
@@ -263,6 +268,22 @@ const generateSLAPolicies = () => {
 	}
 	return slaPolices;
 };
+
+const generateAlert = (type, motive) => {
+	let cleanAlert = {
+		time: casual.integer(1, 144),
+		message: casual.text,
+		to: () => new MockList([1,7]),
+	};
+	if (!type && !motive)
+		return (cleanAlert);
+	
+	return({
+		...cleanAlert,
+		type,
+		motive
+	});
+}
 
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
 	nodes: () => {
@@ -349,10 +370,6 @@ const mocks = {
 		const by_default = casual.boolean;
 		return generateSLAPolicy(position, by_default)
 	},
-	Alert: () => ({
-		time: casual.integer(1, 144),
-		message: casual.text,
-	}),
 	HourAndMinutes: () => ({
 		hour:casual.integer(7, 11),
 		minutes: casual.integer(17, 21)
@@ -607,16 +624,28 @@ const mocks = {
 				...supplier
 			}
 		},
-		updateSLAPolicy: (_, {slapolicy}) => {
+		createSLAPolicy: (_, {slapolicy}) => {
 			return {
-				...generateSLAPolicy(casual.integer(1, 10), false),
+				...generateSLAPolicy(0, false),
 				...slapolicy
 			}
 		},
-		updateSLAPoliciesOrder: generateSLAPolicies(),
-		deleteSLAPolicy: (_, {id}) => {
-			return "Política SLA eliminada con éxito!"
+		updateSLAPolicy: (_, {slapolicy}) => {
+			return {
+				...generateSLAPolicy(casual.integer(0, 10), false),
+				...slapolicy
+			}
 		},
+		updateSLAPoliciesOrder: (_, { slapolicies }) => {
+			return slapolicies.map(slapolicy => ({
+				...generateSLAPolicy(),
+				...slapolicy
+			}));
+		},
+		deleteSLAPolicy: (_, {id}) => ({
+			...generateSLAPolicy(),
+			id
+		}),
 		updateGroup: (_, {group}) => {
 			return {
 				...group
