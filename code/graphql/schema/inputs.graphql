@@ -135,10 +135,11 @@ input TicketTypeInput {
 }
 
 input CustomFieldInput {
-    position: Int
-    key: String
-    label: String
-    type: FieldType
+    position: Int!
+    key: String!
+    label: String!
+    type: FieldType!
+    clientVisible: Boolean!
     # Solo cuando el type = SELECT
     options: [SelectOptionsInput]
 }
