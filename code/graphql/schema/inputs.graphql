@@ -129,6 +129,26 @@ input InterventionInput {
     text: String!
 }
 
+input TicketTypeInput {
+    key: String!
+    label: String!
+}
+
+input CustomFieldInput {
+    position: Int
+    key: String
+    label: String
+    type: FieldType
+    # Solo cuando el type = SELECT
+    options: [SelectOptionsInput]
+}
+
+input SelectOptionsInput {
+    position: Int
+    key: String
+    label: String
+}
+
 input CategoryInput {
     name: String!
 }

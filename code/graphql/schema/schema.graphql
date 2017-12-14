@@ -79,6 +79,9 @@ type Mutation {
 	deleteSLAPolicy(id: ID!): String
 	updateSLAPoliciesOrder(slapolicies: [SlapoliciesOrderInput]!): [ SLAPolicy ]
 
+	updateTicketTypes(types: [TicketTypeInput!]): [ TicketType ]
+	updateCustomFields(custom_fields: [CustomFieldInput!]): [ Field ]
+
 	prueba: String
 	addActivity: String
 }
