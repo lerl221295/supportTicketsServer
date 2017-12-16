@@ -359,7 +359,7 @@ type Alert {
     # Puede ser respuesta o resolución
     motive: AlertMotive
     # Tiempo en horas
-    time: Int
+    time: Float
     to: [ Agent ]
     message: String
 }

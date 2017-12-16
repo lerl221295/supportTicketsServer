@@ -213,7 +213,7 @@ input AlertInput {
     type: AlertType!
     # Puede ser respuesta o resolución
     motive: AlertMotive!
-    hours: Float!
+    time: Float!
     # ID's de agentes a los que le llegará la alerta
     to: [ ID ]
     message: String!

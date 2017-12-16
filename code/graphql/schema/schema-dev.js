@@ -237,7 +237,10 @@ const generateSLAPolicy = (position, by_default) => ({
 		if (by_default) true;
 		else casual.boolean;
 	},
-	position: position || casual.integer(1, 10),
+	position: do {
+		if (position === undefined) casual.integer(1, 10)
+		else position
+	},
 	policies: [generatePolicy('LOW'), generatePolicy('MEDIUM'), generatePolicy('HIGH'), generatePolicy('URGENT')],
 	clients: () => new MockList([1,7]),
 	organizations: () => new MockList([1, 7]),
@@ -269,21 +272,16 @@ const generateSLAPolicies = () => {
 	return slaPolices;
 };
 
-const generateAlert = (type, motive) => {
-	let cleanAlert = {
-		time: casual.integer(1, 144),
-		message: casual.text,
-		to: () => new MockList([1,7]),
-	};
-	if (!type && !motive)
-		return (cleanAlert);
-	
-	return({
-		...cleanAlert,
-		type,
-		motive
-	});
-}
+const generateAlert = (type, motive) => ({
+	time: do {
+		if (type === 'REMINDER') casual.random_element([8, 4, 2, 1, 0.5])
+		else casual.random_element([0, 0.5, 1, 2, 4, 8, 12, 24, 48, 72, 168])
+	},
+	message: casual.text,
+	to: () => new MockList([1,7]),
+	type,
+	motive
+})
 
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
 	nodes: () => {
@@ -365,13 +363,12 @@ const mocks = {
 	}),
 	SLAPolicy: () => {
 		const position = casual.integer(1, 10);
-		const by_default = casual.boolean;
-		return generateSLAPolicy(position, by_default)
+		return generateSLAPolicy(position, false)
 	},
 	HourAndMinutes: () => ({
 		hour:casual.integer(7, 11),
 		minutes: casual.integer(17, 21)
-	}),*/
+	}),
 	Horary: () => ({
 		start: () => ({
 			hour: casual.integer(7, 11),
@@ -658,13 +655,15 @@ const mocks = {
 		createSLAPolicy: (_, {slapolicy}) => {
 			return {
 				...generateSLAPolicy(0, false),
-				...slapolicy
+				...slapolicy,
+				active: true
 			}
 		},
 		updateSLAPolicy: (_, {slapolicy}) => {
 			return {
-				...generateSLAPolicy(casual.integer(0, 10), false),
-				...slapolicy
+				...generateSLAPolicy(),
+				...slapolicy,
+				active: true
 			}
 		},
 		updateSLAPoliciesOrder: (_, { slapolicies }) => {
