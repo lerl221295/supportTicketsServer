@@ -211,6 +211,7 @@ interface Field {
     key: String
     label: String
     type: FieldType
+    clientVisible: Boolean
     #Para cuando se accede a la metadata del ticket (no a traves del FieldValue)
     value(ticket_number: Int!): FieldValue
 }
@@ -220,6 +221,7 @@ type FreeField implements Field {
     key: String
     label: String
     type: FieldType
+    clientVisible: Boolean
     value(ticket_number: Int!): FieldValue
 }
 
@@ -234,6 +236,7 @@ type SelectField implements Field {
     key: String
     label: String
     type: FieldType
+    clientVisible: Boolean
     value(ticket_number: Int!): FieldValue
     options: [ SelectOption ]
 }

@@ -527,6 +527,7 @@ const mocks = {
 					position: 1,
 					key: "date",
 					label: "Fecha de Atencion",
+					clientVisible: true,
 					type: "DATE",
 					value: {
 						__typename: "TextValue",
@@ -538,6 +539,7 @@ const mocks = {
 					position: 3,
 					key: "comment",
 					label: "Comentario",
+					clientVisible: true,
 					type: "TEXTAREA",
 					value: {
 						__typename: "TextValue",
@@ -549,6 +551,7 @@ const mocks = {
 					position: 2,
 					key: "color",
 					label: "Color",
+					clientVisible: true,
 					type: "SELECT",
 					value: {
 						__typename: "SelectValue",
@@ -564,6 +567,7 @@ const mocks = {
 					position: 5,
 					key: "numero",
 					label: "Numero",
+					clientVisible: true,
 					type: "NUMBER",
 					value: {
 						__typename: "NumberValue",
@@ -575,6 +579,7 @@ const mocks = {
 					position: 4,
 					key: "pato",
 					label: "Pargolete",
+					clientVisible: true,
 					type: "CHECKBOX",
 					value: {
 						__typename: "CheckValue",
