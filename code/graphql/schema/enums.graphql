@@ -20,6 +20,17 @@ enum Source {
     TWITTER
 }
 
+# Etapas por las que transcurre un ticket. estas contienen estados.
+enum Stage {
+    # Etapa incial, preparativos para trabajar en la solucion
+    PREPARATION
+    # Etapa donde se trabaja en la solucion del ticket
+    PROGRESS
+    # Etapa final, donde un ticket, ya sea "solucionado" u otro estado, termina su ciclo de vida
+    END
+
+}
+
 enum TicketPriority {
     LOW
     MEDIUM
@@ -87,6 +98,15 @@ enum WeekDay {
     FRIDAY
     SATURDAY
     SUNDAY
+}
+
+enum BusinessHoursModes {
+    # Working_days debe devolver 24x7
+    TWENTYFOUR_SEVEN
+    # Working_days debe devolver mismo horario para los dias laborables, y workeable false para los no laborables 
+    SAME_FOR_DAYS
+    # Personalizado
+    CUSTOMIZED
 }
 
 enum AutomationsType {

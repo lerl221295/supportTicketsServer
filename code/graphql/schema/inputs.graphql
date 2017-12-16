@@ -75,7 +75,7 @@ input TicketInput {
     title: String!
     description: String!
     type_key: String
-    device: ID
+    device_id: ID
     #El id del cliente solo se enviara cuando el ticket lo cree un agente
     client_id: ID
     custom_fields: [ TicketFieldInput ]
@@ -105,22 +105,28 @@ input TicketUpdateInput {
     source: Source
     group_id: ID
     supplier_id: ID
-    device: ID
+    device_id: ID
     custom_fields: [ TicketFieldInput ]
 }
 
 input TicketFieldInput {
     #El key del customField. Determinara cual de los siguientes values leer
-    key: String!
+    field_key: String!
     #Para los valores de texto
     text: String
     #Para los numeros
     number: Float
-    #Para los booleanos
-    bool: Boolean
+    #Para los checks
+    check: Boolean
     #Para los select options
-    key_value: String
+    key: String
 
+}
+
+input InterventionInput {
+    ticket_number: Int!
+    # HTML del mensaje
+    text: String!
 }
 
 input CategoryInput {
@@ -135,10 +141,15 @@ input ArticleInput {
 }
 
 input BusinessHoursInput {
-    # Si es true, el parametro working_day sera ignorado
-    twentyfour_seven: Boolean
-    working_days: [ WorkingDayInput ]
-    holidays: [ HolidayInput ]
+    mode: BusinessHoursModes!
+    holidays: [ HolidayInput! ]
+    # Solo si mode = CUSTOMIZED
+    working_days: [ WorkingDayInput! ]
+    # Solo si mode = SAME_FOR_DAYS
+    week_days: [ WeekDay! ]
+    # Solo si mode = SAME_FOR_DAYS
+    horary: HoraryInput
+    
 }
 
 input WorkingDayInput {

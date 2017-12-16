@@ -44,8 +44,8 @@ type Query {
 
 type Mutation {
 	createTicket(ticket: TicketInput): Ticket
-	updateTicket(ticket: TicketUpdateInput): Ticket
-	addIntervention(ticket_number: Int!): Intervention
+	updateTicket(ticket: TicketUpdateInput!): Ticket
+	addIntervention(intervention: InterventionInput!): Intervention
 	#No pueden haber dos tareas con el mismo text
 	addTask(ticket_number: Int!, text: String!): Task
 	# -> !done del task con el text indicado
