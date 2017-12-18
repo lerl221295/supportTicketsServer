@@ -203,6 +203,7 @@ input SlapoliciesOrderInput {
     position: Int!
 }
 
+# Pensar hacer un Input para la activación de la política SLA, para poder validar en la actualización y creación
 input SlapolicyInput {
     id: ID
     name: String
@@ -210,18 +211,18 @@ input SlapolicyInput {
     active: Boolean
     position: Int
     #Una politica para cada prioridad
-    policies: [ PolicyInput ]
-    clients: [ ID ]
-    organizations: [ ID ]
-    alerts: [ AlertInput ]
+    policies: [ PolicyInput! ]
+    clients: [ ID! ]
+    organizations: [ ID! ]
+    alerts: [ AlertInput! ]
 }
 
 input PolicyInput {
-    priority: TicketPriority
-    first_response: PolicyTimeInput
-    solved: PolicyTimeInput
+    priority: TicketPriority!
+    first_response: PolicyTimeInput!
+    solved: PolicyTimeInput!
     #Si el tiempo correra en horas habiles o 24x7
-    operational_hours: OperationalHours
+    operational_hours: OperationalHours!
 }
 
 input PolicyTimeInput {
@@ -236,6 +237,6 @@ input AlertInput {
     motive: AlertMotive!
     time: Float!
     # ID's de agentes a los que le llegará la alerta
-    to: [ ID ]
+    to: [ ID! ]!
     message: String!
 }
