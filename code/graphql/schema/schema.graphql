@@ -81,6 +81,7 @@ type Mutation {
 
 	updateTicketTypes(types: [TicketTypeInput!]): [ TicketType ]
 	updateCustomFields(custom_fields: [CustomFieldInput!]): [ Field ]
+	updateTicketStates(states: [TicketStateInput!]): [State!]
 
 	prueba: String
 	addActivity: String

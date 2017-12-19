@@ -149,9 +149,9 @@ type Ticket {
     #Las prioridades como enum ya que no son modificables
     priority: TicketPriority
     type: TicketType
-    state: Status
+    state: State
     #Estados a los que puede ir el ticket (calculado)
-    next_states: [ Status ]
+    next_states: [ State ]
     source: Source
     agent: Agent
     client: Client
@@ -178,7 +178,7 @@ type TicketsResponse {
 
 type TicketMetadata {
     types: [ TicketType ]
-    states: [ Status ]
+    states: [ State ]
     custom_fields: [ Field ]
 }
 
@@ -291,13 +291,13 @@ type UpgradeActivityActionAssignment {
     bearer: TicketBearer
 }
 
-type Status {
+type State {
     key: String
     label: String
     sla_paused: Boolean
     stage: Stage
     # Estados desde donde se puede pasar a este estado
-    came_from: [ Status ]
+    came_from: [ State ]
 }
 
 type Category {

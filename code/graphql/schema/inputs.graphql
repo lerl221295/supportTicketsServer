@@ -145,9 +145,19 @@ input CustomFieldInput {
 }
 
 input SelectOptionsInput {
-    position: Int
-    key: String
-    label: String
+    position: Int!
+    key: String!
+    label: String!
+}
+
+input TicketStateInput {
+    key: String!
+    label: String!
+    # False por defecto
+    sla_paused: Boolean
+    stage: Stage
+    # Keys de los estados desde los que se llega a este estado
+    came_from: [ String! ]
 }
 
 input CategoryInput {
