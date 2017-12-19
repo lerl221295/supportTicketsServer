@@ -679,8 +679,7 @@ const mocks = {
 		updateSLAPolicy: (_, {slapolicy}) => {
 			return {
 				...generateSLAPolicy(),
-				...slapolicy,
-				active: true
+				...slapolicy
 			}
 		},
 		updateSLAPoliciesOrder: (_, { slapolicies }) => {
