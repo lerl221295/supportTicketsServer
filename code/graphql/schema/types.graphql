@@ -178,7 +178,7 @@ type TicketsResponse {
 
 type TicketMetadata {
     types: [ TicketType ]
-    status: [ Status ]
+    states: [ Status ]
     custom_fields: [ Field ]
 }
 
@@ -294,6 +294,7 @@ type UpgradeActivityActionAssignment {
 type Status {
     key: String
     label: String
+    sla_paused: Boolean
     stage: Stage
     # Estados desde donde se puede pasar a este estado
     came_from: [ Status ]

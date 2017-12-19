@@ -514,12 +514,24 @@ const mocks = {
 				{key: "problem", label: "Problema"},
 				{key: "question", label: "Pregunta"}
 			],
-			status: [
-				{key: "new", label: "Nuevo", stage: "PREPARATION"},
-				{key: "process", label: "En Proceso", stage: "PROGRESS"},
-				{key: "pending", label: "En Espera", stage: "PROGRESS"},
-				{key: "resolved", label: "Resuelto", stage: "END"},
-				{key: "falied", label: "Fallido", stage: "END"}
+			states: [
+				{key: "new", label: "Nuevo", stage: "PREPARATION", sla_paused: false, came_from: null},
+				{key: "process", label: "En Proceso", stage: "PROGRESS", sla_paused: false, came_from: [
+					{key: "new", label: "Nuevo", stage: "PREPARATION"},
+					{key: "pending", label: "En Espera", stage: "PROGRESS"}
+				]},
+				{key: "pending", label: "En Espera", stage: "PROGRESS", sla_paused: true, came_from: [
+					{key: "new", label: "Nuevo", stage: "PREPARATION"},
+					{key: "process", label: "En Proceso", stage: "PROGRESS"}
+				]},
+				{key: "resolved", label: "Resuelto", stage: "END", sla_paused: false, came_from: [
+					{key: "process", label: "En Proceso", stage: "PROGRESS"},
+					{key: "pending", label: "En Espera", stage: "PROGRESS"}
+				]},
+				{key: "falied", label: "Fallido", stage: "END", sla_paused: false, came_from: [
+					{key: "process", label: "En Proceso", stage: "PROGRESS"},
+					{key: "pending", label: "En Espera", stage: "PROGRESS"}
+				]}
 			],
 			custom_fields: [
 				{
