@@ -224,7 +224,7 @@ input SlapolicyInput {
     policies: [ PolicyInput! ]
     clients: [ ID! ]
     organizations: [ ID! ]
-    alerts: [ AlertInput! ]
+    alerts: [ AlertInput!  ]
 }
 
 input PolicyInput {

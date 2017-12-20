@@ -1,31 +1,31 @@
 type Query {
 	ticket(number: Int!): Ticket
-	tickets(filter: FilterTicketInput, offset: Int, limit: Int): TicketsResponse
+	tickets(filter: FilterTicketInput, limit: Int, offset: Int): TicketsResponse
 	ticketMetadata: TicketMetadata
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
-    activities(ticket_number: Int, offset: Int, limit: Int): ActivitiesResponse
+    activities(ticket_number: Int, limit: Int, offset: Int): ActivitiesResponse
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
 	interventions(ticket_number: Int, last: Int): [ Intervention ]
 
-	clients(search_text: String, offset: Int, limit: Int): ClientsResponse
+	clients(search_text: String, limit: Int, offset: Int): ClientsResponse
 	client(id: ID!): Client
 	#EL cliente_id es opcional. Si no se provee, se obtiene para todos los clientes
 	devices(cliente_id: ID): [ Device ]
-	organizations(search_text: String, offset: Int, limit: Int): OrganizationsResponse
+	organizations(search_text: String, limit: Int, offset: Int): OrganizationsResponse
 	organization(id: ID!): Organization
 
-	agents(search_text: String, offset: Int, limit: Int, groups: [ID], organizations: [ID]): AgentsResponse
+	agents(search_text: String, limit: Int, offset: Int, groups: [ID], organizations: [ID]): AgentsResponse
 	agent(id: ID!): Agent
-	groups(search_text: String, offset: Int, limit: Int): GroupsResponse
+	groups(search_text: String, limit: Int, offset: Int): GroupsResponse
 	group(id: ID): Group
-	suppliers(search_text: String, offset: Int, limit: Int): SuppliersResponse
+	suppliers(search_text: String, limit: Int, offset: Int): SuppliersResponse
 	supplier(id: ID!): Supplier
 
 	solutions: [ Category ]
 	solution(id: ID!): Category
 	article(id: ID!): Article
 
-	notifications(last: Int): [ Notification ]
+	notifications(limit: Int, offset: Int): NotificationsResponse
 
 	discussion(ticket_number: Int!): Discussion
 
@@ -83,13 +83,16 @@ type Mutation {
 	updateCustomFields(custom_fields: [CustomFieldInput!]): [ Field ]
 	updateTicketStates(states: [TicketStateInput!]): [State!]
 
+    notificationReaded(id: ID!): Notification
+
 	prueba: String
+    pruebaNotif: String
 	addActivity: String
 }
 
 type Subscription {
 	newTicket(filter: FilterTicketInput): Ticket
-	notifications: Notification
+	newNotification: Notification
 	newDiscussion: Discussion
 	discussionMessage(ticket_number: Int!): Message
 	newActivity(ticket_number: Int): Activity

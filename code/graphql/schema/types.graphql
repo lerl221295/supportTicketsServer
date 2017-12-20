@@ -323,11 +323,17 @@ type User {
 }
 
 type Notification {
+    id: ID
     text: String
     time: String
     readed: Boolean
     ticket: Ticket
+}
 
+type NotificationsResponse {
+    nodes: [ Notification ]
+    # Número de notificaciones pendientes por leer
+    unread_count: Int
 }
 
 type SLAPolicy {

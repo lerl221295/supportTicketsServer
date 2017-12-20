@@ -137,7 +137,6 @@ const generateActivityActionUpdate = () => {
 
 const generateActivityActionAssignment = () => {
 	const bearer =  casual.random_element(['AGENT', 'SUPPLIER', 'GROUP']);
-	// console.log("bearer---", bearer)
 	return ({
 		__typename: "UpgradeActivityActionAssignment",
 		type: 'ASSIGNMENT',
@@ -181,7 +180,6 @@ const generateCreationUpgradeActivity = (first = casual.boolean) => {
 			type_autor,
 			autor: do {
 				if (type_autor == 'AGENT') generateAgent();
-				else null;
 			},
 			actions: generateNActivitiesActions()
 		});
@@ -283,12 +281,21 @@ const generateAlert = (type, motive) => ({
 	motive
 })
 
+const generateNotification = () => ({
+	id: casual.uuid,
+	text: casual.short_description,
+	time: faker.date.recent(),
+	readed: false //casual.boolean,
+})
+
+const generateNotificationsResponse = (_, { limit, offset }) => ({
+	nodes: () => new MockList(limit || [10, 20]),
+	unread_count: casual.integer(10, 20)
+})
+
 const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
-	nodes: () => {
-		if(limit) return new MockList(limit, entityGenerator);
-		return new MockList(46, entityGenerator)
-	},
-	count: 46
+	nodes: () => new MockList(limit || 47, entityGenerator),
+	count: 47
 });
 
 const mocks = {
@@ -353,11 +360,8 @@ const mocks = {
 		description: casual.description,
 		time: faker.date.recent(),
 	}),
-	Notification: () => ({
-		text: casual.short_description,
-		time: faker.date.recent(),
-		readed: casual.boolean,
-	}),
+	Notification: generateNotification,
+	NotificationsResponse: generateNotificationsResponse,
 	PolicyTime: () => ({
 		value: casual.integer(1, 48)
 	}),
@@ -603,7 +607,6 @@ const mocks = {
 		interventions: (_, { ticket_id, last}) => new MockList([40, 50], generateIntervention),
 		
 		solutions: () => new MockList([40, 50]),
-		notifications: (_, { last }) => new MockList([40, 50]),
 		SLAPolicies: generateSLAPolicies(),
 		ticketsCountByDay: (_, { last = 7 }) => {
 			let ticketsByDay = [];
@@ -692,6 +695,11 @@ const mocks = {
 			...generateSLAPolicy(),
 			id
 		}),
+		notificationReaded: (_, {id}) => ({
+			...generateNotification(),
+			readed: true,
+			id
+		}),
 		updateGroup: (_, {group}) => {
 			return {
 				...group
@@ -704,6 +712,16 @@ const mocks = {
 			}
 			pubsub.publish('tickets', { newTicket });
 			return "Fino!";
+		},
+		pruebaNotif: (_, args, { subdomain }) => {
+			const newNotification = {
+				...generateNotification(),
+				readed: false,
+				ticket: generateTicket(),
+				subdomain
+			}
+			pubsub.publish('notifications', { newNotification });
+			return "Fino fino mi pana!";
 		},
 		addActivity: (_, args, { subdomain }) => {
 			const newActivity = {
@@ -728,11 +746,11 @@ const resolvers = {
 				}
 			)
 		},
-		notifications: {
+		newNotification: {
 			subscribe: withFilter(
 				() => pubsub.asyncIterator('notifications'),
-				({ notification }, variables, context) => {
-					return notification.subdomain === context.subdomain;
+				({ newNotification }, variables, context) => {
+					return newNotification.subdomain === context.subdomain;
 				}
 			)
 		},
