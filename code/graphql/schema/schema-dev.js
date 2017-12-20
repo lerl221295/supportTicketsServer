@@ -338,7 +338,7 @@ const mocks = {
 		old_value: casual.short_description,
 		new_value: casual.short_description
 	}),
-	Status: () => {
+	State: () => {
 		const random = casual.integer(0, 4);
 		const keys = ['new', 'process', 'pending', 'resolved', 'falied'];
 		const labels = ['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido'];
