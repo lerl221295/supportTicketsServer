@@ -37,6 +37,10 @@ type Query {
 	# DASHBOARD INDICATORS
 	indicators: Indicators
 
+	# DISPATCHER AUTOMATION
+    dispatchers: [ Dispatcher ]
+    dispatcher(id: Int!): Dispatcher
+
 	# REPORTES
 	ticketsCountByDay(last: Int): [ TicketByDay ]
 

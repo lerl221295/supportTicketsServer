@@ -288,6 +288,101 @@ const generateNotification = () => ({
 	readed: false //casual.boolean,
 })
 
+const generateField = (type, position) => {
+	//FieldType
+	if (!type) type = casual.random_element(['TEXT', 'TEXTAREA', 'NUMBER', 'DATE', 'SELECT', 'CHECKBOX']);
+	
+	const __typename = do {
+		if (type === 'SELECT') { 'SelectField' }
+		else { 'FreeField' }
+	}
+	
+	const interfaceField = {
+		__typename,
+		position: position || casual.integer(1, 10),
+		key: casual.word,
+		label: casual.words(2),
+		clientVisible: casual.boolean,
+		type,
+		// El value lo voy a dejar opcional por angora
+	}
+	if (__typename === 'FreeField')
+		return(interfaceField);
+	
+	const generateSelectOption = () => ({label: casual.words(2), key: casual.word, position: casual.integer(1, 7)})
+	const generateOptions = () => {
+		const n = casual.integer(1, 7);
+		let array = [];
+		for (let i = 0; i < n; i++)
+			array.push(generateSelectOption())
+		return array;
+	}
+	
+	return({
+		...interfaceField,
+		options: generateOptions()
+	})
+}
+
+const generateFieldValue = (type, selectKey) => {
+	const metadata = generateField(type);
+	return({
+		metadata,
+		...do {
+			if(type === 'SELECT') ({
+				__typename: 'SelectValue',
+				key: selectKey || metadata.options[0].key
+			})
+			else if (type === 'NUMBER') ({
+				__typename: 'NumberValue',
+				number: casual.integer(1, 77)
+			})
+			else if (type === 'CHECKBOX') ({
+				__typename: 'CheckValue',
+				check: casual.boolean
+			})
+			else ({
+					__typename: 'TextValue',
+					text: do {
+						if (type === 'DATE') {faker.date.recent()}
+						else if (type === 'TEXT') {casual.short_description}
+						else {casual.text}
+					}
+				})
+		}
+	})
+}
+
+const generateCondition = () => {
+	const field = generateField();
+	const { type } = field;
+	if (type === 'SELECT') {
+		console.log('field---', field)
+		console.log('options---', field.options)
+	}
+	return({
+		conditioned_field: field,
+		value: {
+			...generateFieldValue(type, do {if (type === 'SELECT') field.options[0].key}),
+			metadata: field
+		}
+	})
+}
+
+const generateAction = () => {
+	return ({})
+}
+
+const generateDispatcher = () => {
+	return ({
+		id: casual.uuid,
+		name: casual.title,
+		description: casual.short_description,
+		conditions: () => new MockList([1, 7], generateCondition),
+		actions: () => new MockList([1, 7], generateAction)
+	})
+}
+
 const generateNotificationsResponse = (_, { limit, offset }) => ({
 	nodes: () => new MockList(limit || [10, 20]),
 	unread_count: casual.integer(10, 20)
@@ -391,11 +486,7 @@ const mocks = {
 	SupervisorCondition: () => ({
 		hours: casual.integer(0, 24),
 	}),
-	Dispatcher: () => ({
-		id: casual.uuid,
-		name: casual.short_description,
-		description: casual.description
-	}),
+	Dispatcher: generateDispatcher,
 	Supervisor: () => ({
 		id: casual.uuid,
 		name: casual.short_description,

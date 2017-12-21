@@ -442,8 +442,6 @@ type SupervisorCondition {
     hours: Int
 }
 
-
-
 type Dispatcher {
     id: ID
     name: String
