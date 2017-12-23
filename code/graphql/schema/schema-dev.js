@@ -309,18 +309,15 @@ const generateField = (type, position) => {
 	if (__typename === 'FreeField')
 		return(interfaceField);
 	
-	const generateSelectOption = () => ({label: casual.words(2), key: casual.word, position: casual.integer(1, 7)})
-	const generateOptions = () => {
-		const n = casual.integer(1, 7);
-		let array = [];
-		for (let i = 0; i < n; i++)
-			array.push(generateSelectOption())
-		return array;
+	const generateSelectOption = (_, i) => {
+		return ({label: casual.words(2), key: casual.word, position: do{if(i === undefined) casual.integer(1, 7); else i}})
 	}
+	
+	const generateOptions = (max, generator) => Array.apply(null, {length: casual.integer(1, max)}).map(generator)
 	
 	return({
 		...interfaceField,
-		options: generateOptions()
+		options: generateOptions(7, generateSelectOption)
 	})
 }
 
@@ -356,11 +353,18 @@ const generateFieldValue = (type, selectKey) => {
 const generateCondition = () => {
 	const field = generateField();
 	const { type } = field;
-	if (type === 'SELECT') {
+	/*if (type === 'SELECT') {
 		console.log('field---', field)
 		console.log('options---', field.options)
-	}
+	}*/
 	return({
+		condition_operator: do {
+			if (type.includes('TEXT')) {casual.random_element(['IS', 'NOT', 'CONTAINS', 'NOT_CONTAINS', 'STARTS', 'ENDS'])}
+			else if (type === 'DATE') {casual.random_element(['IS', 'NOT', 'CONTAINS', 'HIGHER', 'LESS'])}
+			else if (type === 'NUMBER') {casual.random_element(['HIGHER', 'HIGHER_OR_EQUAL', 'LESS', 'LESS_OR_EQUAL'])}
+			// Select y Checkbox
+			else {casual.random_element(['IS', 'NOT'])}
+		},
 		conditioned_field: field,
 		value: {
 			...generateFieldValue(type, do {if (type === 'SELECT') field.options[0].key}),

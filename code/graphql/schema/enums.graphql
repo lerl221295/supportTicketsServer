@@ -123,8 +123,6 @@ enum ConditionOperator {
     NOT_CONTAINS
     STARTS
     ENDS
-    TRUE
-    FALSE
     HIGHER
     HIGHER_OR_EQUAL
     LESS
