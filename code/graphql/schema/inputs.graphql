@@ -82,6 +82,8 @@ input TicketInput {
 }
 
 input FilterTicketInput {
+    #Si es true, se ignora el param "agents"
+    unassigned: Boolean
     agents: [ ID ]
     groups: [ ID ]
     suppliers: [ ID ]
