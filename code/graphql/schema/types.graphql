@@ -130,6 +130,7 @@ type Intervention {
     id: ID
     text: String
     time: String
+    private: Boolean
     type_autor: InterventionAutor
     autor: Autor
     ticket: Ticket

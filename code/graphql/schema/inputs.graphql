@@ -131,6 +131,8 @@ input InterventionInput {
     ticket_number: Int!
     # HTML del mensaje
     text: String!
+    #False por defecto. (solo para agentes)
+    private: Boolean
 }
 
 input TicketTypeInput {
