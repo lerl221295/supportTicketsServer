@@ -74,10 +74,12 @@ input SupplierInput {
 input TicketInput {
     title: String!
     description: String!
+    priority: TicketPriority
     type_key: String
-    device_id: ID
+    agent_id: ID
     #El id del cliente solo se enviara cuando el ticket lo cree un agente
     client_id: ID
+    device_id: ID
     custom_fields: [ TicketFieldInput ]
 }
 

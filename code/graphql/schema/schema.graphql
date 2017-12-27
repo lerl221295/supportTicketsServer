@@ -14,7 +14,7 @@ type Query {
 	organizations(search_text: String, limit: Int, offset: Int): OrganizationsResponse
 	organization(id: ID!): Organization
 
-	agents(search_text: String, limit: Int, offset: Int, groups: [ID], organizations: [ID]): AgentsResponse
+	agents(search_text: String, limit: Int, offset: Int, groups: [ID], suppliers: [ID]): AgentsResponse
 	agent(id: ID!): Agent
 	groups(search_text: String, limit: Int, offset: Int): GroupsResponse
 	group(id: ID): Group
@@ -47,7 +47,7 @@ type Query {
 }
 
 type Mutation {
-	createTicket(ticket: TicketInput): Ticket
+	createTicket(ticket: TicketInput!): Ticket
 	updateTicket(ticket: TicketUpdateInput!): Ticket
 	addIntervention(intervention: InterventionInput!): Intervention
 	#No pueden haber dos tareas con el mismo text
