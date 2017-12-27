@@ -155,3 +155,10 @@ enum DueBy {
     TODAY
     TOMORROW
 }
+
+enum Order {
+    #Desde los mas viejos, hasta los mas nuevos
+    UPWARD
+    #Desde los mas nuevos, hasta los mas viejos
+    FALLING
+}

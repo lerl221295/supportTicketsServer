@@ -1,6 +1,6 @@
 type Query {
 	ticket(number: Int!): Ticket
-	tickets(filter: FilterTicketInput, limit: Int, offset: Int): TicketsResponse
+	tickets(filter: FilterTicketInput, order: Order, limit: Int, offset: Int): TicketsResponse
 	ticketMetadata: TicketMetadata
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
     activities(ticket_number: Int, limit: Int, offset: Int): ActivitiesResponse
