@@ -44,6 +44,8 @@ type Query {
 	# REPORTES
 	ticketsCountByDay(last: Int): [ TicketByDay ]
 
+	emailSupport: String!
+	palette: String!
 }
 
 type Mutation {
@@ -86,6 +88,9 @@ type Mutation {
 	updateTicketTypes(types: [TicketTypeInput!]): [ TicketType ]
 	updateCustomFields(custom_fields: [CustomFieldInput!]): [ Field ]
 	updateTicketStates(states: [TicketStateInput!]): [State!]
+
+	updateEmailSupport(config: EmailConfig!): String!
+	updatePalette(paletteName: String!): String!
 
     notificationReaded(id: ID!): Notification
 

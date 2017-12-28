@@ -737,7 +737,9 @@ const mocks = {
 				working_days,
 				holidays
 			}
-		}
+		},
+		palette: () => casual.random_element(['indigo', 'red']),
+		emailSupport: () => casual.email
 	}),
 	Mutation: () => ({
 		updateClient: (_, {client}) => {

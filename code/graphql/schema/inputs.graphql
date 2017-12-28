@@ -256,3 +256,9 @@ input AlertInput {
     to: [ ID! ]!
     message: String!
 }
+
+input EmailConfig {
+    email: String!
+    password: String!
+    password_confirm: String!
+}
