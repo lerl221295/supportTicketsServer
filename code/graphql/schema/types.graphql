@@ -180,6 +180,7 @@ type TicketMetadata {
     types: [ TicketType ]
     states: [ State ]
     custom_fields: [ Field ]
+    default_fields: [ Field ]
 }
 
 interface FieldValue {
@@ -225,12 +226,6 @@ type FreeField implements Field {
     value(ticket_number: Int!): FieldValue
 }
 
-type SelectOption {
-    label: String
-    key: String
-    position: Int
-}
-
 type SelectField implements Field {
     position: Int
     key: String
@@ -238,7 +233,15 @@ type SelectField implements Field {
     type: FieldType
     clientVisible: Boolean
     value(ticket_number: Int!): FieldValue
-    options: [ SelectOption ]
+    options(search_text: String): [ SelectOption ]
+}
+
+union SelectOption = Agent | Client | Device | State | Group | Supplier | TicketType | StandarOption
+
+type StandarOption {
+    label: String
+    key: String
+    # position: Int
 }
 
 # La actividad puede tener 3 autores, por lo cuál hice una interfaz para manejar los distintos casos
@@ -447,7 +450,7 @@ type Dispatcher {
     name: String
     description: String
     comparator: LogicalComparator
-    conditions: [ Condition ]
+    conditions(position: Int): [ Condition ]
     actions: [ Action ]
 }
 

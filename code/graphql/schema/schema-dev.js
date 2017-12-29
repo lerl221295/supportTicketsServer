@@ -7,6 +7,7 @@ import casual from 'casual'
 import faker from 'faker'
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import images from './base64'
+import lodash from 'lodash'
 
 const pubsub = new PubSub();
 
@@ -37,6 +38,7 @@ const generateClient = () => ({
 const generateAgent = () => {
 	let {name, lastname} = {name: casual.first_name, lastname: casual.last_name};
 	return({
+		__typename: 'Agent',
 		id: casual.uuid,
 		name,
 		lastname,
@@ -65,6 +67,7 @@ const generateOrganization = () => ({
 });
 
 const generateSupplier = () => ({
+	__typename: 'Supplier',
 	id: casual.uuid,
 	name: casual.company_name,
 	about: casual.text,
@@ -72,6 +75,7 @@ const generateSupplier = () => ({
 });
 
 const generateGroup = () => ({
+	__typename: 'Group',
 	id: casual.uuid,
 	name: casual.first_name,
 	about: casual.text,
@@ -288,47 +292,150 @@ const generateNotification = () => ({
 	readed: false //casual.boolean,
 })
 
-const generateField = (type, position) => {
+const generateState = () => {
+	const random = casual.integer(0, 4);
+	const keys = ['new', 'process', 'pending', 'resolved', 'falied'];
+	const labels = ['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido'];
+	return(({__typename: 'State', key: keys[random], label: labels[random]}));
+}
+
+const generateDevice = () => ({
+	__typename: 'Device',
+	id: casual.uuid,
+	name: casual.first_name,
+	code: casual.uuid
+})
+
+const generateTicketType = () =>{
+	const random = casual.integer(0, 2);
+	const keys = ['incident', 'problem', 'question'];
+	const labels = ['Incidente', 'Problema', 'Pregunta'];
+	return(({__typename: 'TicketType', key: keys[random], label: labels[random]}));
+}
+
+let field_options = [];
+
+const generateField = (props) => {
 	//FieldType
-	if (!type) type = casual.random_element(['TEXT', 'TEXTAREA', 'NUMBER', 'DATE', 'SELECT', 'CHECKBOX']);
+	let {type, position, custom} = do {
+		if (props) props;
+		else ({type: undefined, position: undefined, custom: undefined})
+	}
 	
-	const __typename = do {
-		if (type === 'SELECT') { 'SelectField' }
-		else { 'FreeField' }
+	const default_props = [
+		{key: 'priority', label: 'Prioridad', type: 'SELECT'},
+		{key: 'state', label: 'Estado', type: 'SELECT'},
+		{key: 'type', label: 'Tipo', type: 'SELECT'},
+		{key: 'source', label: 'Canal', type: 'SELECT'},
+		{key: 'device', label: 'Dispositivos', type: 'SELECT'},
+		{key: 'agent', label: 'Agente', type: 'SELECT'},
+		{key: 'supplier', label: 'Proveedor', type: 'SELECT'},
+		{key: 'group', label: 'Grupo', type: 'SELECT'},
+		{key: 'title', label: 'Titulo', type: 'TEXT'},
+	]
+	
+	const getDefaultProp = () => {
+		return (
+			casual.random_element(
+				do {
+					if (lodash.isUndefined(type)) default_props;
+					else lodash.filter(default_props, {type});
+				}
+			)
+		)
+	}
+	
+	const generateCustomProp = () => ({
+		key: casual.word,
+		label: casual.words(2),
+		type: type || casual.random_element(['TEXT', 'TEXTAREA', 'NUMBER', 'DATE', 'SELECT', 'CHECKBOX'])
+	});
+	
+	const field_prop = do {
+		if (lodash.isUndefined(custom)) {casual.random_element([getDefaultProp(), generateCustomProp()])}
+		else if (!custom) {getDefaultProp()}
+		else {generateCustomProp()}
 	}
 	
 	const interfaceField = {
-		__typename,
+		__typename: do {
+			if (field_prop.type === 'SELECT') { 'SelectField' }
+			else { 'FreeField' }
+		},
 		position: position || casual.integer(1, 10),
-		key: casual.word,
-		label: casual.words(2),
 		clientVisible: casual.boolean,
-		type,
+		...field_prop
 		// El value lo voy a dejar opcional por angora
 	}
-	if (__typename === 'FreeField')
+	
+	if (field_prop.type !== 'SELECT')
 		return(interfaceField);
 	
-	const generateSelectOption = (_, i) => {
-		return ({label: casual.words(2), key: casual.word, position: do{if(i === undefined) casual.integer(1, 7); else i}})
+	// casual.random_element(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])
+	
+	const generateSelectOption = () => {
+		if (!custom){
+			if (field_prop.key === 'state') return generateState()
+			if (field_prop.key === 'device') return generateDevice()
+			if (field_prop.key === 'agent') return generateAgent()
+			if (field_prop.key === 'supplier') return generateSupplier()
+			if (field_prop.key === 'group') return generateGroup()
+			if (field_prop.key === 'type') return generateTicketType()
+			if (field_prop.key === 'priority') {
+				const priorities = ['LOW', 'MEDIUM', 'HIGH', 'URGENT']
+				return priorities.map((priority)=> ({
+					__typename: 'StandarOption',
+					label: do {
+						if (priority === 'LOW') 'Baja'
+						else if (priority === 'MEDIUM') 'Media'
+						else if (priority === 'HIGH') 'Alta'
+						else 'Urgente'
+					},
+					key: priority
+				}))
+			}
+			if (field_prop.key === 'source') {
+				const sources = ['PORTAL', 'EMAIL', 'FACEBOOK', 'TWITTER']
+				return sources.map((source) => ({
+					__typename: 'StandarOption',
+					label: do {
+						if (source === 'PORTAL') 'Portal'
+						else if (source === 'EMAIL') 'Correo Electrónico'
+						else if (source === 'FACEBOOK') 'Facebook'
+						else 'Twitter'
+					},
+					key: source
+				}))
+			}
+		}
+		return ({ __typename: 'StandarOption', label: casual.words(2), key: casual.word })
 	}
 	
-	const generateOptions = (max, generator) => Array.apply(null, {length: casual.integer(1, max)}).map(generator)
+	const generateOptions = (generator, max) => {
+		if (lodash.isUndefined(max)) return generator();
+		return Array.apply(null, {length: casual.integer(1, max)}).map(generator)
+	}
+	
+	field_options = generateOptions(
+		generateSelectOption,
+		do {
+			if(!['priority', 'source'].includes(field_prop.key)) 7
+		});
 	
 	return({
 		...interfaceField,
-		options: generateOptions(7, generateSelectOption)
+		options: (_, {search_text}) => field_options
 	})
 }
 
-const generateFieldValue = (type, selectKey) => {
-	const metadata = generateField(type);
+const generateFieldValue = (metadata) => {
+	const { type } = metadata;
 	return({
 		metadata,
 		...do {
 			if(type === 'SELECT') ({
 				__typename: 'SelectValue',
-				key: selectKey || metadata.options[0].key
+				key: field_options[casual.integer(0, field_options.length - 1)].key || field_options[casual.integer(0, field_options.length - 1)].id
 			})
 			else if (type === 'NUMBER') ({
 				__typename: 'NumberValue',
@@ -350,40 +457,61 @@ const generateFieldValue = (type, selectKey) => {
 	})
 }
 
-const generateCondition = () => {
-	const field = generateField();
+const generateCondition = (custom) => () => {
+	const field = generateField({custom});
 	const { type } = field;
-	/*if (type === 'SELECT') {
-		console.log('field---', field)
-		console.log('options---', field.options)
-	}*/
+	
 	return({
 		condition_operator: do {
 			if (type.includes('TEXT')) {casual.random_element(['IS', 'NOT', 'CONTAINS', 'NOT_CONTAINS', 'STARTS', 'ENDS'])}
-			else if (type === 'DATE') {casual.random_element(['IS', 'NOT', 'CONTAINS', 'HIGHER', 'LESS'])}
+			else if (type === 'DATE') {casual.random_element(['IS', 'NOT', 'HIGHER', 'LESS'])}
 			else if (type === 'NUMBER') {casual.random_element(['HIGHER', 'HIGHER_OR_EQUAL', 'LESS', 'LESS_OR_EQUAL'])}
 			// Select y Checkbox
 			else {casual.random_element(['IS', 'NOT'])}
 		},
 		conditioned_field: field,
 		value: {
-			...generateFieldValue(type, do {if (type === 'SELECT') field.options[0].key}),
+			...generateFieldValue(field),
 			metadata: field
 		}
 	})
 }
 
-const generateAction = () => {
-	return ({})
+const generateAction = (custom) => () => {
+	const __typename = casual.random_element(['ActionField', 'ActionEmail']);
+	const email_receiver_type = casual.random_element(['Agent', 'Client', 'Group']);
+	
+	if (__typename === 'ActionField') {
+		const field = generateField(custom)
+		return ({
+			__typename,
+			field,
+			new_value: generateFieldValue(field)
+		})
+	}
+	return({
+		__typename,
+		subject: casual.title,
+		body: casual.text,
+		to: {
+			__typename: email_receiver_type,
+			...do {
+				if (email_receiver_type === 'Agent') {generateAgent()}
+				else if (email_receiver_type === 'Client') {generateClient()}
+				else {generateGroup()}
+			}
+		}
+	})
 }
 
 const generateDispatcher = () => {
+	const custom = casual.boolean;
 	return ({
 		id: casual.uuid,
 		name: casual.title,
 		description: casual.short_description,
-		conditions: () => new MockList([1, 7], generateCondition),
-		actions: () => new MockList([1, 7], generateAction)
+		conditions: (_, { position }) => new MockList((!lodash.isUndefined(position) && 1) || [1, 7], generateCondition(custom)),
+		actions: () => new MockList([1, 7], generateAction(custom))
 	})
 }
 
@@ -411,11 +539,7 @@ const mocks = {
 	TwentyFourSeven: () => ({mode: "TWENTYFOUR_SEVEN"}),
 	Customized: () => ({mode: "CUSTOMIZED"}),
 	SameForDays: () => ({mode: "SAME_FOR_DAYS"}),
-	Device: () => ({
-		id: casual.uuid,
-		name: casual.first_name,
-		code: casual.uuid
-	}),
+	Device: generateDevice,
 	Task: () => ({
 		text: casual.string,
 		done: casual.boolean
@@ -437,18 +561,8 @@ const mocks = {
 		old_value: casual.short_description,
 		new_value: casual.short_description
 	}),
-	State: () => {
-		const random = casual.integer(0, 4);
-		const keys = ['new', 'process', 'pending', 'resolved', 'falied'];
-		const labels = ['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido'];
-		return(({key: keys[random], label: labels[random]}));
-	},
-	TicketType: () =>{
-		const random = casual.integer(0, 2);
-		const keys = ['incident', 'problem', 'question'];
-		const labels = ['Incidente', 'Problema', 'Pregunta'];
-		return(({key: keys[random], label: labels[random]}));
-	},
+	State: generateState,
+	TicketType: generateTicketType,
 	Category: () => ({
 		id: casual.uuid,
 		name: casual.name,
@@ -697,7 +811,8 @@ const mocks = {
 						check: false
 					}
 				}
-			]
+			],
+			default_fields: []
 		}),
 		interventions: (_, { ticket_id, last}) => new MockList([40, 50], generateIntervention),
 		
@@ -737,7 +852,9 @@ const mocks = {
 				working_days,
 				holidays
 			}
-		}
+		},
+		
+		dispatchers: () => new MockList([1, 10])
 	}),
 	Mutation: () => ({
 		updateClient: (_, {client}) => {
