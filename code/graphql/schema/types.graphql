@@ -645,3 +645,15 @@ type AgentPerfomance {
     # Tiempo promedio de primera respuesta
     average_response_time: Int
 }
+
+type LoginError {
+    path: String
+    message: String
+}
+
+type LoginResponse {
+    ok: Boolean!
+    token: String
+    errors: [LoginError]
+    user: User
+}
