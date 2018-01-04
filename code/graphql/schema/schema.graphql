@@ -39,7 +39,7 @@ type Query {
 
 	# DISPATCHER AUTOMATION
     dispatchers: [ Dispatcher ]
-    dispatcher(id: Int!): Dispatcher
+    dispatcher(id: ID!): Dispatcher
 
 	# REPORTES
 	ticketsCountByDay(last: Int): [ TicketByDay ]
