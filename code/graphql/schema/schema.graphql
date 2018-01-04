@@ -44,6 +44,17 @@ type Query {
 	# REPORTES
 	ticketsCountByDay(last: Int): [ TicketByDay ]
 
+	ticketsBySource(from: String, to: String): [ TicketsBySource ]
+	ticketsByType(from: String, to: String): [ TicketsByType ]
+	ticketsByPriority(from: String, to: String): [ TicketsByPriority ]
+	ticketsByInterventionCount(from: String, to: String): [ TicketsByInterventionCount ]
+
+	complianceBySource(from: String, to: String, organizations_id: [ID!]): [ ComplianceBySource ]
+	complianceByType(from: String, to: String, organizations_id: [ID!]): [ ComplianceByType ]
+	complianceByPriority(from: String, to: String, organizations_id: [ID!]): [ ComplianceByPriority ]
+
+	#agentsPerfomance(from: String, to: String, agents_id: [ID!]): [ AgentPerfomance ]
+
 	emailSupport: String!
 	palette: String!
 }

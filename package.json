@@ -4,14 +4,17 @@
   "description": "Un API GraphQL para la gestion de tickets de soporte",
   "main": "server.js",
   "dependencies": {
+    "apollo-engine": "^0.8.1",
     "apollo-server-express": "^1.0.2",
     "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
     "cors": "^2.8.4",
     "express": "4.13.4",
     "faker": "^4.1.0",
     "graphql": "^0.10.5",
     "graphql-subscriptions": "^0.4.4",
     "graphql-tools": "^1.0.0",
+    "graphql-voyager": "^1.0.0-rc.11",
     "mail-listener2": "^0.3.1",
     "mongoose": "^4.13.1",
     "node-fetch": "^1.7.1",
@@ -20,6 +23,7 @@
     "subscriptions-transport-ws": "^0.8.2"
   },
   "devDependencies": {
+    "@2fd/graphdoc": "^2.4.0",
     "babel-cli": "6.5.1",
     "babel-core": "^6.5.2",
     "babel-plugin-inline-import": "^2.0.6",
@@ -34,7 +38,9 @@
   "scripts": {
     "start": "BABEL_DISABLE_CACHE=1 nodemon --ext graphql,js ./server.js --exec babel-node",
     "dev": "BABEL_DISABLE_CACHE=1 nodemon --ext graphql,js ./server-dev.js --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-doc": "graphdoc -e http://localhost:3000/graphql -o ./doc/schema --force && sensible-browser ./doc/schema/index.html",
+    "open-doc": "sensible-browser ./doc/schema/index.html"
   },
   "author": "Luis Eduardo & Jefferson Aguilar",
   "license": "ISC"

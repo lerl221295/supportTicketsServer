@@ -578,3 +578,70 @@ type TicketByDay {
     # Números de tickets del día
     tickets: Int
 }
+
+type TicketsBySource {
+    tickets: Int
+    source: Source
+}
+
+type TicketsByType {
+    tickets: Int
+    type: TicketType
+}
+
+type TicketsByPriority {
+    tickets: Int
+    priority: TicketPriority
+}
+
+# Indica cuantos tickets tienen 1, 2, 3, 4, 5, +5 intervenciones
+type TicketsByInterventionCount {
+    tickets: Int
+    interventions: InterventionCount
+}
+
+type Compliance {
+    # Porcentaje de cumplimiento de la primera respuesta
+    first_response: Int
+    # Porcentaje de cumplimiento de solucion
+    solved: Int
+    # Porcentaje de tickets que se solucionan tras el primer contacto
+    solved_after_fr: Int
+}
+
+type ComplianceBySource {
+    compliance: Compliance
+    source: Source
+}
+
+type ComplianceByType {
+    compliance: Compliance
+    type: TicketType
+}
+
+type ComplianceByPriority {
+    compliance: Compliance
+    priority: TicketPriority
+}
+
+type AgentPerfomance {
+    agent: Agent
+    # Numero de tickets (no finalizados) asignados actualmente
+    tikets_assigned: Int
+    # Numero de tickets resueltos
+    tickets_solved: Int
+    # Numero de tickets reasignados a otros agentes
+    reassigned_to_others: Int
+
+    # Porcentaje de tickets donde respondio dentro del tiempo SLA establecido
+    porcentage_first_response: Int
+    # Porcentaje de tickets resueltos dentro del SLA
+    porcentage_solved: Int
+    # Porcentaje de tickets resueltos tras un simple contacto del cliente
+    porcentage_solved_after_fr: Int
+
+    # Tiempo promedio de solucion
+    average_solution_time: Int
+    # Tiempo promedio de primera respuesta
+    average_response_time: Int
+}

@@ -1,4 +1,7 @@
 import express from 'express';
+import compression from 'compression';
+import { Engine } from 'apollo-engine';
+import { express as Voyager } from 'graphql-voyager/middleware';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import bodyParser from 'body-parser';
 import schema from './code/graphql/schema/schema-dev';
@@ -18,6 +21,21 @@ graphQLServer.use('*', cors());
 
 const subdomains = ['directv', 'sidor'];
 
+/*graphQLServer.use(compression());
+
+const engine = new Engine({
+    engineConfig: {
+        apiKey: 'service:lerl221295-6173:tdPmMP1_YVNGavfPlCZhfg'
+    },
+    graphqlPort: GRAPHQL_PORT
+});
+
+engine.start();
+
+graphQLServer.use(engine.expressMiddleware());*/
+
+graphQLServer.use('/voyager', Voyager({ endpointUrl: '/graphql' }));
+
 graphQLServer.use('/graphql', (request, res, next) => {
 	// const subdomain = request.headers.host.split(".")[0];
 	const subdomain = 'directv';
@@ -29,6 +47,8 @@ graphQLServer.use('/graphql', (request, res, next) => {
 graphQLServer.use('/graphql', bodyParser.json({limit: '8mb'}),
 	graphqlExpress( request => ({
 			schema,
+			//tracing: true,
+  			//cacheControl: true,
 			context: {
 				subdomain: 'directv'
 				// subdomain: request.headers.host.split(".")[0]

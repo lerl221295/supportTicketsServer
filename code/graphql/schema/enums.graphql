@@ -162,3 +162,12 @@ enum Order {
     #Desde los mas nuevos, hasta los mas viejos
     FALLING
 }
+
+enum InterventionCount {
+    ONE
+    TWO
+    THREE
+    FOUR
+    FIVE
+    MORE_FIVE
+}
