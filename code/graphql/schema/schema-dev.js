@@ -1026,6 +1026,31 @@ const mocks = {
 			// console.log('-------activity', newActivity);
 			pubsub.publish('activities', { newActivity });
 			return "Fino!";
+		},
+		login: (_, {email, password}) => {
+			if(email !== "luis@gmail.com" && email != "jefferson@gmail.com")
+				return({
+					ok: false,
+					errors: [{path: "email", message: "Usuario inexistente"}],
+					token: null,
+					user: null
+				});
+			if(password !== "holamundo")
+				return({
+					ok: false,
+					errors: [{path: "password", message: "Contraseña incorrecta"}],
+					token: null,
+					user: null
+				});
+			return({
+				ok: true,
+				errors: null,
+				token: casual.uuid,
+				user: {
+					rol: "AGENT",
+					entity: {__typename: 'Agent', ...generateAgent()}
+				}
+			});
 		}
 	})
 };

@@ -60,6 +60,7 @@ type Query {
 }
 
 type Mutation {
+	login(email: String!, password: String!): LoginResponse 
 	createTicket(ticket: TicketInput!): Ticket
 	updateTicket(ticket: TicketUpdateInput!): Ticket
 	addIntervention(intervention: InterventionInput!): Intervention
