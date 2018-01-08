@@ -243,7 +243,6 @@ union SelectOption = Agent | Client | Device | State | Group | Supplier | Ticket
 type StandarOption {
     label: String
     key: String
-    # position: Int
 }
 
 # La actividad puede tener 3 autores, por lo cuál hice una interfaz para manejar los distintos casos

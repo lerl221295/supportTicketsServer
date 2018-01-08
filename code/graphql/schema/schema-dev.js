@@ -808,8 +808,8 @@ const mocks = {
 							key: "white"
 						},
 						options: [
-							{__typename: 'StandarOption', label: "Blanco", key: "white", position: 2},
-							{__typename: 'StandarOption', label: "Negro", key: "black", position: 1}
+							{__typename: 'StandarOption', label: "Blanco", key: "white" },
+							{__typename: 'StandarOption', label: "Negro", key: "black" }
 						]
 					},
 					{
