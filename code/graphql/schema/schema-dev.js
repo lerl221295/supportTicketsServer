@@ -292,10 +292,13 @@ const generateNotification = () => ({
 	readed: false //casual.boolean,
 })
 
-const generateState = () => {
-	const random = casual.integer(0, 4);
+const generateState = (key) => () => {
 	const keys = ['new', 'process', 'pending', 'resolved', 'failed'];
 	const labels = ['Nuevo', 'Proceso', 'Esperando', 'Solucionado', 'Fallido'];
+	const random = do {
+		if (lodash.isUndefined(key)) { casual.integer(0, 4) }
+		else { lodash.indexOf(keys, key) }
+	};
 	return(({__typename: 'State', key: keys[random], label: labels[random]}));
 }
 
@@ -306,10 +309,13 @@ const generateDevice = () => ({
 	code: casual.uuid
 })
 
-const generateTicketType = () => {
-	const random = casual.integer(0, 2);
+const generateTicketType = (key) => () => {
 	const keys = ['incident', 'problem', 'question'];
 	const labels = ['Incidente', 'Problema', 'Pregunta'];
+	const random = do {
+		if (lodash.isUndefined(key)) { casual.integer(0, 2) }
+		else { lodash.indexOf(keys, key) }
+	}
 	return(({__typename: 'TicketType', key: keys[random], label: labels[random]}));
 }
 
@@ -323,7 +329,13 @@ const default_props = [
 	{key: 'supplier', label: 'Proveedor', type: 'SELECT'},
 	{key: 'group', label: 'Grupo', type: 'SELECT'},
 	{key: 'title', label: 'Titulo', type: 'TEXT'},
+	{key: 'description', label: 'Descripción', type: 'TEXT'},
 ]
+
+const generateNelements = (generator, max) => {
+	if (typeof generator === 'function')
+		return Array.apply(null, {length: casual.integer(2, max || 77)}).map(generator);
+}
 
 const generateField = (key) => {
 	
@@ -334,8 +346,8 @@ const generateField = (key) => {
 	});
 	
 	const field_prop = do {
-		if (!lodash.isUndefined(key)) { lodash.find(default_props, { key })}
-		else {generateCustomProp()}
+		if (lodash.isUndefined(key)) { generateCustomProp() }
+		else { lodash.find(default_props, { key }) }
 	}
 	
 	const interfaceField = {
@@ -355,12 +367,12 @@ const generateField = (key) => {
 	
 	const generateSelectOption = () => {
 		if (key) {
-			if (field_prop.key === 'state') return generateState()
 			if (field_prop.key === 'device') return generateDevice()
 			if (field_prop.key === 'agent') return generateAgent()
 			if (field_prop.key === 'supplier') return generateSupplier()
 			if (field_prop.key === 'group') return generateGroup()
-			if (field_prop.key === 'type') return generateTicketType()
+			if (field_prop.key === 'state') return ['new', 'process', 'pending', 'resolved', 'failed'].map(key_state => generateState(key_state)())
+			if (field_prop.key === 'type') return ['incident', 'problem', 'question'].map(key_type => generateTicketType(key_type)())
 			if (field_prop.key === 'priority') {
 				const priorities = ['LOW', 'MEDIUM', 'HIGH', 'URGENT']
 				return priorities.map((priority)=> ({
@@ -391,31 +403,32 @@ const generateField = (key) => {
 		return ({ __typename: 'StandarOption', label: casual.words(2), key: casual.word })
 	}
 	
-	const generateOptions = (generator, max) => {
-		if (lodash.isUndefined(max)) return generator();
-		return Array.apply(null, {length: casual.integer(7, max)}).map(generator)
-	}
-	
 	return({
 		...interfaceField,
 		// options: (_, {search_text}) => field_options
-		options: generateOptions(
-			generateSelectOption,
-			do {
-				if(!['priority', 'source'].includes(field_prop.key)) 27
-			})
+		options: do {
+			if (['device', 'agent', 'supplier', 'group'].includes(field_prop.key))
+				generateNelements(generateSelectOption, 77)
+			else
+				generateSelectOption()
+		}
 	})
 }
 
 const generateFieldValue = (metadata) => {
-	const { type } = metadata;
+	const { type, key } = metadata;
+	
 	return({
 		metadata,
 		...do {
-			if(type === 'SELECT') ({
-				__typename: 'SelectValue',
-				key: metadata.options[casual.integer(0, metadata.options.length - 1)].key || metadata.options[casual.integer(0, metadata.options.length - 1)].id
-			})
+			if(type === 'SELECT') {
+				let random_index = casual.integer(0, metadata.options.length - 1);
+				({
+					__typename: 'SelectValue',
+					key: metadata.options[random_index].key || metadata.options[random_index].id,
+					label: metadata.options[random_index].label || metadata.options[random_index].name
+				})
+			}
 			else if (type === 'NUMBER') ({
 				__typename: 'NumberValue',
 				number: casual.integer(1, 77)
@@ -441,6 +454,10 @@ const generateCondition = (key) => {
 	const { type } = field;
 	
 	return({
+		__typename: do {
+			if(type === 'SELECT') {'ConditionMultiValue'}
+			else {'ConditionSingleValue'}
+		},
 		condition_operator: do {
 			if (type.includes('TEXT')) {casual.random_element(['IS', 'NOT', 'CONTAINS', 'NOT_CONTAINS', 'STARTS', 'ENDS'])}
 			else if (type === 'DATE') {casual.random_element(['IS', 'NOT', 'HIGHER', 'LESS'])}
@@ -449,9 +466,27 @@ const generateCondition = (key) => {
 			else {casual.random_element(['IS', 'NOT'])}
 		},
 		conditioned_field: field,
-		value: {
-			...generateFieldValue(field),
-			metadata: field
+		...do {
+			if(type === 'SELECT') ({
+				values: do {
+					if (['device', 'agent', 'supplier', 'group'].includes(key))
+						generateNelements(() => ({
+							...generateFieldValue(field),
+							metadata: field
+						}), 7)
+					else
+						([{
+							...generateFieldValue(field),
+							metadata: field
+						}])
+				}
+			})
+			else ({
+				value: {
+					...generateFieldValue(field),
+					metadata: field
+				}
+			})
 		}
 	})
 }
@@ -493,12 +528,7 @@ const generateDispatcher = () => {
 		id: casual.uuid,
 		name: casual.title,
 		description: casual.short_description,
-		conditions: (_, { position }) => do {
-			if (!lodash.isUndefined(position))
-				if (position >= static_conditions.length) [] //throw new Error('No existe una condición en esa posición indicada')
-				else [generateCondition(static_conditions[position])]
-			else static_conditions.map(key => generateCondition(key))
-		},
+		conditions: () => static_conditions.map(key => generateCondition(key)),
 		actions: () => static_actions.map(key => generateAction(key))
 	})
 }
@@ -549,8 +579,8 @@ const mocks = {
 		old_value: casual.short_description,
 		new_value: casual.short_description
 	}),
-	State: generateState,
-	TicketType: generateTicketType,
+	State: generateState(),
+	TicketType: generateTicketType(),
 	Category: () => ({
 		id: casual.uuid,
 		name: casual.name,
@@ -714,101 +744,103 @@ const mocks = {
 			],
 			activities: generateNTicketActivities()
 		}),
-		ticketMetadata: () => ({
-			types: [
-				{key: "incident", label: "Incidente"},
-				{key: "problem", label: "Problema"},
-				{key: "question", label: "Pregunta"}
-			],
-			states: [
-				{key: "new", label: "Nuevo", stage: "PREPARATION", sla_paused: false, came_from: null},
-				{key: "process", label: "En Proceso", stage: "PROGRESS", sla_paused: false, came_from: [
-					{key: "new", label: "Nuevo", stage: "PREPARATION"},
-					{key: "pending", label: "En Espera", stage: "PROGRESS"}
-				]},
-				{key: "pending", label: "En Espera", stage: "PROGRESS", sla_paused: true, came_from: [
-					{key: "new", label: "Nuevo", stage: "PREPARATION"},
-					{key: "process", label: "En Proceso", stage: "PROGRESS"}
-				]},
-				{key: "resolved", label: "Resuelto", stage: "END", sla_paused: false, came_from: [
-					{key: "process", label: "En Proceso", stage: "PROGRESS"},
-					{key: "pending", label: "En Espera", stage: "PROGRESS"}
-				]},
-				{key: "falied", label: "Fallido", stage: "END", sla_paused: false, came_from: [
-					{key: "process", label: "En Proceso", stage: "PROGRESS"},
-					{key: "pending", label: "En Espera", stage: "PROGRESS"}
-				]}
-			],
-			custom_fields: [
-				{
-					__typename: "FreeField",
-					position: 1,
-					key: "date",
-					label: "Fecha de Atencion",
-					clientVisible: true,
-					type: "DATE",
-					value: {
-						__typename: "TextValue",
-						text: "Sun Nov 26 2017 22:22:26 GMT-0400 (VET)"
-					}
-				},
-				{
-					__typename: "FreeField",
-					position: 3,
-					key: "comment",
-					label: "Comentario",
-					clientVisible: true,
-					type: "TEXTAREA",
-					value: {
-						__typename: "TextValue",
-						text: "Un comentario fino"
-					}
-				},
-				{
-					__typename: "SelectField",
-					position: 2,
-					key: "color",
-					label: "Color",
-					clientVisible: true,
-					type: "SELECT",
-					value: {
-						__typename: "SelectValue",
-						key: "white"
+		ticketMetadata: () => {
+			const default_fields_keys = ['title', 'description', 'priority', 'type', 'state', 'source', 'agent', 'supplier', 'group', 'device' ]
+			return ({
+				types: [
+					{key: "incident", label: "Incidente"},
+					{key: "problem", label: "Problema"},
+					{key: "question", label: "Pregunta"}
+				],
+				states: [
+					{key: "new", label: "Nuevo", stage: "PREPARATION", sla_paused: false, came_from: null},
+					{key: "process", label: "En Proceso", stage: "PROGRESS", sla_paused: false, came_from: [
+						{key: "new", label: "Nuevo", stage: "PREPARATION"},
+						{key: "pending", label: "En Espera", stage: "PROGRESS"}
+					]},
+					{key: "pending", label: "En Espera", stage: "PROGRESS", sla_paused: true, came_from: [
+						{key: "new", label: "Nuevo", stage: "PREPARATION"},
+						{key: "process", label: "En Proceso", stage: "PROGRESS"}
+					]},
+					{key: "resolved", label: "Resuelto", stage: "END", sla_paused: false, came_from: [
+						{key: "process", label: "En Proceso", stage: "PROGRESS"},
+						{key: "pending", label: "En Espera", stage: "PROGRESS"}
+					]},
+					{key: "falied", label: "Fallido", stage: "END", sla_paused: false, came_from: [
+						{key: "process", label: "En Proceso", stage: "PROGRESS"},
+						{key: "pending", label: "En Espera", stage: "PROGRESS"}
+					]}
+				],
+				custom_fields: [
+					{
+						__typename: "FreeField",
+						position: 1,
+						key: "date",
+						label: "Fecha de Atencion",
+						clientVisible: true,
+						type: "DATE",
+						value: {
+							__typename: "TextValue",
+							text: "Sun Nov 26 2017 22:22:26 GMT-0400 (VET)"
+						}
 					},
-					options: [
-						{label: "Blanco", key: "white", position: 2},
-						{label: "Negro", key: "black", position: 1}
-					]
-				},
-				{
-					__typename: "FreeField",
-					position: 5,
-					key: "numero",
-					label: "Numero",
-					clientVisible: true,
-					type: "NUMBER",
-					value: {
-						__typename: "NumberValue",
-						number: 12345
+					{
+						__typename: "FreeField",
+						position: 3,
+						key: "comment",
+						label: "Comentario",
+						clientVisible: true,
+						type: "TEXTAREA",
+						value: {
+							__typename: "TextValue",
+							text: "Un comentario fino"
+						}
+					},
+					{
+						__typename: "SelectField",
+						position: 2,
+						key: "color",
+						label: "Color",
+						clientVisible: true,
+						type: "SELECT",
+						value: {
+							__typename: "SelectValue",
+							key: "white"
+						},
+						options: [
+							{__typename: 'StandarOption', label: "Blanco", key: "white", position: 2},
+							{__typename: 'StandarOption', label: "Negro", key: "black", position: 1}
+						]
+					},
+					{
+						__typename: "FreeField",
+						position: 5,
+						key: "numero",
+						label: "Numero",
+						clientVisible: true,
+						type: "NUMBER",
+						value: {
+							__typename: "NumberValue",
+							number: 12345
+						}
+					},
+					{
+						__typename: "FreeField",
+						position: 4,
+						key: "pato",
+						label: "Pargolete",
+						clientVisible: true,
+						type: "CHECKBOX",
+						value: {
+							__typename: "CheckValue",
+							check: false
+						}
 					}
-				},
-				{
-					__typename: "FreeField",
-					position: 4,
-					key: "pato",
-					label: "Pargolete",
-					clientVisible: true,
-					type: "CHECKBOX",
-					value: {
-						__typename: "CheckValue",
-						check: false
-					}
-				}
-			],
-			default_fields: []
-		}),
+				],
+				default_fields: default_fields_keys.map(key => generateField(key))
+			})
+		},
 		interventions: (_, { ticket_id, last}) => new MockList([40, 50], generateIntervention),
-		
 		solutions: () => new MockList([40, 50]),
 		SLAPolicies: generateSLAPolicies(),
 		ticketsCountByDay: (_, { last = 7 }) => {
@@ -887,9 +919,7 @@ const mocks = {
 				holidays
 			}
 		},
-		
-		dispatchers: () => new MockList([1, 10])
-		},
+		dispatchers: () => new MockList([1, 10]),
 		palette: () => casual.random_element(['indigo', 'red']),
 		emailSupport: () => casual.email
 	}),
@@ -954,6 +984,22 @@ const mocks = {
 				...group
 			}
 		},
+		createDispatcher: (_, {dispatcher: {conditions, actions, ...dispatcher}}) => {
+			return {
+				...generateDispatcher(),
+				...dispatcher
+			}
+		},
+		updateDispatcher: (_, {dispatcher: {conditions, actions, ...dispatcher}}) => {
+			return {
+				...generateDispatcher(),
+				...dispatcher
+			}
+		},
+		deleteDispatcher: (_, {id}) => ({
+			...generateDispatcher(),
+			id
+		}),
 		prueba: (_, args, { subdomain }) => {
 			const newTicket = {
 				...generateTicket(),

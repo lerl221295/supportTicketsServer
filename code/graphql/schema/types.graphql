@@ -201,6 +201,7 @@ type NumberValue implements FieldValue {
 type SelectValue implements FieldValue {
     metadata: Field
     key: String
+    label: String
 }
 
 type CheckValue implements FieldValue {
@@ -234,7 +235,7 @@ type SelectField implements Field {
     type: FieldType
     clientVisible: Boolean
     value(ticket_number: Int!): FieldValue
-    options(search_text: String): [ SelectOption ]
+    options: [ SelectOption ]
 }
 
 union SelectOption = Agent | Client | Device | State | Group | Supplier | TicketType | StandarOption
@@ -428,13 +429,29 @@ type SameForDays implements BusinessHours {
 
 union Automation = Dispatcher | Observer | Supervisor | Scenario
 
-type Condition {
+interface Condition {
+    #Campo que está siendo condicionado
+    conditioned_field: Field
+    # Operador de la condición
+    condition_operator: ConditionOperator
+}
+
+type ConditionSingleValue implements Condition {
     #Campo que está siendo condicionado
     conditioned_field: Field
     # Operador de la condición
     condition_operator: ConditionOperator
     # Valor con el que va a ser comparado
     value: FieldValue
+}
+
+type ConditionMultiValue implements Condition {
+    #Campo que está siendo condicionado
+    conditioned_field: Field
+    # Operador de la condición
+    condition_operator: ConditionOperator
+    # Valor con el que va a ser comparado
+    values: [ FieldValue ]
 }
 
 type SupervisorCondition {
@@ -451,7 +468,7 @@ type Dispatcher {
     name: String
     description: String
     comparator: LogicalComparator
-    conditions(position: Int): [ Condition ]
+    conditions: [ Condition ]
     actions: [ Action ]
 }
 

@@ -124,7 +124,6 @@ input TicketFieldInput {
     check: Boolean
     #Para los select options
     key: String
-
 }
 
 input InterventionInput {
@@ -261,4 +260,30 @@ input EmailConfig {
     email: String!
     password: String!
     password_confirm: String!
+}
+
+input DispatcherInput {
+    id: ID
+    name: String
+    description: String
+    comparator: LogicalComparator
+    conditions: [ ConditionInput! ]
+    actions: [ ActionInput! ]
+}
+
+input ConditionInput {
+    # Key del campo condicionado
+    conditioned_field_key: String
+    condition_operator: ConditionOperator
+    value: TicketFieldInput
+}
+
+input ActionInput {
+    field_key: String
+    new_value: TicketFieldInput
+
+    subject: String
+    body: String
+    to: ID
+    receiver_type: ReceiverType
 }
