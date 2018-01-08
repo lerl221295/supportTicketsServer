@@ -660,6 +660,11 @@ const mocks = {
 		on_hold: casual.integer(2, 50),
 		unassigned: casual.integer(2, 50)
 	}),
+	Compliance: () => ({
+		first_response: casual.integer(85, 99),
+		solved: casual.integer(85, 99),
+		solved_after_fr: casual.integer(85, 99)
+	}),
 	Query: () => ({
 		/*tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
@@ -815,7 +820,48 @@ const mocks = {
 			}
 			return ticketsByDay;
 		},
-
+		ticketsBySource: () => ([
+			{source: "PORTAL", tickets: casual.integer(2, 50)},
+			{source: "EMAIL", tickets: casual.integer(2, 50)},
+			{source: "FACEBOOK", tickets: casual.integer(2, 50)},
+			{source: "TWITTER", tickets: casual.integer(2, 50)}
+		]),
+		ticketsByPriority: () => ([
+			{priority: "LOW", tickets: casual.integer(2, 50)},
+			{priority: "MEDIUM", tickets: casual.integer(2, 50)},
+			{priority: "HIGH", tickets: casual.integer(2, 50)},
+			{priority: "URGENT", tickets: casual.integer(2, 50)}
+		]),
+		ticketsByInterventionCount: () => ([
+			{interventions: "ONE", tickets: casual.integer(2, 50)},
+			{interventions: "TWO", tickets: casual.integer(2, 50)},
+			{interventions: "THREE", tickets: casual.integer(2, 50)},
+			{interventions: "FOUR", tickets: casual.integer(2, 50)},
+			{interventions: "FIVE", tickets: casual.integer(2, 50)},
+			{interventions: "MORE_FIVE", tickets: casual.integer(2, 50)}
+		]),
+		ticketsByType: () => ([
+			{type: {key: "incident", label: "Incidente"}, tickets: casual.integer(2, 50)},
+			{type: {key: "problem", label: "Problema"}, tickets: casual.integer(2, 50)},
+			{type: {key: "question", label: "Pregunta"}, tickets: casual.integer(2, 50)}
+		]),
+		complianceBySource: () => ([
+			{ source: "EMAIL" },
+			{ source: "PORTAL" },
+			{ source: "FACEBOOK" },
+			{ source: "TWITTER" }
+		]),
+		complianceByType: () => ([
+			{ type: {key: "incident", label: "Incidente"} },
+			{ type: {key: "problem", label: "Problema"} },
+			{ type: {key: "question", label: "Pregunta"} }
+		]),
+		complianceByPriority: () => ([
+			{ priority: "LOW" },
+			{ priority: "MEDIUM" },
+			{ priority: "HIGH" },
+			{ priority: "URGENT" }
+		]),
 		businessHours: (_, {days}) => {
 			let working_days = [
 				{day: "MONDAY", workeable: true, horary: {start: {hour: 7, minutes: 30}, end: {hour: 17, minutes: 0} }},
@@ -843,6 +889,9 @@ const mocks = {
 		},
 		
 		dispatchers: () => new MockList([1, 10])
+		},
+		palette: () => casual.random_element(['indigo', 'red']),
+		emailSupport: () => casual.email
 	}),
 	Mutation: () => ({
 		updateClient: (_, {client}) => {

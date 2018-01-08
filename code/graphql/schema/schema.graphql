@@ -1,6 +1,6 @@
 type Query {
 	ticket(number: Int!): Ticket
-	tickets(filter: FilterTicketInput, limit: Int, offset: Int): TicketsResponse
+	tickets(filter: FilterTicketInput, order: Order, limit: Int, offset: Int): TicketsResponse
 	ticketMetadata: TicketMetadata
 	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
     activities(ticket_number: Int, limit: Int, offset: Int): ActivitiesResponse
@@ -14,7 +14,7 @@ type Query {
 	organizations(search_text: String, limit: Int, offset: Int): OrganizationsResponse
 	organization(id: ID!): Organization
 
-	agents(search_text: String, limit: Int, offset: Int, groups: [ID], organizations: [ID]): AgentsResponse
+	agents(search_text: String, limit: Int, offset: Int, groups: [ID], suppliers: [ID]): AgentsResponse
 	agent(id: ID!): Agent
 	groups(search_text: String, limit: Int, offset: Int): GroupsResponse
 	group(id: ID): Group
@@ -44,10 +44,23 @@ type Query {
 	# REPORTES
 	ticketsCountByDay(last: Int): [ TicketByDay ]
 
+	ticketsBySource(from: String, to: String): [ TicketsBySource ]
+	ticketsByType(from: String, to: String): [ TicketsByType ]
+	ticketsByPriority(from: String, to: String): [ TicketsByPriority ]
+	ticketsByInterventionCount(from: String, to: String): [ TicketsByInterventionCount ]
+
+	complianceBySource(from: String, to: String, organizations_id: [ID!]): [ ComplianceBySource ]
+	complianceByType(from: String, to: String, organizations_id: [ID!]): [ ComplianceByType ]
+	complianceByPriority(from: String, to: String, organizations_id: [ID!]): [ ComplianceByPriority ]
+
+	#agentsPerfomance(from: String, to: String, agents_id: [ID!]): [ AgentPerfomance ]
+
+	emailSupport: String!
+	palette: String!
 }
 
 type Mutation {
-	createTicket(ticket: TicketInput): Ticket
+	createTicket(ticket: TicketInput!): Ticket
 	updateTicket(ticket: TicketUpdateInput!): Ticket
 	addIntervention(intervention: InterventionInput!): Intervention
 	#No pueden haber dos tareas con el mismo text
@@ -86,6 +99,9 @@ type Mutation {
 	updateTicketTypes(types: [TicketTypeInput!]): [ TicketType ]
 	updateCustomFields(custom_fields: [CustomFieldInput!]): [ Field ]
 	updateTicketStates(states: [TicketStateInput!]): [State!]
+
+	updateEmailSupport(config: EmailConfig!): String!
+	updatePalette(paletteName: String!): String!
 
     notificationReaded(id: ID!): Notification
 

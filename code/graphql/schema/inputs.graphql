@@ -74,10 +74,12 @@ input SupplierInput {
 input TicketInput {
     title: String!
     description: String!
+    priority: TicketPriority
     type_key: String
-    device_id: ID
+    agent_id: ID
     #El id del cliente solo se enviara cuando el ticket lo cree un agente
     client_id: ID
+    device_id: ID
     custom_fields: [ TicketFieldInput ]
 }
 
@@ -129,6 +131,8 @@ input InterventionInput {
     ticket_number: Int!
     # HTML del mensaje
     text: String!
+    #False por defecto. (solo para agentes)
+    private: Boolean
 }
 
 input TicketTypeInput {
@@ -251,4 +255,10 @@ input AlertInput {
     # ID's de agentes a los que le llegará la alerta
     to: [ ID! ]!
     message: String!
+}
+
+input EmailConfig {
+    email: String!
+    password: String!
+    password_confirm: String!
 }
