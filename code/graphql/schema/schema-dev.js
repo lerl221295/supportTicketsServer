@@ -827,8 +827,8 @@ const mocks = {
 					{
 						__typename: "FreeField",
 						position: 4,
-						key: "pato",
-						label: "Pargolete",
+						key: "presupuestado",
+						label: "Presupuestado",
 						clientVisible: true,
 						type: "CHECKBOX",
 						value: {
