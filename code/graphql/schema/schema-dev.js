@@ -856,7 +856,8 @@ const mocks = {
 			{source: "PORTAL", tickets: casual.integer(2, 50)},
 			{source: "EMAIL", tickets: casual.integer(2, 50)},
 			{source: "FACEBOOK", tickets: casual.integer(2, 50)},
-			{source: "TWITTER", tickets: casual.integer(2, 50)}
+			{source: "TWITTER", tickets: casual.integer(2, 50)},
+			{source: "PHONE", tickets: casual.integer(2, 50)}
 		]),
 		ticketsByPriority: () => ([
 			{priority: "LOW", tickets: casual.integer(2, 50)},
@@ -881,7 +882,8 @@ const mocks = {
 			{ source: "EMAIL" },
 			{ source: "PORTAL" },
 			{ source: "FACEBOOK" },
-			{ source: "TWITTER" }
+			{ source: "TWITTER" },
+			{ source: "PHONE" }
 		]),
 		complianceByType: () => ([
 			{ type: {key: "incident", label: "Incidente"} },

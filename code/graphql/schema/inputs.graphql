@@ -10,9 +10,7 @@ input ClientInput {
     face_base64: String
     twitter_id: ID
     facebook_id: ID
-    # ID'S de dispositivos existentes del cliente
-    devices: [ ID ]
-    # Crear nuevos equipos y asociarlos con el cliente de una
+    # Si el cliente existe, sustituye los equipos que le pertenecian
     new_devices: [ DeviceInput ]
     # ID de la organización a la que pertenece
     organization_id: ID
@@ -84,6 +82,8 @@ input TicketInput {
 }
 
 input FilterTicketInput {
+    #Numero de ticket
+    number: Float
     #Si es true, se ignora el param "agents"
     unassigned: Boolean
     agents: [ ID ]
@@ -99,7 +99,6 @@ input FilterTicketInput {
     due_by: [ DueBy ]
 }
 
-#A diferencia de con los clientes, con los tickets no vale la pena mantener el mismo input
 input TicketUpdateInput {
     ticket_number: Int!
     type_key: String

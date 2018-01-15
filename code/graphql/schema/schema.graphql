@@ -1,115 +1,382 @@
 type Query {
-	ticket(number: Int!): Ticket
-	tickets(filter: FilterTicketInput, order: Order, limit: Int, offset: Int): TicketsResponse
+	ticket(
+	#Numero del Ticket
+		number: Int!
+	): Ticket
+	tickets(
+		#Objeto de filtrado de los tickets
+		filter: FilterTicketInput
+		#Orden esperado de la respuesta
+		order: Order
+		#Paginacion: Cantidad de nodos esperados
+		limit: Int
+		#Paginacion: Cantidad de nodos a obviar o saltar
+		offset: Int
+	): TicketsResponse
 	ticketMetadata: TicketMetadata
-	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
-    activities(ticket_number: Int, limit: Int, offset: Int): ActivitiesResponse
-	#EL ticket_number es opcional. Si no se provee, se obtiene para todos los tickets
-	interventions(ticket_number: Int, last: Int): [ Intervention ]
+	activities(
+    	#Numero del Ticket. Si no se provee, se obtiene para todos los tickets
+    	ticket_number: Int
+    	#Paginacion: Cantidad de nodos esperados
+    	limit: Int
+    	#Paginacion: Cantidad de nodos a obviar o saltar
+    	offset: Int
+    ): ActivitiesResponse
+	interventions(
+		#Numero del Ticket. Si no se provee, se obtiene para todos los tickets
+		ticket_number: Int
+		#Cantidad de ultimas intervenciones
+		last: Int
+	): [ Intervention ]
 
-	clients(search_text: String, limit: Int, offset: Int): ClientsResponse
-	client(id: ID!): Client
-	#EL cliente_id es opcional. Si no se provee, se obtiene para todos los clientes
-	devices(cliente_id: ID): [ Device ]
-	organizations(search_text: String, limit: Int, offset: Int): OrganizationsResponse
-	organization(id: ID!): Organization
+	clients(
+		#Texto de referencia para filtrar la respuesta
+		search_text: String
+		#Paginacion: Cantidad de nodos esperados
+		limit: Int
+		#Paginacion: Cantidad de nodos a obviar o saltar
+		offset: Int
+	): ClientsResponse
+	client(
+		#Identificador unico del cliente
+		id: ID!
+	): Client
+	
+	devices(
+		#Identificador unico del cliente. Si no se provee, se obtiene para todos los clientes
+		cliente_id: ID
+	): [ Device ]
+	organizations(
+		#Texto de referencia para filtrar la respuesta
+		search_text: String
+		#Paginacion: Cantidad de nodos esperados
+		limit: Int
+		#Paginacion: Cantidad de nodos a obviar o saltar
+		offset: Int
+	): OrganizationsResponse
+	organization(
+		#Identificador unico de la organizacion
+		id: ID!
+	): Organization
 
-	agents(search_text: String, limit: Int, offset: Int, groups: [ID], suppliers: [ID]): AgentsResponse
-	agent(id: ID!): Agent
-	groups(search_text: String, limit: Int, offset: Int): GroupsResponse
-	group(id: ID): Group
-	suppliers(search_text: String, limit: Int, offset: Int): SuppliersResponse
-	supplier(id: ID!): Supplier
+	agents(
+		#Texto de referencia para filtrar la respuesta
+		search_text: String
+		#Paginacion: Cantidad de nodos esperados
+		limit: Int
+		#Paginacion: Cantidad de nodos a obviar o saltar
+		offset: Int
+		#Array de identificadores unicos de grupos
+		groups: [ID]
+		#Array de identificadores unicos de proveedores
+		suppliers: [ID]
+	): AgentsResponse
+	agent(
+		id: ID!
+	): Agent
+	groups(
+		#Texto de referencia para filtrar la respuesta
+		search_text: String
+		#Paginacion: Cantidad de nodos esperados
+		limit: Int
+		#Paginacion: Cantidad de nodos a obviar o saltar
+		offset: Int
+	): GroupsResponse
+	group(
+		#Identificador unico del grupo
+		id: ID
+	): Group
+	suppliers(
+		#Texto de referencia para filtrar la respuesta
+		search_text: String
+		#Paginacion: Cantidad de nodos esperados
+		limit: Int
+		#Paginacion: Cantidad de nodos a obviar o saltar
+		offset: Int
+	): SuppliersResponse
+	supplier(
+		#Identificador unico del proveedor
+		id: ID!
+	): Supplier
 
 	solutions: [ Category ]
-	solution(id: ID!): Category
-	article(id: ID!): Article
+	solution(
+		#Identificador unico de la solucion o categoria de articulos
+		id: ID!
+	): Category
+	article(
+		#Identificador unico de articulo
+		id: ID!
+	): Article
 
-	notifications(limit: Int, offset: Int): NotificationsResponse
+	notifications(
+		#Paginacion: Cantidad de nodos esperados
+		limit: Int
+		#Paginacion: Cantidad de nodos a obviar o saltar
+		offset: Int
+	): NotificationsResponse
 
-	discussion(ticket_number: Int!): Discussion
+	discussion(
+		#Numero del Ticket
+		ticket_number: Int!
+	): Discussion
 
 	# Pasando el atributo days, solo obtienes el horario de esos dias indicados
-	businessHours(days: [WeekDay!]): BusinessHours
+	businessHours(
+		#Array de dias laborables en la semana
+		days: [WeekDay!]
+	): BusinessHours
 	SLAPolicies: [ SLAPolicy ]
-	SLAPolicy(id: ID!): SLAPolicy
+	SLAPolicy(
+		#Identificador unico de la politica SLA
+		id: ID!
+	): SLAPolicy
 
 	# DASHBOARD INDICATORS
 	indicators: Indicators
 
 	# DISPATCHER AUTOMATION
     dispatchers: [ Dispatcher ]
-    dispatcher(id: ID!): Dispatcher
+    dispatcher(
+    	#Identificador unico del despachador
+    	id: ID!
+    ): Dispatcher
 
 	# REPORTES
-	ticketsCountByDay(last: Int): [ TicketByDay ]
+	ticketsCountByDay(
+		#Cantidad de ultimos dias
+		last: Int
+	): [ TicketByDay ]
 
-	ticketsBySource(from: String, to: String): [ TicketsBySource ]
-	ticketsByType(from: String, to: String): [ TicketsByType ]
-	ticketsByPriority(from: String, to: String): [ TicketsByPriority ]
-	ticketsByInterventionCount(from: String, to: String): [ TicketsByInterventionCount ]
+	ticketsBySource(
+		from: String
+		to: String
+	): [ TicketsBySource ]
+	ticketsByType(
+		from: String
+		to: String
+	): [ TicketsByType ]
+	ticketsByPriority(
+		#Fecha de inicio del periodo de tiempo a consultar
+		from: String
+		#Fecha final del periodo de tiempo a consultar
+		to: String
+	): [ TicketsByPriority ]
+	ticketsByInterventionCount(
+		#Fecha de inicio del periodo de tiempo a consultar
+		from: String
+		#Fecha final del periodo de tiempo a consultar
+		to: String
+	): [ TicketsByInterventionCount ]
 
-	complianceBySource(from: String, to: String, organizations_id: [ID!]): [ ComplianceBySource ]
-	complianceByType(from: String, to: String, organizations_id: [ID!]): [ ComplianceByType ]
-	complianceByPriority(from: String, to: String, organizations_id: [ID!]): [ ComplianceByPriority ]
+	complianceBySource(
+		#Fecha de inicio del periodo de tiempo a consultar
+		from: String
+		#Fecha final del periodo de tiempo a consultar
+		to: String
+		#Array de identificadores unicos de organizaciones
+		organizations_id: [ID!]
+	): [ ComplianceBySource ]
+	complianceByType(
+		#Fecha de inicio del periodo de tiempo a consultar
+		from: String
+		#Fecha final del periodo de tiempo a consultar
+		to: String
+		#Array de identificadores unicos de organizaciones
+		organizations_id: [ID!]
+	): [ ComplianceByType ]
+	complianceByPriority(
+		#Fecha de inicio del periodo de tiempo a consultar
+		from: String
+		#Fecha final del periodo de tiempo a consultar
+		to: String
+		#Array de identificadores unicos de organizaciones
+		organizations_id: [ID!]
+	): [ ComplianceByPriority ]
 
-	#agentsPerfomance(from: String, to: String, agents_id: [ID!]): [ AgentPerfomance ]
+	#agentsPerfomance(
+	#	from: String
+	#	to: String
+	#	agents_id: [ID!]
+	#): [ AgentPerfomance ]
 
 	emailSupport: String!
 	palette: String!
 }
 
 type Mutation {
-	login(email: String!, password: String!): LoginResponse 
-	createTicket(ticket: TicketInput!): Ticket
-	updateTicket(ticket: TicketUpdateInput!): Ticket
-	addIntervention(intervention: InterventionInput!): Intervention
+	login(
+		#Correo electronico del usuario
+		email: String!
+		#Contraseña del usuario
+		password: String!
+	): LoginResponse 
+	createTicket(
+		#Datos del ticket a crear
+		ticket: TicketInput!
+	): Ticket
+	updateTicket(
+		#Datos del ticket a actualizar
+		ticket: TicketUpdateInput!
+	): Ticket
+	addIntervention(
+		#Detalles de la nueva intervencion
+		intervention: InterventionInput!
+	): Intervention
 	#No pueden haber dos tareas con el mismo text
-	addTask(ticket_number: Int!, text: String!): Task
+	addTask(
+		#Numero del Ticket
+		ticket_number: Int!
+		#Titulo de la tarea por hacer
+		text: String!
+	): Task
 	# -> !done del task con el text indicado
-	checkTask(ticket_number: Int!, text: String!): Task
+	checkTask(
+		#Numero del Ticket
+		ticket_number: Int!
+		#Titulo de la tarea por hacer
+		text: String!
+	): Task
 
-	createClient(client: ClientInput!): Client
-	updateClient(client: ClientInput!): Client
-	createDevice(client_id: ID!): Device
-	createOrganization(organization: OrganizationInput!): Organization
-	updateOrganization(organization: OrganizationInput!): Organization
+	createClient(
+		#Detalles del cliente a crear
+		client: ClientInput!
+	): Client
+	updateClient(
+		#Detalles del cliente a actualizar
+		client: ClientInput!
+	): Client
+	createDevice(
+		#Identificador unico del cliente
+		client_id: ID!
+		#Detalles del dispositivo
+		device: DeviceInput!
+	): Device
+	createOrganization(
+		#Detalles de la organizacion a crear
+		organization: OrganizationInput!
+	): Organization
+	updateOrganization(
+		#Detalles de la organizacion a actualizar
+		organization: OrganizationInput!
+	): Organization
 
-	createAgent(agent: AgentInput!): Agent
-	updateAgent(agent: AgentInput!): Agent
-	createGroup(group: GroupInput!): Group
-	updateGroup(group: GroupInput!): Group
-	disolveGroup(group_id: ID!): String
-	createSupplier(supplier: SupplierInput!): Supplier
-	updateSupplier(supplier: SupplierInput!): Supplier
+	createAgent(
+		#Detalles del agente a crear
+		agent: AgentInput!
+	): Agent
+	updateAgent(
+		#Detalles del clienagentetualizar
+		agent: AgentInput!
+	): Agent
+	createGroup(
+		#Detallesgrupoiente a crear
+		group: GroupInput!
+	): Group
+	updateGroup(
+		#Detalles del grupo a actualizar
+		group: GroupInput!
+	): Group
+	disolveGroup(
+		#Identificador unico del grupo a disolver
+		group_id: ID!
+	): String
+	createSupplier(
+		#Detalles del proveedor a crear
+		supplier: SupplierInput!
+	): Supplier
+	updateSupplier(
+		#Detalles del clienproveedortualizar
+		supplier: SupplierInput!
+	): Supplier
 
-	createCategory(category: CategoryInput!): Category
-	updateCategory(category: CategoryInput!): Category
-	addArticle(article: ArticleInput!): Article
-	updateArticle(article: ArticleInput!): Article
+	#Base de conocimientos: una categoria agrupa distintos articulos
+	createCategory(
+		#Detalles de la categoria a crear
+		category: CategoryInput!
+	): Category
+	updateCategory(
+		#Detalles de la categoria a actualizar
+		category: CategoryInput!
+	): Category
+	addArticle(
+		#Detalles del articulo a crear
+		article: ArticleInput!
+	): Article
+	updateArticle(
+		#Detalles del articulo a actualizar
+		article: ArticleInput!
+	): Article
 
-	addAgentsToDiscussion(agents_id: [ ID ], ticket_number: Int!): [ Agent ]
+	addAgentsToDiscussion(
+		#Array de identificadores unicos de los agentes a agregar a la discusion
+		agents_id: [ ID ]
+		#Numero del Ticket
+		ticket_number: Int!
+	): [ Agent ]
 
-	updateBusinessHours(business_hours: BusinessHoursInput!): BusinessHours
+	updateBusinessHours(
+		#Detalles del horario habil de la mesa de ayuda
+		business_hours: BusinessHoursInput!
+	): BusinessHours
 
-	createSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
-	updateSLAPolicy(slapolicy: SlapolicyInput!): SLAPolicy
-	deleteSLAPolicy(id: ID!): SLAPolicy
-	updateSLAPoliciesOrder(slapolicies: [SlapoliciesOrderInput]!): [ SLAPolicy ]
+	createSLAPolicy(
+		#Detalles de la politica SLA a crear
+		slapolicy: SlapolicyInput!
+	): SLAPolicy
+	updateSLAPolicy(
+		#Detalles de la politica SLA a modificar
+		slapolicy: SlapolicyInput!
+	): SLAPolicy
+	deleteSLAPolicy(
+		#Detalles de la politica SLA a eliminar
+		id: ID!
+	): SLAPolicy
+	updateSLAPoliciesOrder(
+		#Detalles del orden de las politicas SLA
+		slapolicies: [SlapoliciesOrderInput]!
+	): [ SLAPolicy ]
 
-	updateTicketTypes(types: [TicketTypeInput!]): [ TicketType ]
-	updateCustomFields(custom_fields: [CustomFieldInput!]): [ Field ]
-	updateTicketStates(states: [TicketStateInput!]): [State!]
+	updateTicketTypes(
+		#Tipos del ticket
+		types: [TicketTypeInput!]
+	): [ TicketType ]
+	updateCustomFields(
+		#Campos personalizados del ticket
+		custom_fields: [CustomFieldInput!]
+	): [ Field ]
+	updateTicketStates(
+		#Estados y ciclo de vida del ticket
+		states: [TicketStateInput!]
+	): [State!]
 
 	# DISPATCHER AUTOMATION
-	createDispatcher(dispatcher: DispatcherInput!): Dispatcher
-	updateDispatcher(dispatcher: DispatcherInput!): Dispatcher
-	deleteDispatcher(id: ID!): Dispatcher
+	createDispatcher(
+		#Detalles de la automatizacion Dispatcher a crear
+		dispatcher: DispatcherInput!
+	): Dispatcher
+	updateDispatcher(
+		#Detalles de la automatizacion Dispatcher a actualizar
+		dispatcher: DispatcherInput!
+	): Dispatcher
+	deleteDispatcher(
+		#Identificador unico de la automatizacion Dispatcher a eliminar
+		id: ID!
+	): Dispatcher
 
-	updateEmailSupport(config: EmailConfig!): String!
-	updatePalette(paletteName: String!): String!
+	updateEmailSupport(
+		#Detalles del email que dara soporte via correo electronico
+		config: EmailConfig!
+	): String!
+	updatePalette(
+		#NOmbre de la paleta de colores del sistema
+		paletteName: String!
+	): String!
 
-    notificationReaded(id: ID!): Notification
+    notificationReaded(
+    	#Identificador unico de la notificacion que se marcara como leida
+    	id: ID!
+    ): Notification
 
 	prueba: String
     pruebaNotif: String
@@ -117,12 +384,24 @@ type Mutation {
 }
 
 type Subscription {
-	newTicket(filter: FilterTicketInput): Ticket
+	newTicket(
+		#Objeto de filtrado de los tickets
+		filter: FilterTicketInput
+	): Ticket
 	newNotification: Notification
 	newDiscussion: Discussion
-	discussionMessage(ticket_number: Int!): Message
-	newActivity(ticket_number: Int): Activity
-	interventions(ticket_number: Int): Intervention
+	discussionMessage(
+		#Numero del Ticket
+		ticket_number: Int!
+	): Message
+	newActivity(
+		#Numero del Ticket
+		ticket_number: Int
+	): Activity
+	interventions(
+		#Numero del Ticket
+		ticket_number: Int
+	): Intervention
 }
 
 schema {

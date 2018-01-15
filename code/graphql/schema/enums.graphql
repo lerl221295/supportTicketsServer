@@ -18,6 +18,7 @@ enum Source {
     EMAIL
     FACEBOOK
     TWITTER
+    PHONE
 }
 
 # Etapas por las que transcurre un ticket. estas contienen estados.
