@@ -86,7 +86,6 @@ const generateGroup = () => ({
 const generateTicket = () => {
 	const date = new Date();
 	return({
-		id: casual.uuid,
 		time: faker.date.recent(),
 		number: casual.integer(1, 7777),
 		title: casual.short_description,
@@ -214,7 +213,6 @@ const generateNActivitiesActions = (n = casual.integer(1, 4)) => {
 };
 
 const generateIntervention = () => ({
-	id: casual.uuid,
 	text: casual.text,
 	time: faker.date.recent(),
 	type_autor: casual.random_element(["AGENT", "CLIENT"]),
@@ -243,7 +241,7 @@ const generateSLAPolicy = (position, by_default) => ({
 		if (position === undefined) casual.integer(1, 10)
 		else position
 	},
-	policies: [generatePolicy('LOW'), generatePolicy('MEDIUM'), generatePolicy('HIGH'), generatePolicy('URGENT')],
+    objectives: [generateObjective('LOW'), generateObjective('MEDIUM'), generateObjective('HIGH'), generateObjective('URGENT')],
 	clients: () => new MockList([1,7]),
 	organizations: () => new MockList([1, 7]),
 	alerts: () => [
@@ -254,7 +252,7 @@ const generateSLAPolicy = (position, by_default) => ({
 	]
 });
 
-const generatePolicy = (priority = casual.random_element(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])) => {
+const generateObjective = (priority = casual.random_element(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])) => {
 	return ({
 		priority,
 		first_response: { value: casual.integer(1, 12) },

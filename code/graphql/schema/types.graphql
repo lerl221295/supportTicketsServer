@@ -127,7 +127,6 @@ type Discussion {
 union Autor = Client | Agent
 
 type Intervention {
-    id: ID
     text: String
     time: String
     private: Boolean
@@ -348,13 +347,13 @@ type SLAPolicy {
     active: Boolean
     position: Int
     #Una politica para cada prioridad
-    policies: [ Policy ]
+    objectives: [ SLAPolicyObjective ]
     clients: [ Client ]
     organizations: [ Organization ]
     alerts: [ Alert ]
 }
 
-type Policy {
+type SLAPolicyObjective {
     priority: TicketPriority
     first_response: PolicyTime
     solved: PolicyTime
