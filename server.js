@@ -4,14 +4,16 @@ import mongoose from 'mongoose';
 import { createServer } from 'http';
 import cors from 'cors';
 
+import * as models from './code/models'
+
 //GraphQL y Apollo
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
-import schema from './code/graphql/schema/schema';
+import schema from './code/graphql/schema';
 
 //CONSTANTS
-const GRAPHQL_PORT = 3000,
+const GRAPHQL_PORT = 3001,
     GRAPHQL_URL = '/graphql',
     SUBSCRIPTIONS_URL = '/subscriptions';
 
@@ -37,18 +39,22 @@ graphQLServer.use(GRAPHQL_URL, (req, res, next) => {
     else res.status(404).json({error: "no tienes aseso menol"});
 });
 
+let Tenants = mongoose.model('Tenants');
+
 //MIDDLEWARE PARSE BODY TO JSON, SET SCHEMA AND CONTEXT TO GRAPHQL SERVER
 graphQLServer.use(GRAPHQL_URL, bodyParser.json(), bodyParser.urlencoded({ extended: true }),
-    graphqlExpress( req => ({
+    graphqlExpress( async (req) => {
+        const tenant = await Tenants.findOne({subdomain: req.headers.host.split(".")[0]});
+        return({
             schema,
             //para manejar el jwt en el header : (agregarlo al context para
             //que cada resolver lo reciba en el tercer parametro.jwt
             context: {
-                jwt: req.headers.authorization || "Bearer UmdFNzluYk8wcndKY0NDMWN4WXBjSnZiZmh0TFlOMFFzdjAxUzFhcg==",
-                subdomain: req.headers.host.split(".")[0]
+                jwt: req.headers.authorization ,
+                tenant_id: tenant.id
             }
-        }) 
-    )
+        })
+    })
 );
 
 //MIDDLEWARE RUN GRAPHIQL

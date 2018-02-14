@@ -4,7 +4,7 @@ import { Engine } from 'apollo-engine';
 import { express as Voyager } from 'graphql-voyager/middleware';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import bodyParser from 'body-parser';
-import schema from './code/graphql/schema/schema-dev';
+import schema from './code/graphql/schema-dev';
 import cors from 'cors';
 import MailListener from 'mail-listener2';
 
