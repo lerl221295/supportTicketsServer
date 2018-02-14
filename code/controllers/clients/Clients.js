@@ -19,16 +19,27 @@ class ClientsController {
 		}
 	}
 
-	getAll = async (_, args, {jwt, tenant_id}) => {
-		const nodes = await Clients.find({tenant_id});
+	getAll = async (_, {search_text, limit, offset}, {jwt, tenant_id}) => {
+		let nodes = await Clients.find({tenant_id})
+			.or([{name: new RegExp(search_text, 'i')}, {lastname: new RegExp(search_text, 'i')}])
+			.skip(offset).limit(limit);
+		
+		const count = await Clients.count({
+			$and: [
+				{tenant_id}, 
+				{$or: [{name: new RegExp(search_text, 'i')}, {lastname: new RegExp(search_text, 'i')}]}
+			]
+		});
+		
 		return({
 			nodes: nodes,
-			count: nodes.length || 0
+			count
 		})
 	}
 
 	save = async (_, {client}, {jwt, tenant_id}) => {
 		const newClient = await Clients.create({...client, tenant_id});
+		/*falta crear el usuario y asociarlo al cliente*/
 		return newClient;
 	}
 
