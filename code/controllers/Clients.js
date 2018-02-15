@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 //import _ from 'lodash';
 
 let Clients = mongoose.model('Clients');
+let Organizations = mongoose.model('Organizations');
 
 class ClientsController {
 	constructor(){
@@ -21,7 +22,8 @@ class ClientsController {
 		}
 
 		this.propertiesAndRelationships = {
-			...this.properties
+			...this.properties,
+			organization: this.organization
 			//organizations, tickets, devices .....
 		}
 	}
@@ -56,15 +58,25 @@ class ClientsController {
 	}
 
 	save = async (_, {client}, {jwt, tenant_id}) => {
+		if(!client.organization_id){
+			const organizationWithSubdomain = 
+				await Organizations.findOne({domains: client.email.split('@')[1]});
+			if(organizationWithSubdomain) client.organization_id = organizationWithSubdomain._id;
+		}
 		const newClient = await Clients.create({...client, tenant_id});
 		/*falta crear el usuario y asociarlo al cliente*/
-		/*falta validar el subdominio del correo para asociar a una organizcion*/
 		return newClient;
 	}
 
 	update = async (_, {client: {id, ...update}}, {tenant_id}) => {
 		const clientUpdated = Clients.findByIdAndUpdate(id, update, {new: true});
 		return clientUpdated;
+	}
+
+	organization = async ({organization_id}) => {
+		if(!organization_id) return null;
+		const organization = await Organizations.findById(organization_id);
+        return organization;
 	}
 
 }
