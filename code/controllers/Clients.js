@@ -4,9 +4,26 @@ import mongoose from 'mongoose';
 let Clients = mongoose.model('Clients');
 
 class ClientsController {
-	properties = {
-		id : client => client._id,
-		fullName : ({name, lastname}) => `${name} ${lastname}`
+	constructor(){
+		this.properties = {
+			id : client => client._id,
+			fullName : ({name, lastname}) => `${name} ${lastname}`
+		}
+
+		this.querys = {
+			client: this.get,
+			clients: this.getAll
+		}
+
+		this.mutations = {
+			createClient: this.save,
+			updateClient: this.update
+		}
+
+		this.propertiesAndRelationships = {
+			...this.properties
+			//organizations, tickets, devices .....
+		}
 	}
 
 	get = async (_, {id}, {jwt, tenant_id}) => {

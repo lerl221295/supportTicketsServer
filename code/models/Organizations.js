@@ -17,9 +17,11 @@ let OrganizationsSchema = new Schema({
     "about": {
         "type": String
     },
-    "domains": {
-        "type": String
-    }
+    "domains": [
+        {
+            type: String
+        }
+    ]
 })
 
 export default mongoose.model('Organizations', OrganizationsSchema);
