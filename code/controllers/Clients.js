@@ -7,7 +7,6 @@ let Organizations = mongoose.model('Organizations');
 class ClientsController {
 	constructor(){
 		this.properties = {
-			id : client => client._id,
 			fullName : ({name, lastname}) => `${name} ${lastname}`
 		}
 

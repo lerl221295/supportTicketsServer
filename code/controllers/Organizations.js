@@ -5,10 +5,6 @@ let Organizations = mongoose.model('Organizations');
 
 class OrganizationsController {
     constructor(){
-        this.properties = {
-            id : ({_id}) => _id
-        }
-
         this.querys = {
             organization: this.get,
             organizations: this.getAll
@@ -20,7 +16,6 @@ class OrganizationsController {
         }
 
         this.propertiesAndRelationships = {
-            ...this.properties
             //clients, tickets .....
         }
     }
