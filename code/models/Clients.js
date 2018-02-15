@@ -22,6 +22,9 @@ let ClientsSchema = new Schema({
         type: String,
         required: true
     },
+    "face_base64": {
+        type: String
+    },
     "phones": [
         {
             type: String

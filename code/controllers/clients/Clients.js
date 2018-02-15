@@ -20,6 +20,7 @@ class ClientsController {
 	}
 
 	getAll = async (_, {search_text, limit, offset}, {jwt, tenant_id}) => {
+		search_text = search_text || '';
 		let nodes = await Clients.find({tenant_id})
 			.or([{name: new RegExp(search_text, 'i')}, {lastname: new RegExp(search_text, 'i')}])
 			.skip(offset).limit(limit);
@@ -44,7 +45,7 @@ class ClientsController {
 	}
 
 	update = async (_, {client: {id, ...update}}, {tenant_id}) => {
-		const clientUpdated = Clients.findOneAndUpdate(id, update, {new: true});
+		const clientUpdated = Clients.findByIdAndUpdate(id, update, {new: true});
 		return clientUpdated;
 	}
 
