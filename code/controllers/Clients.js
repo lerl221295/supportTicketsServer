@@ -58,6 +58,7 @@ class ClientsController {
 	save = async (_, {client}, {jwt, tenant_id}) => {
 		const newClient = await Clients.create({...client, tenant_id});
 		/*falta crear el usuario y asociarlo al cliente*/
+		/*falta validar el subdominio del correo para asociar a una organizcion*/
 		return newClient;
 	}
 
