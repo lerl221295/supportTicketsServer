@@ -37,6 +37,7 @@ type Agent {
     profession: String
     face_base64: String
     supplier: Supplier
+    discussions: [ Discussion ]
     #Tickets asignados actualmente al agente
     tickets: [ Ticket ]
     groups: [ Group ]

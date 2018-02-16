@@ -86,6 +86,10 @@ input FilterTicketInput {
     number: Float
     #Si es true, se ignora el param "agents"
     unassigned: Boolean
+    #Fecha desde (por defecto: una semana atras)
+    date_from: String
+    #Fecha hasta (por defecto: momento actual)
+    date_to: String
     agents: [ ID ]
     groups: [ ID ]
     suppliers: [ ID ]
