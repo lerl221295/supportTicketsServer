@@ -1,14 +1,14 @@
-{
-    "_id": {
-        "type": "Schema.Types.ObjectId",
-        "required": true
-    },
-    "tenant_id": {
-        "type": "Schema.Types.ObjectId",
+import mongoose from 'mongoose';
+
+let Schema = mongoose.Schema;
+
+let BusinessHoursSchema = new Schema({
+	"tenant_id": {
+        "type": Schema.Types.ObjectId,
         "required": true
     },
     "mode": {
-        "type": "String",
+        "type": String,
         "enum": [
             "TWENTYFOUR_SEVEN",
             "SAME_FOR_DAYS",
@@ -19,17 +19,17 @@
     "holidays": [
         {
             "name": {
-                "type": "String",
+                "type": String,
                 "required": true
             },
             "day": {
-                "type": "Number",
+                "type": Number,
                 "min": 1,
                 "max": 31,
                 "required": true
             },
             "month": {
-                "type": "Number",
+                "type": Number,
                 "min": 1,
                 "max": 12,
                 "required": true
@@ -39,7 +39,7 @@
     "working_days": [
         {
             "day": {
-                "type": "String",
+                "type": String,
                 "enum": [
                     "MONDAY",
                     "TUESDAY",
@@ -57,18 +57,18 @@
             "horary": {
                 "start": {
                     "hour": {
-                        "type": "Number"
+                        "type": Number
                     },
                     "minutes": {
-                        "type": "Number"
+                        "type": Number
                     }
                 },
                 "end": {
                     "hour": {
-                        "type": "Number"
+                        "type": Number
                     },
                     "minutes": {
-                        "type": "Number"
+                        "type": Number
                     }
                 }
             }
@@ -77,24 +77,24 @@
     "horary": {
         "start": {
             "hour": {
-                "type": "Number"
+                "type": Number
             },
             "minutes": {
-                "type": "Number"
+                "type": Number
             }
         },
         "end": {
             "hour": {
-                "type": "Number"
+                "type": Number
             },
             "minutes": {
-                "type": "Number"
+                "type": Number
             }
         }
     },
     "week_days": [
         {
-            "type": "String",
+            "type": String,
             "enum": [
                 "MONDAY",
                 "TUESDAY",
@@ -106,4 +106,6 @@
             ]
         }
     ]
-}
+})
+
+export default mongoose.model('BusinessHours', BusinessHoursSchema);
