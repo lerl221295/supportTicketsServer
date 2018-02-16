@@ -1,10 +1,10 @@
 input ClientInput {
     #Requerido para actualizar, no para crear
     id: ID
-    name: String!
-    lastname: String!
-    email: String!
-    phones: [ String ]!
+    name: String
+    lastname: String
+    email: String
+    phones: [ String ]
     address: String
     about: String
     face_base64: String

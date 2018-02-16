@@ -541,9 +541,8 @@ const paginatedMocks = (entityGenerator) => (_, {limit}) => ({
 	count: 47
 });
 
-const mocks = {
-	Client : generateClient,
-	ClientsResponse : paginatedMocks(generateClient),
+export const mocks = {
+	//Client: generateClient,
 	Organization: generateOrganization,
 	OrganizationsResponse: paginatedMocks(generateOrganization),
 	Agent : generateAgent,
@@ -694,6 +693,8 @@ const mocks = {
 		solved_after_fr: casual.integer(85, 99)
 	}),
 	Query: () => ({
+		client: generateClient,
+		clients: paginatedMocks(generateClient),
 		/*tickets: (root, args, { subdomain }) => {
 			//console.log(jwt);
 			//if(!jwt) throw Error("Mamate un pipe, sapo");
