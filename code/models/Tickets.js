@@ -20,13 +20,11 @@ let TicketsSchema = new Schema({
     },
     "field_values": [
         {
-            "field_id": {
+            "field": {
                 "type": Schema.Types.ObjectId,
+                ref: 'Fields',
                 "required": true
             },
-            /*a pesar de que ya se referencia el Field con field_id, almacenar el key ayuda
-            a obtener mas rapido a partir del ticket, el valor de campo requerido*/
-            "key": String,
             "value": {
                 "text": {
                     "type": String
