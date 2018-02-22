@@ -3,6 +3,9 @@
 import TenantsModel from './Tenants'
 import ClientsModel from './Clients'
 import OrganizationsModel from './Organizations'
+import AgentsModel from './Agents'
+import GroupsModel from './Groups'
+import SuppliersModel from './Suppliers'
 import BusinessHoursModel from './BusinessHours'
 import TicketsModel from './Tickets'
 import StatesModel from './States'
@@ -17,6 +20,9 @@ export default {
 	TicketsModel,
 	ActivitiesModel,
 	FieldsModel,
-	StatesModel
+	StatesModel,
+	AgentsModel,
+	GroupsModel,
+	SuppliersModel
 }
 
