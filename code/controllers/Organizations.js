@@ -22,8 +22,7 @@ class OrganizationsController {
 
     get = async (_, {id}, {jwt, tenant_id}) => {
         try {
-            const organization = await Organizations.findById(id);
-            return organization;
+            return await Organizations.findById(id);
         }
         catch(e){
             return null;
@@ -41,20 +40,18 @@ class OrganizationsController {
         });
         
         return({
-            nodes: nodes,
+            nodes,
             count
         })
     }
 
-    save = async (_, {organization}, {jwt, tenant_id}) => {
-        const newOrganization = await Organizations.create({...organization, tenant_id});
-        return newOrganization;
-    }
+    save = async (_, {organization}, {jwt, tenant_id}) => (
+        await Organizations.create({...organization, tenant_id})
+    )
 
-    update = async (_, {organization: {id, ...update}}, {tenant_id}) => {
-        const organizationUpdated = Organizations.findByIdAndUpdate(id, update, {new: true});
-        return organizationUpdated;
-    }
+    update = async (_, {organization: {id, ...update}}, {tenant_id}) => (
+        await Organizations.findByIdAndUpdate(id, update, {new: true})
+    )
 
 }
 

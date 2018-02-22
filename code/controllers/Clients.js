@@ -51,7 +51,7 @@ class ClientsController {
 		});
 		
 		return({
-			nodes: nodes,
+			nodes,
 			count
 		})
 	}
@@ -67,10 +67,9 @@ class ClientsController {
 		return newClient;
 	}
 
-	update = async (_, {client: {id, ...update}}, {tenant_id}) => {
-		const clientUpdated = Clients.findByIdAndUpdate(id, update, {new: true});
-		return clientUpdated;
-	}
+	update = async (_, {client: {id, ...update}}, {tenant_id}) => (
+		await Clients.findByIdAndUpdate(id, update, {new: true})
+	)
 
 	organization = async ({organization_id}) => {
 		if(!organization_id) return null;
