@@ -2,6 +2,8 @@
 import Clients from '../controllers/Clients'
 import Organizations from '../controllers/Organizations'
 import BusinessHours from '../controllers/BusinessHours'
+import Tickets from '../controllers/Tickets'
+import TicketFields from '../controllers/TicketFields'
 
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import lodash from 'lodash';
@@ -10,16 +12,22 @@ const resolvers = {
 	Query: {
         ...Clients.querys,
         ...Organizations.querys,
-        ...BusinessHours.querys
+        ...BusinessHours.querys,
+        ...Tickets.querys
 	},
 	Mutation: {
 		...Clients.mutations,
 		...Organizations.mutations,
-		...BusinessHours.mutations
+		...BusinessHours.mutations,
+		...Tickets.mutations
 	},
 	Client: Clients.propertiesAndRelationships,
 	Organization: Organizations.propertiesAndRelationships,
-	BusinessHours: BusinessHours.propertiesAndRelationships
+	BusinessHours: BusinessHours.propertiesAndRelationships,
+	Ticket: Tickets.propertiesAndRelationships,
+	State: TicketFields.stateProps,
+	FieldValue: TicketFields.fieldValueProps,
+	Field: TicketFields.fieldProps
 };
 
 export default resolvers;

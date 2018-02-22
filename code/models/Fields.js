@@ -1,6 +1,14 @@
-{
+import mongoose from 'mongoose';
+
+let Schema = mongoose.Schema;
+
+let FieldsSchema = new Schema({
+	"tenant_id": {
+        "type": Schema.Types.ObjectId,
+        "required": true
+    },
     "type": {
-        "type": "String",
+        "type": String,
         "enum": [
             "TEXT",
             "TEXTAREA",
@@ -11,41 +19,38 @@
         ],
         "required": true
     },
-    "_id": {
-        "type": "Schema.Types.ObjectId",
-        "required": true
-    },
-    "tenant_id": {
-        "type": "Schema.Types.ObjectId",
-        "required": true
-    },
     "default": {
-        "type": "Boolean"
+        "type": Boolean
     },
     "key": {
-        "type": "String",
+        "type": String,
         "required": true
     },
+    "label": {
+        type: String
+    },
     "position": {
-        "type": "Number",
+        "type": Number,
         "required": true
     },
     "ent_field": {
-        "type": "String"
+        "type": String
     },
     "clientVisible": {
-        "type": "Boolean"
+        "type": Boolean
     },
     "options": [
         {
             "key": {
-                "type": "String",
+                "type": String,
                 "required": true
             },
             "label": {
-                "type": "String",
+                "type": String,
                 "required": true
             }
         }
     ]
-}
+})
+
+export default mongoose.model('Fields', FieldsSchema);
