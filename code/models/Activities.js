@@ -39,6 +39,9 @@ let ActivitiesSchema = new Schema({
                 ],
                 "required": true
             },
+            "prop_id": {
+                "type": Schema.Types.ObjectId
+            },
             "new_value": {
                 "type": String,
                 "required": true
@@ -60,6 +63,6 @@ let ActivitiesSchema = new Schema({
             }
         }
     ]
-})
+});
 
 export default mongoose.model('Activities', ActivitiesSchema);
