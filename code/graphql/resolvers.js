@@ -6,6 +6,7 @@ import Groups from '../controllers/Groups'
 import Suppliers from '../controllers/Suppliers'
 import BusinessHours from '../controllers/BusinessHours'
 import Tickets from '../controllers/Tickets'
+import Activities from '../controllers/Activities'
 import TicketFields from '../controllers/TicketFields'
 
 import { PubSub, withFilter } from 'graphql-subscriptions';
@@ -19,7 +20,8 @@ const resolvers = {
         ...Tickets.querys,
         ...Agents.querys,
         ...Groups.querys,
-        ...Suppliers.querys
+        ...Suppliers.querys,
+        ...Activities.querys
 	},
 	Mutation: {
 		...Clients.mutations,
@@ -39,7 +41,13 @@ const resolvers = {
 	Ticket: Tickets.propertiesAndRelationships,
 	State: TicketFields.stateProps,
 	FieldValue: TicketFields.fieldValueProps,
-	Field: TicketFields.fieldProps
+	Field: TicketFields.fieldProps,
+	Activity: Activities.propertiesAndRelationships,
+	CreationActivity: Activities.creationActivity,
+	UpgradeActivity: Activities.upgradeActivity,
+	UpgradeActivityAction: Activities.upgradeActivityActions,
+	UpgradeActivityActionAssignment: Activities.upgradeActivityActionAssignment,
+	TicketBearer: Activities.ticketBearer
 };
 
 export default resolvers;

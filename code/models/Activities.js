@@ -11,10 +11,13 @@ let ActivitiesSchema = new Schema({
         "type": Schema.Types.ObjectId,
         "required": true
     },
+    creation: {
+        type: Boolean,
+        default: false
+    },
     "autor": {
         "id": {
-            "type": Schema.Types.ObjectId,
-            "required": true
+            "type": Schema.Types.ObjectId
         },
         "type": {
             "type": String,
@@ -27,7 +30,7 @@ let ActivitiesSchema = new Schema({
     },
     "time": {
         "type": Date,
-        "required": true
+        default: Date.now
     },
     "actions": [
         {
@@ -39,6 +42,9 @@ let ActivitiesSchema = new Schema({
                 ],
                 "required": true
             },
+            "prop_id": {
+                "type": Schema.Types.ObjectId
+            },
             "new_value": {
                 "type": String,
                 "required": true
@@ -48,12 +54,10 @@ let ActivitiesSchema = new Schema({
                 "required": true
             },
             "old_value": {
-                "type": String,
-                "required": true
+                "type": String
             },
             "old_id": {
-                "type": Schema.Types.ObjectId,
-                "required": true
+                "type": Schema.Types.ObjectId
             },
             "new_id": {
                 "type": Schema.Types.ObjectId

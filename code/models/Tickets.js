@@ -56,7 +56,8 @@ let TicketsSchema = new Schema({
                 }
             },
             "time": {
-                "type": Date
+                "type": Date,
+                default: Date.now
             },
             "text": {
                 "type": String
@@ -72,7 +73,8 @@ let TicketsSchema = new Schema({
                 "type": String
             },
             "done": {
-                "type": Boolean
+                "type": Boolean,
+                default: false
             }
         }
     ]
