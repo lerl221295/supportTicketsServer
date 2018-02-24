@@ -400,7 +400,7 @@ type Subscription {
 	): Activity
 	interventions(
 		#Numero del Ticket
-		ticket_number: Int
+		ticket_number: Int!
 	): Intervention
 }
 

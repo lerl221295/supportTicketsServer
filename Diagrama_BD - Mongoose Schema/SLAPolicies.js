@@ -37,7 +37,7 @@
             "type": "Schema.Types.ObjectId"
         }
     ],
-    "policies": [
+    "objetives": [
         {
             "priority": {
                 "type": "String",

@@ -64,6 +64,6 @@ let ActivitiesSchema = new Schema({
             }
         }
     ]
-})
+});
 
 export default mongoose.model('Activities', ActivitiesSchema);
