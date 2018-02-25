@@ -9,6 +9,7 @@ import Tickets from '../controllers/Tickets'
 import Activities from '../controllers/Activities'
 import TicketFields from '../controllers/TicketFields'
 import SLAPolicies from '../controllers/SLAPolicies'
+import Dashboard from '../controllers/Dashboard'
 
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import lodash from 'lodash';
@@ -23,7 +24,8 @@ const resolvers = {
         ...Groups.querys,
         ...Suppliers.querys,
         ...SLAPolicies.querys,
-        ...Activities.querys
+        ...Activities.querys,
+		...Dashboard.querys
 	},
 	Mutation: {
 		...Clients.mutations,
