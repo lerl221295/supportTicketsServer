@@ -50,7 +50,7 @@ const resolvers = {
 	UpgradeActivity: Activities.upgradeActivity,
 	UpgradeActivityAction: Activities.upgradeActivityActions,
 	UpgradeActivityActionAssignment: Activities.upgradeActivityActionAssignment,
-	TicketBearer: Activities.ticketBearer
+	TicketBearer: Activities.ticketBearer,
     SLAPolicy: SLAPolicies.propertiesAndRelationships,
 	Alert: SLAPolicies.alertsRelationships
 };
