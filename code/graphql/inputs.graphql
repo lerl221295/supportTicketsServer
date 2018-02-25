@@ -84,11 +84,9 @@ input TicketInput {
 input FilterTicketInput {
     #Numero de ticket
     number: Float
-    date_from: String
-    date_to: String
     #Si es true, se ignora el param "agents"
     unassigned: Boolean
-    #Fecha desde (por defecto: una semana atras)
+    #Fecha desde (por defecto: el principio del tenant)
     date_from: String
     #Fecha hasta (por defecto: momento actual)
     date_to: String

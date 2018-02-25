@@ -6,6 +6,7 @@ import Groups from '../controllers/Groups'
 import Suppliers from '../controllers/Suppliers'
 import BusinessHours from '../controllers/BusinessHours'
 import Tickets from '../controllers/Tickets'
+import Activities from '../controllers/Activities'
 import TicketFields from '../controllers/TicketFields'
 import SLAPolicies from '../controllers/SLAPolicies'
 
@@ -21,7 +22,8 @@ const resolvers = {
         ...Agents.querys,
         ...Groups.querys,
         ...Suppliers.querys,
-        ...SLAPolicies.querys
+        ...SLAPolicies.querys,
+        ...Activities.querys
 	},
 	Mutation: {
 		...Clients.mutations,
@@ -43,6 +45,12 @@ const resolvers = {
 	State: TicketFields.stateProps,
 	FieldValue: TicketFields.fieldValueProps,
 	Field: TicketFields.fieldProps,
+	Activity: Activities.propertiesAndRelationships,
+	CreationActivity: Activities.creationActivity,
+	UpgradeActivity: Activities.upgradeActivity,
+	UpgradeActivityAction: Activities.upgradeActivityActions,
+	UpgradeActivityActionAssignment: Activities.upgradeActivityActionAssignment,
+	TicketBearer: Activities.ticketBearer
     SLAPolicy: SLAPolicies.propertiesAndRelationships,
 	Alert: SLAPolicies.alertsRelationships
 };
