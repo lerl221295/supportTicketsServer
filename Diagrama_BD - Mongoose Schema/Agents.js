@@ -1,4 +1,4 @@
-{
+let obj = {
     "_id": {
         "type": "Schema.Types.ObjectId",
         "required": true

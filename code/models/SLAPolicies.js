@@ -1,46 +1,48 @@
-{
-    "description": {
-        "type": "String"
-    },
-    "_id": {
-        "type": "Schema.Types.ObjectId",
-        "required": true
-    },
+import mongoose from 'mongoose';
+
+let Schema = mongoose.Schema;
+
+let SLAPoliciesSchema = new Schema({
     "tenant_id": {
-        "type": "Schema.Types.ObjectId",
+        "type": Schema.Types.ObjectId,
         "required": true
     },
     "name": {
-        "type": "String",
+        "type": String,
+        unique : true,
         "required": true
     },
-    "position": {
-        "type": "Number",
-        "min": 0,
-        "required": true
-    },
-    "by_default": {
-        "type": "Boolean",
-        "default": false
-    },
-    "active": {
-        "type": "Boolean",
-        "required": true
+    "description": {
+        "type": String
     },
     "organizations": [
         {
-            "type": "Schema.Types.ObjectId"
+            "type": Schema.Types.ObjectId
         }
     ],
     "clients": [
         {
-            "type": "Schema.Types.ObjectId"
+            "type": Schema.Types.ObjectId
         }
     ],
-    "objetives": [
+    "by_default": {
+        "type": Boolean,
+        "default": false
+    },
+    "position": {
+        "type": Number,
+        "min": 0,
+        "default": 0,
+        "required": true
+    },
+    "active": {
+        "type": Boolean,
+        "default": true
+    },
+    "objectives": [
         {
             "priority": {
-                "type": "String",
+                "type": String,
                 "enum": [
                     "LOW",
                     "MEDIUM",
@@ -50,7 +52,7 @@
                 "required": true
             },
             "operational_hours": {
-                "type": "String",
+                "type": String,
                 "enum": [
                     "CALENDAR",
                     "BUSINESS"
@@ -59,10 +61,10 @@
             },
             "first_response": {
                 "value": {
-                    "type": "Number"
+                    "type": Number
                 },
                 "unity": {
-                    "type": "String",
+                    "type": String,
                     "enum": [
                         "MINUTES",
                         "HOURS",
@@ -73,10 +75,10 @@
             },
             "solved": {
                 "value": {
-                    "type": "Number"
+                    "type": Number
                 },
                 "unity": {
-                    "type": "String",
+                    "type": String,
                     "enum": [
                         "MINUTES",
                         "HOURS",
@@ -87,4 +89,6 @@
             }
         }
     ]
-}
+});
+
+export default mongoose.model('Policies', SLAPoliciesSchema);

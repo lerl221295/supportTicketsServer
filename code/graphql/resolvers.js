@@ -7,6 +7,7 @@ import Suppliers from '../controllers/Suppliers'
 import BusinessHours from '../controllers/BusinessHours'
 import Tickets from '../controllers/Tickets'
 import TicketFields from '../controllers/TicketFields'
+import SLAPolicies from '../controllers/SLAPolicies'
 
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import lodash from 'lodash';
@@ -19,7 +20,8 @@ const resolvers = {
         ...Tickets.querys,
         ...Agents.querys,
         ...Groups.querys,
-        ...Suppliers.querys
+        ...Suppliers.querys,
+        ...SLAPolicies.querys
 	},
 	Mutation: {
 		...Clients.mutations,
@@ -28,7 +30,8 @@ const resolvers = {
 		...Tickets.mutations,
 		...Agents.mutations,
 		...Groups.mutations,
-		...Suppliers.mutations
+		...Suppliers.mutations,
+		...SLAPolicies.mutations
 	},
 	Client: Clients.propertiesAndRelationships,
 	Organization: Organizations.propertiesAndRelationships,
@@ -39,7 +42,9 @@ const resolvers = {
 	Ticket: Tickets.propertiesAndRelationships,
 	State: TicketFields.stateProps,
 	FieldValue: TicketFields.fieldValueProps,
-	Field: TicketFields.fieldProps
+	Field: TicketFields.fieldProps,
+    SLAPolicy: SLAPolicies.propertiesAndRelationships,
+	Alert: SLAPolicies.alertsRelationships
 };
 
 export default resolvers;

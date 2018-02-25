@@ -57,6 +57,6 @@ let AgentsSchema = new Schema({
     "supplier_id": {
         "type": Schema.Types.ObjectId
     }
-})
+});
 
 export default mongoose.model('Agents', AgentsSchema);

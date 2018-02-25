@@ -13,7 +13,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import schema from './code/graphql/schema';
 
 //CONSTANTS
-const GRAPHQL_PORT = 3001,
+const GRAPHQL_PORT = 3002,
     GRAPHQL_URL = '/graphql',
     SUBSCRIPTIONS_URL = '/subscriptions';
 
@@ -33,7 +33,8 @@ graphQLServer.use(cors());
 
 //MIDDLEWARE VALIDATE SUBDOMAIN
 graphQLServer.use(GRAPHQL_URL, (req, res, next) => {
-    const subdomain = req.headers.host.split(".")[0];
+    // const subdomain = req.headers.host.split(".")[0];
+    const subdomain = 'directv';
     if(SUBDOMAINS.includes(subdomain))
         next();
     else res.status(404).json({error: "no tienes aseso menol"});
@@ -44,7 +45,8 @@ let Tenants = mongoose.model('Tenants');
 //MIDDLEWARE PARSE BODY TO JSON, SET SCHEMA AND CONTEXT TO GRAPHQL SERVER
 graphQLServer.use(GRAPHQL_URL, bodyParser.json(), bodyParser.urlencoded({ extended: true }),
     graphqlExpress( async (req) => {
-        const tenant = await Tenants.findOne({subdomain: req.headers.host.split(".")[0]});
+        // const tenant = await Tenants.findOne({subdomain: req.headers.host.split(".")[0]});
+        const tenant = await Tenants.findOne({subdomain: 'directv'});
         return({
             schema,
             //para manejar el jwt en el header : (agregarlo al context para

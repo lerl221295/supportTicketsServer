@@ -334,7 +334,7 @@ type Mutation {
 	): SLAPolicy
 	updateSLAPoliciesOrder(
 		#Detalles del orden de las politicas SLA
-		slapolicies: [SlapoliciesOrderInput]!
+		slapolicies: [SlapoliciesOrderInput!]!
 	): [ SLAPolicy ]
 
 	updateTicketTypes(
