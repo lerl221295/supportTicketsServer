@@ -1,4 +1,5 @@
 /*controllers*/
+import Authenticate from '../controllers/Authenticate'
 import Clients from '../controllers/Clients'
 import Organizations from '../controllers/Organizations'
 import Agents from '../controllers/Agents'
@@ -25,7 +26,8 @@ const resolvers = {
         ...Suppliers.querys,
         ...SLAPolicies.querys,
         ...Activities.querys,
-		...Dashboard.querys
+        ...Authenticate.querys,
+        ...TicketFields.querys
 	},
 	Mutation: {
 		...Clients.mutations,
@@ -35,6 +37,8 @@ const resolvers = {
 		...Agents.mutations,
 		...Groups.mutations,
 		...Suppliers.mutations,
+		...Authenticate.mutations,
+		...TicketFields.mutations,
 		...SLAPolicies.mutations
 	},
 	Client: Clients.propertiesAndRelationships,
@@ -44,15 +48,22 @@ const resolvers = {
 	Supplier: Suppliers.propertiesAndRelationships,
 	BusinessHours: BusinessHours.propertiesAndRelationships,
 	Ticket: Tickets.propertiesAndRelationships,
+	Intervention: Tickets.intervention,
+	Autor: Tickets.interventionAutor,
+	TicketMetadata: TicketFields.ticketMetadata,
 	State: TicketFields.stateProps,
 	FieldValue: TicketFields.fieldValueProps,
 	Field: TicketFields.fieldProps,
+	FreeField: TicketFields.freeField,
+	SelectField: TicketFields.selectField,
 	Activity: Activities.propertiesAndRelationships,
 	CreationActivity: Activities.creationActivity,
 	UpgradeActivity: Activities.upgradeActivity,
 	UpgradeActivityAction: Activities.upgradeActivityActions,
 	UpgradeActivityActionAssignment: Activities.upgradeActivityActionAssignment,
 	TicketBearer: Activities.ticketBearer,
+	Notification: Authenticate.notification,
+	Entity: Authenticate.entity,
     SLAPolicy: SLAPolicies.propertiesAndRelationships,
 	Alert: SLAPolicies.alertsRelationships
 };

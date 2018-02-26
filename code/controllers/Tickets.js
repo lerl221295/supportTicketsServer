@@ -48,6 +48,15 @@ class TicketsController {
         for(let prop of this.ticketProps){
             this.propertiesAndRelationships[prop] = this[prop];
         }
+
+        this.intervention = {
+            type_autor: ({autor}) => autor.type,
+            autor: this.autor
+        }
+
+        this.interventionAutor = {
+            __resolveType: this.autorInterventionResolveType
+        }
     }
 
     title = async ({field_values}, _, {tenant_id}) => (
@@ -103,7 +112,7 @@ class TicketsController {
     }
 
     ticketActivities = async ({id: ticket_id}, _, {tenant_id}) => (
-        await Activities.find({tenant_id, ticket_id}).sort({time: -1})
+        await Activities.find({tenant_id, ticket_id}).sort({time: 1})
     );
 
     customValues = async ({field_values}, _, {tenant_id}) => {
@@ -253,7 +262,7 @@ class TicketsController {
         }
     })
 
-    save = async (_, {ticket}, {jwt, tenant_id}) => {
+    save = async (_, {ticket}, {requester, tenant_id}) => {
         const ticketBuilded = { tenant_id };
 
         const ticketProps = {};
@@ -335,7 +344,7 @@ class TicketsController {
             tenant_id,
             ticket_id: newTicket.id,
             autor: {
-                id: null, //FALTA SETEAR EL AUTOR CON EL JWT
+                id: requester._id,
                 type: 'AGENT'
             },
             creation: true,
@@ -345,7 +354,7 @@ class TicketsController {
         return await newTicket.populate('field_values.field').execPopulate();
     }
 
-    update = async (_, {ticket: {ticket_number: number, ...ticket}}, {tenant_id}) => {
+    update = async (_, {ticket: {ticket_number: number, ...ticket}}, {tenant_id, requester}) => {
         const ticketUpdated = await Tickets.findOne({tenant_id, number}).populate('field_values.field');
         if(!ticketUpdated) return null;
         const actions = [];
@@ -555,7 +564,7 @@ class TicketsController {
             tenant_id,
             ticket_id: ticketUpdated.id,
             autor: {
-                id: null, //FALTA SETEAR EL AUTOR CON EL JWT
+                id: requester._id,
                 type: 'AGENT'
             },
             actions
@@ -596,11 +605,14 @@ class TicketsController {
         return null;
     }
 
-    addIntervention = async (_, {intervention: {ticket_number, text, private: note}}, {tenant_id}) => {
+    addIntervention = async (_, {intervention: {ticket_number, text, private: note}}, {tenant_id, requester}) => {
         const ticket = await Tickets.findOne({tenant_id, number: ticket_number});
         if(ticket){
             ticket.interventions.push({
-                //FALTA autor CON JWT
+                autor: {
+                    id: requester._id,
+                    type: requester.user_type
+                },
                 text,
                 private: note || false
             })
@@ -615,6 +627,14 @@ class TicketsController {
         else return null;
     }
 
+    autorInterventionResolveType = ({role}) => do {
+        if(role) "Agent";
+        else "Client";
+    }
+
+    autor = async ({autor}, _, {tenant_id}) => (
+        await Agents.findOne({tenant_id, _id: autor.id})
+    )
 }
 
 export default new TicketsController

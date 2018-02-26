@@ -11,6 +11,7 @@ import TicketsModel from './Tickets'
 import StatesModel from './States'
 import ActivitiesModel from './Activities'
 import FieldsModel from './Fields'
+import UsersModel from './Users'
 import SLAPoliciesModel from './SLAPolicies'
 import AlertsModel from './Alerts'
 
@@ -26,6 +27,7 @@ export default {
 	AgentsModel,
 	GroupsModel,
 	SuppliersModel,
+	UsersModel,
     SLAPoliciesModel,
     AlertsModel
 }
