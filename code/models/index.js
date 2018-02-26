@@ -27,7 +27,7 @@ export default {
 	AgentsModel,
 	GroupsModel,
 	SuppliersModel,
-	UsersModel
+	UsersModel,
     SLAPoliciesModel,
     AlertsModel
 }
