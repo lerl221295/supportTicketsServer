@@ -41,7 +41,7 @@ class PoliciesController {
 	};
 
 	getAll = async (_, {}, {jwt, tenant_id}) => {
-		return await Policies.find({tenant_id}).sort('position');
+        return await Policies.find({tenant_id}).sort('position');
 	};
 
     save = async (_, {slapolicy: {alerts, ...slapolicy}}, {jwt, tenant_id}) => {
@@ -106,13 +106,13 @@ class PoliciesController {
         return await Policies.find({tenant_id}).sort('position');
 	};
 
-	clients = async ({clients}) => await Clients.find({_id: {$in: clients}});
+	clients = async ({clients}, _, {tenant_id}) => await Clients.find({tenant_id, _id: {$in: clients}});
 
-	organizations = async ({organizations}) => await Organizations.find({_id: {$in: organizations}});
+	organizations = async ({organizations}, _, {tenant_id}) => await Organizations.find({tenant_id, _id: {$in: organizations}});
 
 	alerts = async ({_id}) => await Alerts.find({sla_policy_id: _id});
 
-    alertsTo = async ({to: AgentsIds}) => await Agents.find({_id: {$in: AgentsIds} })
+    alertsTo = async ({to: AgentsIds}, _, {tenant_id}) => await Agents.find({tenant_id, _id: {$in: AgentsIds} })
 }
 
 export default new PoliciesController

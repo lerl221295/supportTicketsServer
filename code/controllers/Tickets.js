@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import lodash from 'lodash';
+import moment from 'moment';
 
 const Tickets = mongoose.model('Tickets');
 const States = mongoose.model('States');
@@ -10,6 +11,7 @@ const Agents = mongoose.model('Agents');
 const Groups = mongoose.model('Groups');
 const Suppliers = mongoose.model('Suppliers');
 const Activities = mongoose.model('Activities');
+const Policies = mongoose.model('Policies');
 
 
 const priorities = [
@@ -39,7 +41,9 @@ class TicketsController {
         this.ticketProps =  ['title', 'description', 'source', 'priority', 'client', 'type', 'state', 'next_states', 'agent', 'supplier', 'group'/*, 'device'*/]
         this.propertiesAndRelationships = {
             custom_fields: this.customValues,
-            activities: this.ticketActivities
+            activities: this.ticketActivities,
+            response_by: this.getResponseResolveTime('first_response'),
+            resolve_by: this.getResponseResolveTime('solved')
         };
         for(let prop of this.ticketProps){
             this.propertiesAndRelationships[prop] = this[prop];
@@ -123,6 +127,15 @@ class TicketsController {
         }, []);
 
         return onlyCustomizedValues;
+    }
+
+    getResponseResolveTime = (type) => async ({field_values, time}, _, {tenant_id}) => {
+        const
+            client_id = field_values.find(({field: {key}}) => key === 'client').value.ent_id,
+            priority = field_values.find(({field: {key}}) => key === 'priority').value.key,
+            { objectives } = await Policies.findOne({tenant_id, clients: client_id}, 'objectives').sort('position'),
+            clientObjective = objectives.find(({priority: objPriority}) => objPriority === priority);
+        return moment(time).add(clientObjective[type].value, clientObjective[type].unity).toDate();
     }
 
     get = async (_, {number}, {jwt, tenant_id}) => (
