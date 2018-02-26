@@ -7,22 +7,14 @@ const Organizations = mongoose.model('Organizations');
 const Alerts = mongoose.model('Alerts');
 const Agents = mongoose.model('Agents');
 const Tickets = mongoose.model('Tickets');
+const States = mongoose.model('States');
 
 class DashboardController {
     constructor (){
         this.querys = {
             ticketsCountByDay: this.ticketsCountByDay,
+            indicators: this.indicators
         };
-
-        /*this.propertiesAndRelationships = {
-            clients: this.clients,
-            organizations: this.organizations,
-            alerts: this.alerts
-        };
-
-        this.alertsRelationships = {
-            to: this.alertsTo
-        };*/
     }
 
     ticketsCountByDay = async (_, {last}, {jwt, tenant_id}) => {
@@ -56,13 +48,62 @@ class DashboardController {
         return ticketsByDays;
     };
 
-    /*clients = async ({clients}) => await Clients.find({_id: {$in: clients}});
+    indicators = async (_, {last}, {jwt, tenant_id}) => {
+        // Instance of indicators
+        let indicators = {
+            unresolved: 0,
+            overdue: 0,
+            due_today: 0,
+            open: 0,
+            on_hold: 0,
+            unassigned: 0
+        };
+        // Find tickets, sorts asc by time, with field_values.field populate
+        const allTickets = await Tickets
+            .find({tenant_id}).sort('time')
+            .populate({
+                path: 'field_values.field',
+                match: { key: {$in: ['state', 'agent']}},
+                select: 'key ent_field'
+            })
+            .select('field_values')
+            .exec((err, tickets) => {
+                if (!err) {
+                    tickets = tickets.map(ticket => {
+                        ticket.field_values = ticket.field_values.filter(({field}) => field);
+                        return ticket;
+                    });
+                    return tickets;
+                }
+            });
+        // Count the amount of the open, on hold, unresolved and unassigned tickets
+        await Promise.all(allTickets.map(async ({_id, field_values}) => {
+            await Promise.all(field_values.map(async ({field: {key}, value: {ent_id}}) => {
+                if (key === 'state') {
+                    // Open tickets
+                    const open = await States.findOne({tenant_id, _id: ent_id, key: 'new'}).select('key');
+                    if (open) indicators.open++;
+                    // Tickets on hold
+                    const on_hold = await States.findOne({tenant_id, _id: ent_id, sla_paused: true}).select('key');
+                    if (on_hold) indicators.on_hold++;
+                    // Unresolved tickets
+                    const unresolved = await States.findOne({tenant_id, _id: ent_id, stage: {$ne: 'END'}}).select('key');
+                    if (unresolved) indicators.unresolved++;
+                }
+                else
+                    if (!ent_id) indicators.unassigned++;
 
-    organizations = async ({organizations}) => await Organizations.find({_id: {$in: organizations}});
-
-    alerts = async ({_id}) => await Alerts.find({sla_policy_id: _id});
-
-    alertsTo = async ({to: AgentsIds}) => await Agents.find({_id: {$in: AgentsIds} })*/
+            }))
+        }));
+        // This is used for mock overdue and due_today
+        indicators = {
+            ...indicators,
+            overdue: Math.round(indicators.unresolved * 0.2),
+            due_today: Math.round(indicators.unresolved * 0.1)
+        };
+        // Return calculated indicators
+        return indicators;
+    }
 }
 
 export default new DashboardController
