@@ -9,6 +9,8 @@ import BusinessHours from '../controllers/BusinessHours'
 import Tickets from '../controllers/Tickets'
 import Activities from '../controllers/Activities'
 import TicketFields from '../controllers/TicketFields'
+import SLAPolicies from '../controllers/SLAPolicies'
+import Dashboard from '../controllers/Dashboard'
 
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import lodash from 'lodash';
@@ -22,6 +24,7 @@ const resolvers = {
         ...Agents.querys,
         ...Groups.querys,
         ...Suppliers.querys,
+        ...SLAPolicies.querys,
         ...Activities.querys,
         ...Authenticate.querys,
         ...TicketFields.querys
@@ -35,7 +38,8 @@ const resolvers = {
 		...Groups.mutations,
 		...Suppliers.mutations,
 		...Authenticate.mutations,
-		...TicketFields.mutations
+		...TicketFields.mutations,
+		...SLAPolicies.mutations
 	},
 	Client: Clients.propertiesAndRelationships,
 	Organization: Organizations.propertiesAndRelationships,
@@ -59,7 +63,9 @@ const resolvers = {
 	UpgradeActivityActionAssignment: Activities.upgradeActivityActionAssignment,
 	TicketBearer: Activities.ticketBearer,
 	Notification: Authenticate.notification,
-	Entity: Authenticate.entity
+	Entity: Authenticate.entity,
+    SLAPolicy: SLAPolicies.propertiesAndRelationships,
+	Alert: SLAPolicies.alertsRelationships
 };
 
 export default resolvers;

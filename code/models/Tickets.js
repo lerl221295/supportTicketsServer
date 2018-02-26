@@ -84,6 +84,6 @@ TicketsSchema.plugin(AutoIncrement, {
     id: 'tickets_seq',
     inc_field: "number",
     reference_fields: ["tenant_id"]
-})
+});
 
 export default mongoose.model('Tickets', TicketsSchema);

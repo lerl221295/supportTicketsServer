@@ -12,6 +12,8 @@ import StatesModel from './States'
 import ActivitiesModel from './Activities'
 import FieldsModel from './Fields'
 import UsersModel from './Users'
+import SLAPoliciesModel from './SLAPolicies'
+import AlertsModel from './Alerts'
 
 export default {
 	ClientsModel,
@@ -26,5 +28,7 @@ export default {
 	GroupsModel,
 	SuppliersModel,
 	UsersModel
+    SLAPoliciesModel,
+    AlertsModel
 }
 

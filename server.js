@@ -14,7 +14,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import schema from './code/graphql/schema';
 
 //CONSTANTS
-const GRAPHQL_PORT = 3001,
+const GRAPHQL_PORT = 3002,
     GRAPHQL_URL = '/graphql',
     SUBSCRIPTIONS_URL = '/subscriptions';
 
@@ -34,7 +34,8 @@ graphQLServer.use(cors());
 
 //MIDDLEWARE VALIDATE SUBDOMAIN
 graphQLServer.use(GRAPHQL_URL, (req, res, next) => {
-    const subdomain = req.headers.host.split(".")[0];
+    // const subdomain = req.headers.host.split(".")[0];
+    const subdomain = 'directv';
     if(SUBDOMAINS.includes(subdomain))
         next();
     else res.status(404).json({error: "no tienes aseso menol"});

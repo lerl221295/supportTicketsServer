@@ -224,18 +224,17 @@ input SlapoliciesOrderInput {
 # Pensar hacer un Input para la activación de la política SLA, para poder validar en la actualización y creación
 input SlapolicyInput {
     id: ID
-    name: String
-    description: String
+    name: String!
+    description: String!
     active: Boolean
-    position: Int
     #Una politica para cada prioridad
-    policies: [ PolicyInput! ]
+    objectives: [ ObjectiveInput! ]!
     clients: [ ID! ]
     organizations: [ ID! ]
     alerts: [ AlertInput!  ]
 }
 
-input PolicyInput {
+input ObjectiveInput {
     priority: TicketPriority!
     first_response: PolicyTimeInput!
     solved: PolicyTimeInput!
