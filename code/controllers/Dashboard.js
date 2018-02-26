@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import moment from 'moment';
+import { getResponseResolveTime } from '../utils';
 
 const Policies = mongoose.model('Policies');
 const Clients = mongoose.model('Clients');
@@ -63,10 +64,10 @@ class DashboardController {
             .find({tenant_id}).sort('time')
             .populate({
                 path: 'field_values.field',
-                match: { key: {$in: ['state', 'agent']}},
+                match: { key: {$in: ['state', 'agent', 'client', 'priority']}},
                 select: 'key ent_field'
             })
-            .select('field_values')
+            .select('field_values time')
             .exec((err, tickets) => {
                 if (!err) {
                     tickets = tickets.map(ticket => {
@@ -77,7 +78,7 @@ class DashboardController {
                 }
             });
         // Count the amount of the open, on hold, unresolved and unassigned tickets
-        await Promise.all(allTickets.map(async ({_id, field_values}) => {
+        await Promise.all(allTickets.map(async ({_id, field_values, time}) => {
             await Promise.all(field_values.map(async ({field: {key}, value: {ent_id}}) => {
                 if (key === 'state') {
                     // Open tickets
@@ -88,19 +89,25 @@ class DashboardController {
                     if (on_hold) indicators.on_hold++;
                     // Unresolved tickets
                     const unresolved = await States.findOne({tenant_id, _id: ent_id, stage: {$ne: 'END'}}).select('key');
-                    if (unresolved) indicators.unresolved++;
+                    if (unresolved) {
+                        indicators.unresolved++;
+                        const resolve_by = await getResponseResolveTime({field_values, time, tenant_id, type: 'solved'});
+                        if (moment().isSame(resolve_by, 'day')) indicators.due_today++;
+                        if (moment().isAfter(resolve_by, 'day')) indicators.overdue++;
+                    }
                 }
                 else
-                    if (!ent_id) indicators.unassigned++;
+                    if (key === 'agent')
+                        if (!ent_id) indicators.unassigned++;
 
             }))
         }));
         // This is used for mock overdue and due_today
-        indicators = {
+        /*indicators = {
             ...indicators,
             overdue: Math.round(indicators.unresolved * 0.2),
             due_today: Math.round(indicators.unresolved * 0.1)
-        };
+        };*/
         // Return calculated indicators
         return indicators;
     }

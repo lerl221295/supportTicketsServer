@@ -27,7 +27,8 @@ const resolvers = {
         ...SLAPolicies.querys,
         ...Activities.querys,
         ...Authenticate.querys,
-        ...TicketFields.querys
+        ...TicketFields.querys,
+        ...Dashboard.querys
 	},
 	Mutation: {
 		...Clients.mutations,
