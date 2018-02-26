@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
-//import _ from 'lodash';
+import md5 from 'md5';
 
 let Agents = mongoose.model('Agents');
 let Groups = mongoose.model('Groups');
 let Suppliers = mongoose.model('Suppliers');
+let Users = mongoose.model('Users');
 
 class AgentsController {
 	constructor(){
@@ -58,8 +59,13 @@ class AgentsController {
 
 	save = async (_, {agent}, {jwt, tenant_id}) => {
 		if(!agent.role) agent.role = "AGENT";
-		const newAgent = await Agents.create({...agent, tenant_id});
-		/*falta crear el usuario y asociarlo al agente*/
+		const password = (`${agent.lastname}-${agent.name}`).replace(/\s/g,'').toLowerCase();
+		console.log(password);
+		const user = await Users.create({
+			tenant_id,
+			password: md5(password)
+		});
+		const newAgent = await Agents.create({...agent, user_id: user.id, tenant_id});
 		return newAgent;
 	}
 

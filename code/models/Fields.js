@@ -30,14 +30,14 @@ let FieldsSchema = new Schema({
         type: String
     },
     "position": {
-        "type": Number,
-        "required": true
+        "type": Number
     },
     "ent_field": {
         "type": String
     },
     "clientVisible": {
-        "type": Boolean
+        "type": Boolean,
+        default: false
     },
     "options": [
         {

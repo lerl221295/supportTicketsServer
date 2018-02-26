@@ -1,4 +1,5 @@
 /*controllers*/
+import Authenticate from '../controllers/Authenticate'
 import Clients from '../controllers/Clients'
 import Organizations from '../controllers/Organizations'
 import Agents from '../controllers/Agents'
@@ -21,7 +22,9 @@ const resolvers = {
         ...Agents.querys,
         ...Groups.querys,
         ...Suppliers.querys,
-        ...Activities.querys
+        ...Activities.querys,
+        ...Authenticate.querys,
+        ...TicketFields.querys
 	},
 	Mutation: {
 		...Clients.mutations,
@@ -30,7 +33,9 @@ const resolvers = {
 		...Tickets.mutations,
 		...Agents.mutations,
 		...Groups.mutations,
-		...Suppliers.mutations
+		...Suppliers.mutations,
+		...Authenticate.mutations,
+		...TicketFields.mutations
 	},
 	Client: Clients.propertiesAndRelationships,
 	Organization: Organizations.propertiesAndRelationships,
@@ -39,15 +44,22 @@ const resolvers = {
 	Supplier: Suppliers.propertiesAndRelationships,
 	BusinessHours: BusinessHours.propertiesAndRelationships,
 	Ticket: Tickets.propertiesAndRelationships,
+	Intervention: Tickets.intervention,
+	Autor: Tickets.interventionAutor,
+	TicketMetadata: TicketFields.ticketMetadata,
 	State: TicketFields.stateProps,
 	FieldValue: TicketFields.fieldValueProps,
 	Field: TicketFields.fieldProps,
+	FreeField: TicketFields.freeField,
+	SelectField: TicketFields.selectField,
 	Activity: Activities.propertiesAndRelationships,
 	CreationActivity: Activities.creationActivity,
 	UpgradeActivity: Activities.upgradeActivity,
 	UpgradeActivityAction: Activities.upgradeActivityActions,
 	UpgradeActivityActionAssignment: Activities.upgradeActivityActionAssignment,
-	TicketBearer: Activities.ticketBearer
+	TicketBearer: Activities.ticketBearer,
+	Notification: Authenticate.notification,
+	Entity: Authenticate.entity
 };
 
 export default resolvers;

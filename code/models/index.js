@@ -11,6 +11,7 @@ import TicketsModel from './Tickets'
 import StatesModel from './States'
 import ActivitiesModel from './Activities'
 import FieldsModel from './Fields'
+import UsersModel from './Users'
 
 export default {
 	ClientsModel,
@@ -23,6 +24,7 @@ export default {
 	StatesModel,
 	AgentsModel,
 	GroupsModel,
-	SuppliersModel
+	SuppliersModel,
+	UsersModel
 }
 

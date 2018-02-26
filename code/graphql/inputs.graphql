@@ -147,7 +147,7 @@ input CustomFieldInput {
     key: String!
     label: String!
     type: FieldType!
-    clientVisible: Boolean!
+    clientVisible: Boolean
     # Solo cuando el type = SELECT
     options: [SelectOptionsInput]
 }
