@@ -14,7 +14,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import schema from './code/graphql/schema';
 
 //CONSTANTS
-const GRAPHQL_PORT = 3002,
+const GRAPHQL_PORT = 3001,
     GRAPHQL_URL = '/graphql',
     SUBSCRIPTIONS_URL = '/subscriptions';
 
@@ -45,13 +45,13 @@ let Tenants = mongoose.model('Tenants');
 
 //MIDDLEWARE PARSE BODY TO JSON, SET SCHEMA AND CONTEXT TO GRAPHQL SERVER
 graphQLServer.use(GRAPHQL_URL, bodyParser.json(), bodyParser.urlencoded({ extended: true }),
-    graphqlExpress( async (req) => {
+    graphqlExpress( async (req, res) => {
         // const tenant = await Tenants.findOne({subdomain: req.headers.host.split(".")[0]});
         const tenant = await Tenants.findOne({subdomain: 'directv'});
         let requester = null;
         if(req.headers.authorization) requester = jwt.decode(req.headers.authorization.split('Bearer ')[1], '123');
-        else requester = jwt.decode("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzIiLCJuYW1lIjoiSm9yZ2UgTHVpcyIsImxhc3RuYW1lIjoiUm9qYXMgTW9udGVybyIsInNleCI6Ik1BTEUiLCJlbWFpbCI6ImpvcmdlQGdtYWlsLmNvbSIsInJvbGUiOiJBR0VOVCIsInVzZXJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzEiLCJ0ZW5hbnRfaWQiOiI1YTgzNTdiMWZmZjJjYTIyMGYzMzJmZDgiLCJfX3YiOjAsInBob25lcyI6W10sInVzZXJfdHlwZSI6IkFHRU5UIn0.FkP1FOKJ6nqeU-UeE-TeVHDy03xpOf972wZkpm5Jbig", '123');
-        /*{
+        else //requester = jwt.decode("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzIiLCJuYW1lIjoiSm9yZ2UgTHVpcyIsImxhc3RuYW1lIjoiUm9qYXMgTW9udGVybyIsInNleCI6Ik1BTEUiLCJlbWFpbCI6ImpvcmdlQGdtYWlsLmNvbSIsInJvbGUiOiJBR0VOVCIsInVzZXJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzEiLCJ0ZW5hbnRfaWQiOiI1YTgzNTdiMWZmZjJjYTIyMGYzMzJmZDgiLCJfX3YiOjAsInBob25lcyI6W10sInVzZXJfdHlwZSI6IkFHRU5UIn0.FkP1FOKJ6nqeU-UeE-TeVHDy03xpOf972wZkpm5Jbig", '123');
+        {
             res.status(404).json({
                 ok: false,
                 errors: [{
@@ -60,7 +60,7 @@ graphQLServer.use(GRAPHQL_URL, bodyParser.json(), bodyParser.urlencoded({ extend
                 }]
             });
             return;
-        }*/
+        }
         return({
             schema,
             //para manejar el jwt en el header : (agregarlo al context para
