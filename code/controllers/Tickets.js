@@ -148,10 +148,12 @@ class TicketsController {
 
     filterTicket = async (ticket, filter, tenant_id) => {
         const agentId = ticket.field_values.find(({field}) => field.key == 'agent').value.ent_id;
-        if(filter.unassigned) 
+        if(filter.unassigned){ 
             if(agentId) return false;
-        else if(filter.agents && filter.agents.length)
+        }
+        else if(filter.agents && filter.agents.length){
             if(!agentId || !filter.agents.includes(String(agentId))) return false;
+        }
 
         if(filter.groups && filter.groups.length){
             const groupId = ticket.field_values.find(({field}) => field.key == 'group').value.ent_id;
@@ -358,7 +360,7 @@ class TicketsController {
             field_value.field.id = field_value.field._id;
             switch(field_value.field.key){
                 case 'agent':
-                    if(ticket.agent_id){
+                    if('agent_id' in ticket){
                         const newAgent = await Agents.findById(ticket.agent_id);
                         const oldAgent = await Agents.findById(field_value.value.ent_id);
                         actions.push({
@@ -371,7 +373,10 @@ class TicketsController {
                                 else null;
                             },
                             new_id: ticket.agent_id,
-                            new_value: newAgent.name
+                            new_value: do {
+                                if(newAgent) newAgent.name;
+                                else null;
+                            }
                         });
 
                         /*asignacion de agente. falta validar, si el ticket pertenece a 
@@ -380,7 +385,7 @@ class TicketsController {
                     }
                     return field_value;
                 case 'group':
-                    if(ticket.group_id){
+                    if('group_id' in ticket){
                         const newGroup = await Groups.findById(ticket.group_id);
                         const oldGroup = await Groups.findById(field_value.value.ent_id);
                         actions.push({
@@ -393,7 +398,10 @@ class TicketsController {
                                 else null;
                             },
                             new_id: ticket.group_id,
-                            new_value: newGroup.name
+                            new_value: do {
+                                if(newGroup) newGroup.name;
+                                else null;
+                            }
                         });
 
                         /*falta validar el caso en el que ya esta asignado a un agente*/
@@ -401,7 +409,7 @@ class TicketsController {
                     }
                     return field_value;
                 case 'supplier':
-                    if(ticket.supplier_id){
+                    if('supplier_id' in ticket){
                         const newSupplier = await Suppliers.findById(ticket.supplier_id);
                         const oldSupplier = await Suppliers.findById(field_value.value.ent_id);
                         actions.push({
@@ -422,12 +430,12 @@ class TicketsController {
                     }
                     return field_value;
                 case 'device':
-                    if(ticket.device_id){
+                    if('device_id' in ticket){
                         return {...field_value, value: {ent_id: ticket.device_id}};
                     }
                     return field_value;
                 case 'state':
-                    if(ticket.state_key){
+                    if('state_key' in ticket){
                         const next_states = await this.next_states(ticketUpdated, {}, {tenant_id});
                         const newState = next_states.find(({key}) => key === ticket.state_key);
                         if(newState){
@@ -448,7 +456,7 @@ class TicketsController {
                     }
                     return field_value;
                 case 'type':
-                    if(ticket.type_key){
+                    if('type_key' in ticket){
                         const {options: types} = await Fields.findOne({tenant_id, key: 'type'});
                         const newType = types.find(type => type.key === ticket.type_key);
                         if(newType){
@@ -466,7 +474,7 @@ class TicketsController {
                     }
                     return field_value;
                 case 'priority':
-                    if(ticket.priority){
+                    if('priority' in ticket){
                         actions.push({
                             type: 'UPDATE',
                             prop_id: field_value.field.id,
@@ -478,7 +486,7 @@ class TicketsController {
                     }
                     return field_value;
                 case 'source':
-                    if(ticket.source){
+                    if('source' in ticket){
                         actions.push({
                             type: 'UPDATE',
                             prop_id: field_value.field.id,
@@ -614,6 +622,10 @@ class TicketsController {
             await ticket.save();
             // falta enviar correo al receptor de la intervencion
             return {
+                autor: {
+                    id: requester._id,
+                    type: requester.user_type
+                },
                 text,
                 private: note || false,
                 time: new Date()
