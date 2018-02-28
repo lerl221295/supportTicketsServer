@@ -46,8 +46,7 @@ let ActivitiesSchema = new Schema({
                 "type": Schema.Types.ObjectId
             },
             "new_value": {
-                "type": String,
-                "required": true
+                "type": String
             },
             "prop_name": {
                 "type": String,
