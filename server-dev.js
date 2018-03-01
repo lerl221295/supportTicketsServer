@@ -13,7 +13,7 @@ import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 
-const GRAPHQL_PORT = 3003;
+const GRAPHQL_PORT = 3000;
 
 const graphQLServer = express();
 
