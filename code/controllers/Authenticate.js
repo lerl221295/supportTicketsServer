@@ -46,9 +46,11 @@ class UsersController {
 			}]
 		});
 
+		const {face_base64, ...agentObject} = agent.toObject();
+
 		return ({
 			ok: true,
-			token: jwt.encode({...(agent.toObject()), user_type: "AGENT"}, '123'),
+			token: jwt.encode({...agentObject, user_type: "AGENT"}, '123'),
 			user: {
 				rol: "AGENT",
 				entity: agent,

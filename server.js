@@ -14,7 +14,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import schema from './code/graphql/schema';
 
 //CONSTANTS
-const GRAPHQL_PORT = 3002,
+const GRAPHQL_PORT = 3001,
     GRAPHQL_URL = '/graphql',
     SUBSCRIPTIONS_URL = '/subscriptions';
 
