@@ -18,7 +18,7 @@ class DashboardController {
         };
     }
 
-    ticketsCountByDay = async (_, {last}, {jwt, tenant_id}) => {
+    ticketsCountByDay = async (_, {last = 7}, {jwt, tenant_id}) => {
         const
             // Start day of interval, defined by 'last' parameter
             startDate = moment().subtract(last, "days").set({'hour': 0, 'minute': 0, 'second': 0, 'millisecond': 0}),

@@ -63,22 +63,22 @@ class UsersController {
 		const user = Users.findOne({tenant_id, _id: requester.user_id});
 		const notifications = user.notifications || [];
 		let unread_count = 0;
-		
+
 		unread_count = notifications.reduce((total, {readed}) => do{
 			if(readed) total;
 			else total+1;
 		}, 0);
-			
-		const nodes = do {
-            if(limit && offset)
-                notifications.slice(offset, offset+limit);
-            else if(offset)
-                notifications.slice(offset);
-            else if(limit) notifications.slice(0, limit);
-            else notifications;
-        }
 
-        return({nodes, unread_count})
+		const nodes = do {
+			if(limit && offset)
+				notifications.slice(offset, offset+limit);
+			else if(offset)
+				notifications.slice(offset);
+			else if(limit) notifications.slice(0, limit);
+			else notifications;
+		}
+
+		return({nodes, unread_count})
 	}
 
 	notificationTicket = async ({ticket_id: _id}, _, {tenant_id}) => (
