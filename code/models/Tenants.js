@@ -13,6 +13,16 @@ let TenantsSchema = new Schema({
     },
     "active": {
         type: Boolean
+    },
+    "emailSupport": {
+        address: {
+            type: String,
+            required: true
+        },
+        password: {
+            type: String,
+            required: true
+        }
     }
 })
 

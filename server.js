@@ -6,6 +6,8 @@ import cors from 'cors';
 import jwt from 'jwt-simple';
 
 import * as models from './code/models'
+import EmailSupportController from './code/controllers/EmailSupport'
+import TicketsController from './code/controllers/Tickets'
 
 //GraphQL y Apollo
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
@@ -56,7 +58,7 @@ graphQLServer.use(GRAPHQL_URL, bodyParser.json(), bodyParser.urlencoded({ extend
         // const tenant = await Tenants.findOne({subdomain: 'directv'});
         let requester = null;
         if(req.headers.authorization) requester = jwt.decode(req.headers.authorization.split('Bearer ')[1], '123');
-        else //requester = jwt.decode("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzIiLCJuYW1lIjoiSm9yZ2UgTHVpcyIsImxhc3RuYW1lIjoiUm9qYXMgTW9udGVybyIsInNleCI6Ik1BTEUiLCJlbWFpbCI6ImpvcmdlQGdtYWlsLmNvbSIsInJvbGUiOiJBR0VOVCIsInVzZXJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzEiLCJ0ZW5hbnRfaWQiOiI1YTgzNTdiMWZmZjJjYTIyMGYzMzJmZDgiLCJfX3YiOjAsInBob25lcyI6W10sInVzZXJfdHlwZSI6IkFHRU5UIn0.FkP1FOKJ6nqeU-UeE-TeVHDy03xpOf972wZkpm5Jbig", '123');
+        /*else //requester = jwt.decode("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzIiLCJuYW1lIjoiSm9yZ2UgTHVpcyIsImxhc3RuYW1lIjoiUm9qYXMgTW9udGVybyIsInNleCI6Ik1BTEUiLCJlbWFpbCI6ImpvcmdlQGdtYWlsLmNvbSIsInJvbGUiOiJBR0VOVCIsInVzZXJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzEiLCJ0ZW5hbnRfaWQiOiI1YTgzNTdiMWZmZjJjYTIyMGYzMzJmZDgiLCJfX3YiOjAsInBob25lcyI6W10sInVzZXJfdHlwZSI6IkFHRU5UIn0.FkP1FOKJ6nqeU-UeE-TeVHDy03xpOf972wZkpm5Jbig", '123');
         {
             res.status(402).json({
                 ok: false,
@@ -66,7 +68,7 @@ graphQLServer.use(GRAPHQL_URL, bodyParser.json(), bodyParser.urlencoded({ extend
                 }]
             });
             return;
-        }
+        }*/
         return({
             schema,
             //para manejar el jwt en el header : (agregarlo al context para
@@ -88,7 +90,8 @@ graphQLServer.use('/graphiql', graphiqlExpress({
 
 // WRAP THE EXPRESS SERVER WITH SUBSCRIPTIONS
 const ws = createServer(graphQLServer);
-ws.listen(GRAPHQL_PORT, () => {
+ws.listen(GRAPHQL_PORT, async () => {
+    await EmailSupportController.listenAll();
     console.log(`Apollo Server is now running on http://localhost:${GRAPHQL_PORT}${GRAPHQL_URL}`);
     new SubscriptionServer({
         execute,

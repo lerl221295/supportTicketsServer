@@ -11,6 +11,7 @@ import Activities from '../controllers/Activities'
 import TicketFields from '../controllers/TicketFields'
 import SLAPolicies from '../controllers/SLAPolicies'
 import Dashboard from '../controllers/Dashboard'
+import EmailSupport from '../controllers/EmailSupport'
 
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import lodash from 'lodash';
@@ -28,7 +29,8 @@ const resolvers = {
         ...Activities.querys,
         ...Authenticate.querys,
         ...TicketFields.querys,
-        ...Dashboard.querys
+        ...Dashboard.querys,
+		...EmailSupport.querys
 	},
 	Mutation: {
 		...Clients.mutations,
@@ -40,7 +42,8 @@ const resolvers = {
 		...Suppliers.mutations,
 		...Authenticate.mutations,
 		...TicketFields.mutations,
-		...SLAPolicies.mutations
+		...SLAPolicies.mutations,
+		...EmailSupport.mutations
 	},
 	Client: Clients.propertiesAndRelationships,
 	Organization: Organizations.propertiesAndRelationships,
