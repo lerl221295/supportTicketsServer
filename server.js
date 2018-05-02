@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import { createServer } from 'http';
 import cors from 'cors';
 import jwt from 'jwt-simple';
-
 import * as models from './code/models'
 import EmailSupportController from './code/controllers/EmailSupport'
 import TicketsController from './code/controllers/Tickets'
@@ -99,6 +98,8 @@ graphQLServer.use('/graphiql', graphiqlExpress({
 	endpointURL: GRAPHQL_URL,
 	subscriptionsEndpoint: `ws://${GRAPHQL_HOST}:${GRAPHQL_PORT}${SUBSCRIPTIONS_URL}`//subscription
 }));
+
+graphQLServer.use('/', (req, res) => { res.redirect('/graphiql') });
 
 // WRAP THE EXPRESS SERVER WITH SUBSCRIPTIONS
 const ws = createServer(graphQLServer);
