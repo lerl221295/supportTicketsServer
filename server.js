@@ -6,6 +6,8 @@ import cors from 'cors';
 import jwt from 'jwt-simple';
 
 import * as models from './code/models'
+import EmailSupportController from './code/controllers/EmailSupport'
+import TicketsController from './code/controllers/Tickets'
 
 //GraphQL y Apollo
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
@@ -101,7 +103,8 @@ graphQLServer.use('/graphiql', graphiqlExpress({
 
 // WRAP THE EXPRESS SERVER WITH SUBSCRIPTIONS
 const ws = createServer(graphQLServer);
-ws.listen(GRAPHQL_PORT, () => {
+ws.listen(GRAPHQL_PORT, async () => {
+    await EmailSupportController.listenAll();
 	console.log(`Apollo Server is now running on http://${GRAPHQL_HOST}:${GRAPHQL_PORT}${GRAPHQL_URL}`);
 	new SubscriptionServer({
 		execute,

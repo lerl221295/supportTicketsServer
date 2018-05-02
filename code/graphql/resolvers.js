@@ -12,24 +12,26 @@ import TicketFields from '../controllers/TicketFields'
 import Tenant from '../controllers/Tenant'
 import SLAPolicies from '../controllers/SLAPolicies'
 import Dashboard from '../controllers/Dashboard'
+import EmailSupport from '../controllers/EmailSupport'
 
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import lodash from 'lodash';
 
 const resolvers = {
 	Query: {
-		...Clients.querys,
-		...Organizations.querys,
-		...BusinessHours.querys,
-		...Tickets.querys,
-		...Agents.querys,
-		...Groups.querys,
-		...Suppliers.querys,
-		...SLAPolicies.querys,
-		...Activities.querys,
-		...Authenticate.querys,
-		...TicketFields.querys,
-		...Dashboard.querys
+        ...Clients.querys,
+        ...Organizations.querys,
+        ...BusinessHours.querys,
+        ...Tickets.querys,
+        ...Agents.querys,
+        ...Groups.querys,
+        ...Suppliers.querys,
+        ...SLAPolicies.querys,
+        ...Activities.querys,
+        ...Authenticate.querys,
+        ...TicketFields.querys,
+        ...Dashboard.querys,
+		...EmailSupport.querys
 	},
 	Mutation: {
 		...Clients.mutations,
@@ -43,6 +45,7 @@ const resolvers = {
 		...TicketFields.mutations,
 		...SLAPolicies.mutations,
 		...Tenant.mutations,
+		...EmailSupport.mutations
 	},
 	Client: Clients.propertiesAndRelationships,
 	Organization: Organizations.propertiesAndRelationships,

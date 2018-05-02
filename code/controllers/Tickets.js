@@ -57,8 +57,14 @@ class TicketsController {
         this.interventionAutor = {
             __resolveType: this.autorInterventionResolveType
         }
-    }
 
+        this.transporters = {};
+    }
+    
+    //setTransporters = transporters => this.transporters = transporters;
+
+    setTransporter = (transporter, id) => this.transporters[id] = transporter;
+    
     title = async ({field_values}, _, {tenant_id}) => (
         field_values.find(({field}) => field.key === 'title').value.text
     )
@@ -261,6 +267,7 @@ class TicketsController {
 
     save = async (_, {ticket}, {requester, tenant_id}) => {
         const ticketBuilded = { tenant_id };
+        if(ticket.email_reference) ticketBuilded.email_reference = ticket.email_reference;
 
         const ticketProps = {};
         
@@ -314,7 +321,7 @@ class TicketsController {
             },
             {
                 field: ticketProps.source.id,
-                value: { key: 'PORTAL' }
+                value: { key: ticket.source || 'PORTAL' }
             },
             {
                 field: ticketProps.type.id,
@@ -335,6 +342,13 @@ class TicketsController {
             }
         }
 
+        if(ticket.source == "EMAIL"){
+            ticketBuilded.last_client_intervention = {
+                messageId: ticket.email_reference,
+                subject: ticket.title
+            }
+        }
+
         const newTicket = await Tickets.create(ticketBuilded);
 
         await Activities.create({
@@ -342,7 +356,10 @@ class TicketsController {
             ticket_id: newTicket.id,
             autor: {
                 id: requester._id,
-                type: 'AGENT'
+                type: do {
+                    if(ticket.source === "EMAIL") "SYSTEM";
+                    else 'AGENT';
+                }
             },
             creation: true,
             time: newTicket.time
@@ -422,7 +439,10 @@ class TicketsController {
                                 else null;
                             },
                             new_id: ticket.supplier_id,
-                            new_value: newSupplier.name
+                            new_value: do {
+                                if(newSupplier) newSupplier.name;
+                                else null;
+                            }
                         });
 
                         /*falta validar el caso en el que ya esta asignado a un agente*/
@@ -608,8 +628,11 @@ class TicketsController {
         return null;
     }
 
-    addIntervention = async (_, {intervention: {ticket_number, text, private: note}}, {tenant_id, requester}) => {
-        const ticket = await Tickets.findOne({tenant_id, number: ticket_number});
+    addIntervention = async (_, {intervention: {ticket_number, text, private: note, email_reference, messageId, time, messageSubject}}, {tenant_id, requester}) => {
+        let ticket = null;
+        if(email_reference) ticket = await Tickets.findOne({tenant_id, email_reference}).populate('field_values.field');
+        else ticket = await Tickets.findOne({tenant_id, number: ticket_number}).populate('field_values.field');
+        
         if(ticket){
             ticket.interventions.push({
                 autor: {
@@ -617,10 +640,37 @@ class TicketsController {
                     type: requester.user_type
                 },
                 text,
-                private: note || false
+                private: note || false,
+                time: time || undefined
             })
             await ticket.save();
-            // falta enviar correo al receptor de la intervencion
+            
+            if(requester.user_type === "AGENT"){
+                //enviar correo al receptor de la intervencion
+                const client = await this.client(ticket, {}, {tenant_id});
+                const mailResponse = {
+                    from: 'youremail@gmail.com',
+                    to: client.email,
+                    subject: `Re: ${ticket.last_client_intervention.subject}`,
+                    html: `El agente ${requester.name} te ha respondido: \n 
+                    ${text}`,
+                    inReplyTo: ticket.last_client_intervention.messageId
+                };
+
+                this.transporters[tenant_id].sendMail(mailResponse, (error, info) => {
+                    if (error) {
+                        console.log(error);
+                    }
+                });
+            }
+            else{
+                ticket.last_client_intervention = {
+                    messageId: messageId,
+                    subject: messageSubject
+                }
+                await ticket.save();
+            }
+
             return {
                 autor: {
                     id: requester._id,

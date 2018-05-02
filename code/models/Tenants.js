@@ -24,6 +24,16 @@ let TenantsSchema = new Schema({
 	subscription_time: {
 		type: Date,
 		default: Date.now
+	},
+	"emailSupport": {
+		address: {
+			type: String,
+			required: true
+		},
+		password: {
+			type: String,
+			required: true
+		}
 	}
 });
 

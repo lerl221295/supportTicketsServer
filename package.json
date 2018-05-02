@@ -23,6 +23,7 @@
     "mongoose": "^4.13.1",
     "mongoose-sequence": "^4.0.1",
     "node-fetch": "^1.7.1",
+    "nodemailer": "^4.6.3",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "subscriptions-transport-ws": "^0.8.2"

@@ -8,6 +8,7 @@ let TicketsSchema = new Schema({
         "type": Schema.Types.ObjectId,
         "required": true
     },
+    email_reference: String,/*identificador del email, si el ticket fue creado por esta via*/
     "time": {
         "type": Date,
         default: Date.now
@@ -45,6 +46,10 @@ let TicketsSchema = new Schema({
             }
         }
     ],
+    last_client_intervention: {
+        messageId: String,
+        subject: String
+    },
     "interventions": [
         {
             "autor": {

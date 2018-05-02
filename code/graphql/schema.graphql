@@ -200,7 +200,7 @@ type Query {
   #	agents_id: [ID!]
   #): [ AgentPerfomance ]
 
-  emailSupport: String!
+  emailSupport: String
   palette: String!
 }
 
