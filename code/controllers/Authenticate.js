@@ -76,14 +76,13 @@ class UsersController {
 				notifications.slice(offset);
 			else if(limit) notifications.slice(0, limit);
 			else notifications;
-		}
-
+		};
 		return({nodes, unread_count})
-	}
+	};
 
 	notificationTicket = async ({ticket_id: _id}, _, {tenant_id}) => (
 		await Tickets.findOne({tenant_id, _id}).populate('field_values.field')
-	)
+	);
 
 	entityResolveType = (entity) => do {
 		if(entity.role) "Agent";

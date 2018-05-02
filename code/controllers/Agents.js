@@ -59,8 +59,9 @@ class AgentsController {
 
 	save = async (_, {agent}, {jwt, tenant_id}) => {
 		if(!agent.role) agent.role = "AGENT";
-		const password = (`${agent.lastname}-${agent.name}`).replace(/\s/g,'').toLowerCase();
-		console.log(password);
+		// const password = (`${agent.lastname}-${agent.name}`).replace(/\s/g,'').toLowerCase();
+		const password = "abc123";
+		// console.log(password);
 		const user = await Users.create({
 			tenant_id,
 			password: md5(password)

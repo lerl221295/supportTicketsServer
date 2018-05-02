@@ -28,7 +28,7 @@ export default {
 	GroupsModel,
 	SuppliersModel,
 	UsersModel,
-    SLAPoliciesModel,
-    AlertsModel
+	SLAPoliciesModel,
+	AlertsModel
 }
 

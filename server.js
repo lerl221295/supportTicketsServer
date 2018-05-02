@@ -14,94 +14,105 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import schema from './code/graphql/schema';
 
 //CONSTANTS
-const GRAPHQL_PORT = 3001,
-    GRAPHQL_URL = '/graphql',
-    SUBSCRIPTIONS_URL = '/subscriptions';
-
-let SUBDOMAINS = ['directv', 'sidor'];
+const
+	GRAPHQL_PORT = 3001,
+	GRAPHQL_HOST = 'localhost',
+	GRAPHQL_URL = '/graphql',
+	SUBSCRIPTIONS_URL = '/subscriptions';
 
 //EXPRESS SERVER
 const graphQLServer = express();
 
 //CONECTING MONGODB
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/tickets');
-//mongoose.connect('mongodb://username:password@host:port/database?options...');
+mongoose.connect(`mongodb://${GRAPHQL_HOST}/tickets`);
+let Tenants = mongoose.model('Tenants');
 
 //MIDDLEWARE CORS FOR ALLOW EXTERNAL ORIGINS
 // graphQLServer.use('*', cors({ origin: `http://localhost:${GRAPHQL_PORT}` }));//subscription
 graphQLServer.use(cors());
 
 //MIDDLEWARE VALIDATE SUBDOMAIN
-graphQLServer.use(GRAPHQL_URL, (req, res, next) => {
-    const subdomain = req.headers.host.split(".")[0];
-    // const subdomain = 'directv';
-    if(SUBDOMAINS.includes(subdomain))
-        next();
-    else res.status(402).json({
-        ok: false,
-        errors: [{
-            path: "/",
-            message: "Usted no es un cliente del sistema, registrese adquiriendo una suscripción para continuar."
-        }]
-    });
+graphQLServer.use(GRAPHQL_URL, bodyParser.json({limit: '8mb'}), bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
+	if (req.headers.host === `${GRAPHQL_HOST}:${GRAPHQL_PORT}`) {
+		const query = req.body.query;
+		if (query && query.includes("mutation") && query.includes("registerTenant"))
+			next();
+	}
+	else {
+		req.context = {};
+		const tenant = await Tenants.findOne({subdomain: req.headers.host.split(".")[0]});
+		if(tenant) {
+			req.context.tenant_id = tenant.id;
+			next();
+		}
+		else res.status(402).json({
+			ok: false,
+			errors: [{
+				path: "/",
+				message: "Usted no es un cliente del sistema, registrese adquiriendo una suscripción para continuar."
+			}]
+		});
+	}
 });
 
-let Tenants = mongoose.model('Tenants');
+//MIDDLEWARE VALIDATE TENANT EXISTS
+graphQLServer.use(GRAPHQL_URL, bodyParser.json({limit: '8mb'}), bodyParser.urlencoded({ extended: true }), async (req, res, next) => {
+	if (req.headers.host !== `${GRAPHQL_HOST}:${GRAPHQL_PORT}`) {
+		if(req.headers.authorization) {
+			// Validate that the token is valid
+			req.context.requester = jwt.decode(req.headers.authorization.split('Bearer ')[1], '123');
+			req.context.jwt = req.headers.authorization;
+			console.log('req.context---', req.context)
+			next();
+		}
+		else {
+			const query = req.body.query;
+			if (!(query.includes("mutation") && query.includes("login") && query.includes("email") && query.includes("password"))) {
+				res.status(402).json({
+					ok: false,
+					errors: [{
+						path: "login",
+						message: "Recurso protegido, debe estar logueado para continuar."
+					}]
+				});
+			}
+			else next();
+		}
+	}
+	else next();
+});
 
-//MIDDLEWARE PARSE BODY TO JSON, SET SCHEMA AND CONTEXT TO GRAPHQL SERVER
+// MIDDLEWARE SET SCHEMA AND CONTEXT TO GRAPHQL SERVER
 graphQLServer.use(GRAPHQL_URL, bodyParser.json({limit: '8mb'}), bodyParser.urlencoded({ extended: true }),
-    graphqlExpress( async (req, res) => {
-        const tenant = await Tenants.findOne({subdomain: req.headers.host.split(".")[0]});
-        // const tenant = await Tenants.findOne({subdomain: 'directv'});
-        let requester = null;
-        if(req.headers.authorization) requester = jwt.decode(req.headers.authorization.split('Bearer ')[1], '123');
-        // else requester = jwt.decode("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzIiLCJuYW1lIjoiSm9yZ2UgTHVpcyIsImxhc3RuYW1lIjoiUm9qYXMgTW9udGVybyIsInNleCI6Ik1BTEUiLCJlbWFpbCI6ImpvcmdlQGdtYWlsLmNvbSIsInJvbGUiOiJBR0VOVCIsInVzZXJfaWQiOiI1YTkxZTk5NTA0ZTljNTFjZTU2YmZiNzEiLCJ0ZW5hbnRfaWQiOiI1YTgzNTdiMWZmZjJjYTIyMGYzMzJmZDgiLCJfX3YiOjAsInBob25lcyI6W10sInVzZXJfdHlwZSI6IkFHRU5UIn0.FkP1FOKJ6nqeU-UeE-TeVHDy03xpOf972wZkpm5Jbig", '123');
-        else {
-            const query = req.body.query;
-            if (!(query.includes("mutation") && query.includes("login") && query.includes("email") && query.includes("password"))) {
-                res.status(402).json({
-                    ok: false,
-                    errors: [{
-                        path: "login",
-                        message: "Recurso protegido, debe estar logueado para continuar."
-                    }]
-                });
-                return ({schema});
-            }
-        }
-        return({
-            schema,
-            //para manejar el jwt en el header : (agregarlo al context para
-            //que cada resolver lo reciba en el tercer parametro.jwt
-            context: {
-                requester,
-                jwt: req.headers.authorization ,
-                tenant_id: tenant.id
-            }
-        })
-    })
+	graphqlExpress( async (req, res) => {
+		console.log('req.context---', req.context)
+		return({
+			schema,
+			context: { ...req.context }
+		})
+	})
 );
 
 //MIDDLEWARE RUN GRAPHIQL
-graphQLServer.use('/graphiql', graphiqlExpress({ 
+graphQLServer.use('/graphiql', graphiqlExpress({
 	endpointURL: GRAPHQL_URL,
-  	subscriptionsEndpoint: `ws://localhost:${GRAPHQL_PORT}${SUBSCRIPTIONS_URL}`//subscription
+	subscriptionsEndpoint: `ws://${GRAPHQL_HOST}:${GRAPHQL_PORT}${SUBSCRIPTIONS_URL}`//subscription
 }));
 
 // WRAP THE EXPRESS SERVER WITH SUBSCRIPTIONS
 const ws = createServer(graphQLServer);
 ws.listen(GRAPHQL_PORT, () => {
-    console.log(`Apollo Server is now running on http://localhost:${GRAPHQL_PORT}${GRAPHQL_URL}`);
-    new SubscriptionServer({
-        execute,
-        subscribe,
-        schema,
-        onConnect: (connectionParams, webSocket) => ({
-            subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
-        })
-    }, {
-        server: ws,
-        path: SUBSCRIPTIONS_URL,
-    });
+	console.log(`Apollo Server is now running on http://${GRAPHQL_HOST}:${GRAPHQL_PORT}${GRAPHQL_URL}`);
+	new SubscriptionServer({
+		execute,
+		subscribe,
+		schema,
+		onConnect: (connectionParams, webSocket) => ({
+			subdomain: webSocket.upgradeReq.headers.host.split(".")[0]
+		})
+	}, {
+		server: ws,
+		path: SUBSCRIPTIONS_URL,
+	});
 });

@@ -1,291 +1,298 @@
 input ClientInput {
-    #Requerido para actualizar, no para crear
-    id: ID
-    name: String
-    lastname: String
-    email: String
-    phones: [ String ]
-    address: String
-    about: String
-    face_base64: String
-    twitter_id: ID
-    facebook_id: ID
-    # Si el cliente existe, sustituye los equipos que le pertenecian
-    new_devices: [ DeviceInput ]
-    # ID de la organización a la que pertenece
-    organization_id: ID
+  #Requerido para actualizar, no para crear
+  id: ID
+  name: String
+  lastname: String
+  email: String
+  phones: [ String ]
+  address: String
+  about: String
+  face_base64: String
+  twitter_id: ID
+  facebook_id: ID
+  # Si el cliente existe, sustituye los equipos que le pertenecian
+  new_devices: [ DeviceInput ]
+  # ID de la organización a la que pertenece
+  organization_id: ID
 }
 
 input DeviceInput {
-    code: String!
-    name: String!
+  code: String!
+  name: String!
 }
 
 input OrganizationInput {
-    id: ID
-    name: String!
-    about: String
-    domains: [ String ]
-    # ID's de clientes de la organización
-    clients: [ ID ]
+  id: ID
+  name: String!
+  about: String
+  domains: [ String ]
+  # ID's de clientes de la organización
+  clients: [ ID ]
 }
 
 input AgentInput {
-    #Requerido para actualizar, no para crear
-    id: ID
-    name: String
-    lastname: String
-    role: AgentRole
-    sex: Sex
-    email: String
-    phones: [ String ]
-    about: String
-    face_base64: String
-    profession: String
-    # ID del proveedor al que pertenece
-    supplier_id: ID
-    groups_id: [ ID ]
+  #Requerido para actualizar, no para crear
+  id: ID
+  name: String
+  lastname: String
+  role: AgentRole
+  sex: Sex
+  email: String
+  phones: [ String ]
+  about: String
+  face_base64: String
+  profession: String
+  # ID del proveedor al que pertenece
+  supplier_id: ID
+  groups_id: [ ID ]
 }
 
 input GroupInput {
-    id: ID
-    name: String
-    about: String
-    group_scale_id: ID
-    # ID's de los agentes del grupo
-    agents_id: [ ID ]
-    # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
-    notification_hours: Float
-    # Agente que debe ser notificado
-    notification_agent_id: ID
-    notification_text: String
+  id: ID
+  name: String
+  about: String
+  group_scale_id: ID
+  # ID's de los agentes del grupo
+  agents_id: [ ID ]
+  # Tiempo en que deben ser notificados los agentes cuando un ticket no ha sido asignado
+  notification_hours: Float
+  # Agente que debe ser notificado
+  notification_agent_id: ID
+  notification_text: String
 }
 
 input SupplierInput {
-    id: ID
-    name: String
-    about: String
-    # ID's de agentes del proveedor
-    agents_id: [ ID ]
+  id: ID
+  name: String
+  about: String
+  # ID's de agentes del proveedor
+  agents_id: [ ID ]
 }
 
 input TicketInput {
-    title: String!
-    description: String!
-    priority: TicketPriority
-    type_key: String
-    agent_id: ID
-    #El id del cliente solo se enviara cuando el ticket lo cree un agente
-    client_id: ID
-    device_id: ID
-    custom_fields: [ TicketFieldInput ]
+  title: String!
+  description: String!
+  priority: TicketPriority
+  type_key: String
+  agent_id: ID
+  #El id del cliente solo se enviara cuando el ticket lo cree un agente
+  client_id: ID
+  device_id: ID
+  custom_fields: [ TicketFieldInput ]
 }
 
 input FilterTicketInput {
-    #Numero de ticket
-    number: Float
-    #Si es true, se ignora el param "agents"
-    unassigned: Boolean
-    #Fecha desde (por defecto: el principio del tenant)
-    date_from: String
-    #Fecha hasta (por defecto: momento actual)
-    date_to: String
-    agents: [ ID ]
-    groups: [ ID ]
-    suppliers: [ ID ]
-    clients: [ ID ]
-    organizations: [ ID ]
-    #Keys de los estados
-    states_keys: [ String ]
-    #Keys de los tipos
-    types_keys: [ String ]
-    priorities: [ TicketPriority ]
-    due_by: [ DueBy ]
+  #Numero de ticket
+  number: Float
+  #Si es true, se ignora el param "agents"
+  unassigned: Boolean
+  #Fecha desde (por defecto: el principio del tenant)
+  date_from: String
+  #Fecha hasta (por defecto: momento actual)
+  date_to: String
+  agents: [ ID ]
+  groups: [ ID ]
+  suppliers: [ ID ]
+  clients: [ ID ]
+  organizations: [ ID ]
+  #Keys de los estados
+  states_keys: [ String ]
+  #Keys de los tipos
+  types_keys: [ String ]
+  priorities: [ TicketPriority ]
+  due_by: [ DueBy ]
 }
 
 input TicketUpdateInput {
-    ticket_number: Int!
-    type_key: String
-    priority: TicketPriority
-    state_key: String
-    agent_id: ID
-    source: Source
-    group_id: ID
-    supplier_id: ID
-    device_id: ID
-    custom_fields: [ TicketFieldInput ]
+  ticket_number: Int!
+  type_key: String
+  priority: TicketPriority
+  state_key: String
+  agent_id: ID
+  source: Source
+  group_id: ID
+  supplier_id: ID
+  device_id: ID
+  custom_fields: [ TicketFieldInput ]
 }
 
 input TicketFieldInput {
-    #El key del customField. Determinara cual de los siguientes values leer
-    field_key: String!
-    #Para los valores de texto
-    text: String
-    #Para los numeros
-    number: Float
-    #Para los checks
-    check: Boolean
-    #Para los select options
-    key: String
+  #El key del customField. Determinara cual de los siguientes values leer
+  field_key: String!
+  #Para los valores de texto
+  text: String
+  #Para los numeros
+  number: Float
+  #Para los checks
+  check: Boolean
+  #Para los select options
+  key: String
 }
 
 input InterventionInput {
-    ticket_number: Int!
-    # HTML del mensaje
-    text: String!
-    #False por defecto. (solo para agentes)
-    private: Boolean
+  ticket_number: Int!
+  # HTML del mensaje
+  text: String!
+  #False por defecto. (solo para agentes)
+  private: Boolean
 }
 
 input TicketTypeInput {
-    key: String!
-    label: String!
+  key: String!
+  label: String!
 }
 
 input CustomFieldInput {
-    position: Int!
-    key: String!
-    label: String!
-    type: FieldType!
-    clientVisible: Boolean
-    # Solo cuando el type = SELECT
-    options: [SelectOptionsInput]
+  position: Int!
+  key: String!
+  label: String!
+  type: FieldType!
+  clientVisible: Boolean
+  # Solo cuando el type = SELECT
+  options: [SelectOptionsInput]
 }
 
 input SelectOptionsInput {
-    position: Int!
-    key: String!
-    label: String!
+  position: Int!
+  key: String!
+  label: String!
 }
 
 input TicketStateInput {
-    key: String!
-    label: String!
-    # False por defecto
-    sla_paused: Boolean
-    stage: Stage
-    # Keys de los estados desde los que se llega a este estado
-    came_from: [ String! ]
+  key: String!
+  label: String!
+  # False por defecto
+  sla_paused: Boolean
+  stage: Stage
+  # Keys de los estados desde los que se llega a este estado
+  came_from: [ String! ]
 }
 
 input CategoryInput {
-    name: String!
+  name: String!
 }
 
 input ArticleInput {
-    # ID de la categoría a la que pertenece
-    category_id: ID!
-    name: String!
-    description: String!
+  # ID de la categoría a la que pertenece
+  category_id: ID!
+  name: String!
+  description: String!
 }
 
 input BusinessHoursInput {
-    mode: BusinessHoursModes!
-    holidays: [ HolidayInput! ]
-    # Solo si mode = CUSTOMIZED
-    working_days: [ WorkingDayInput! ]
-    # Solo si mode = SAME_FOR_DAYS
-    week_days: [ WeekDay! ]
-    # Solo si mode = SAME_FOR_DAYS
-    horary: HoraryInput
-    
+  mode: BusinessHoursModes!
+  holidays: [ HolidayInput! ]
+  # Solo si mode = CUSTOMIZED
+  working_days: [ WorkingDayInput! ]
+  # Solo si mode = SAME_FOR_DAYS
+  week_days: [ WeekDay! ]
+  # Solo si mode = SAME_FOR_DAYS
+  horary: HoraryInput
+
 }
 
 input WorkingDayInput {
-    day: WeekDay
-    # Si es falso, se ignora el atributo horary
-    workeable: Boolean
-    horary: HoraryInput
+  day: WeekDay
+  # Si es falso, se ignora el atributo horary
+  workeable: Boolean
+  horary: HoraryInput
 }
 
 input HourAndMinutesInput {
-    hour: Int
-    minutes: Int
+  hour: Int
+  minutes: Int
 }
 
 input HoraryInput {
-    #Hora exacta del dia en que se comienza a trabajar
-    start: HourAndMinutesInput!
-    #Hora exacta del dia en que se termina de trabajar
-    end: HourAndMinutesInput!
+  #Hora exacta del dia en que se comienza a trabajar
+  start: HourAndMinutesInput!
+  #Hora exacta del dia en que se termina de trabajar
+  end: HourAndMinutesInput!
 }
 
 input HolidayInput {
-    name: String!
-    day: Int!
-    month: Int!
+  name: String!
+  day: Int!
+  month: Int!
 }
 
 input SlapoliciesOrderInput {
-    id: ID!
-    position: Int!
+  id: ID!
+  position: Int!
 }
 
 # Pensar hacer un Input para la activación de la política SLA, para poder validar en la actualización y creación
 input SlapolicyInput {
-    id: ID
-    name: String!
-    description: String!
-    active: Boolean
-    #Una politica para cada prioridad
-    objectives: [ ObjectiveInput! ]!
-    clients: [ ID! ]
-    organizations: [ ID! ]
-    alerts: [ AlertInput!  ]
+  id: ID
+  name: String!
+  description: String!
+  active: Boolean
+  #Una politica para cada prioridad
+  objectives: [ ObjectiveInput! ]!
+  clients: [ ID! ]
+  organizations: [ ID! ]
+  alerts: [ AlertInput!  ]
 }
 
 input ObjectiveInput {
-    priority: TicketPriority!
-    first_response: PolicyTimeInput!
-    solved: PolicyTimeInput!
-    #Si el tiempo correra en horas habiles o 24x7
-    operational_hours: OperationalHours!
+  priority: TicketPriority!
+  first_response: PolicyTimeInput!
+  solved: PolicyTimeInput!
+  #Si el tiempo correra en horas habiles o 24x7
+  operational_hours: OperationalHours!
 }
 
 input PolicyTimeInput {
-    value: Int!
-    unity: UnityTime!
+  value: Int!
+  unity: UnityTime!
 }
 
 input AlertInput {
-    # Puede ser recordatorio o violación del SLA
-    type: AlertType!
-    # Puede ser respuesta o resolución
-    motive: AlertMotive!
-    time: Float!
-    # ID's de agentes a los que le llegará la alerta
-    to: [ ID! ]!
-    message: String!
+  # Puede ser recordatorio o violación del SLA
+  type: AlertType!
+  # Puede ser respuesta o resolución
+  motive: AlertMotive!
+  time: Float!
+  # ID's de agentes a los que le llegará la alerta
+  to: [ ID! ]!
+  message: String!
 }
 
 input EmailConfig {
-    email: String!
-    password: String!
-    password_confirm: String!
+  email: String!
+  password: String!
+  password_confirm: String!
 }
 
 input DispatcherInput {
-    id: ID
-    name: String
-    description: String
-    comparator: LogicalComparator
-    conditions: [ ConditionInput! ]
-    actions: [ ActionInput! ]
+  id: ID
+  name: String
+  description: String
+  comparator: LogicalComparator
+  conditions: [ ConditionInput! ]
+  actions: [ ActionInput! ]
 }
 
 input ConditionInput {
-    # Key del campo condicionado
-    conditioned_field_key: String
-    condition_operator: ConditionOperator
-    value: TicketFieldInput
+  # Key del campo condicionado
+  conditioned_field_key: String
+  condition_operator: ConditionOperator
+  value: TicketFieldInput
 }
 
 input ActionInput {
-    field_key: String
-    new_value: TicketFieldInput
+  field_key: String
+  new_value: TicketFieldInput
 
-    subject: String
-    body: String
-    to: ID
-    receiver_type: ReceiverType
+  subject: String
+  body: String
+  to: ID
+  receiver_type: ReceiverType
+}
+
+input TenantInput {
+  name: String!
+  subdomain: String!
+  phones: [ String ]
+  admin: AgentInput!
 }

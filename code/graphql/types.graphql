@@ -539,9 +539,9 @@ type Tenant {
     active: Boolean
     subscription_time: String
     # Imagen en base64
-    icon: String
-    colors: TenantColors
-    plans: [ TenantPlan ]
+#    icon: String
+#    colors: TenantColors
+#    plans: [ TenantPlan ]
 }
 
 type TenantColors {
