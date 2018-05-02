@@ -25,7 +25,7 @@ let TenantsSchema = new Schema({
 		type: Date,
 		default: Date.now
 	},
-	"emailSupport": {
+	emailSupport: {
 		address: {
 			type: String,
 			required: true

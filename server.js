@@ -87,7 +87,6 @@ graphQLServer.use(GRAPHQL_URL, bodyParser.json({limit: '8mb'}), bodyParser.urlen
 // MIDDLEWARE SET SCHEMA AND CONTEXT TO GRAPHQL SERVER
 graphQLServer.use(GRAPHQL_URL, bodyParser.json({limit: '8mb'}), bodyParser.urlencoded({ extended: true }),
 	graphqlExpress( async (req, res) => {
-		console.log('req.context---', req.context)
 		return({
 			schema,
 			context: { ...req.context }
@@ -104,7 +103,7 @@ graphQLServer.use('/graphiql', graphiqlExpress({
 // WRAP THE EXPRESS SERVER WITH SUBSCRIPTIONS
 const ws = createServer(graphQLServer);
 ws.listen(GRAPHQL_PORT, async () => {
-    await EmailSupportController.listenAll();
+	await EmailSupportController.listenAll();
 	console.log(`Apollo Server is now running on http://${GRAPHQL_HOST}:${GRAPHQL_PORT}${GRAPHQL_URL}`);
 	new SubscriptionServer({
 		execute,
