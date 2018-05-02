@@ -63,7 +63,6 @@ graphQLServer.use(GRAPHQL_URL, bodyParser.json({limit: '8mb'}), bodyParser.urlen
 			// Validate that the token is valid
 			req.context.requester = jwt.decode(req.headers.authorization.split('Bearer ')[1], '123');
 			req.context.jwt = req.headers.authorization;
-			console.log('req.context---', req.context)
 			next();
 		}
 		else {
